@@ -17,7 +17,7 @@ import scipy
 from scipy import misc
 import psychopy
 import tempfile
-
+import math
 
 # =============================================================================
 # Print instructions
@@ -130,6 +130,15 @@ def distBetweenPoints(point1, point2):
 	'''
 	dist = np.sqrt( (point1[0]-point2[0])**2 + (point1[1] - point2[1])**2 )
 	return dist
+
+def determineAngle(p1, p2):
+	'''
+	'''
+	normx = ((p2[0] - p1[0]))
+	normy = ((p2[1] - p1[1]))
+	narcdeg = math.atan2(normy, normx)
+	sdegree = ((narcdeg * 180)/math.pi)
+	return sdegree
 
 def isNumber(s):
     try:
@@ -806,9 +815,6 @@ class eyeLink:
                 calDiam     = 10,\
                 holeDiam    = 2,\
                 colorDepth  = 32,\
-                drift       = False,\
-                driftX      = False,\
-                driftY      = False,\
                 targSound   = "on",\
                 corrSound   = "on",\
                 incSound    = "on",\

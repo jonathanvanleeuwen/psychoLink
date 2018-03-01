@@ -174,23 +174,22 @@ def runExp(tl):
         fixPos = [ps* tl.pxPerDeg[0] for ps in tl.fixDotPos[i]]
         fixPos = ((np.random.random(2)-0.5)*2)*8*tl.pxPerDeg[0]
         fixDot.pos = fixPos
-        fixDot.pos = [0,0]
+        #fixDot.pos = [0,0]
         
         targPos = [ps* tl.pxPerDeg[0] for ps in tl[tl.endPos[i]+'FixPos'][i]]
         targDot.pos = targPos
         
-        philPattern = getRandomPhilIm(par['philX'], par['philY'], par['philSize'], 
-                              par['philCol1'], par['philCol2'])
-        philStim.setImage(philPattern)
-        philStim.pos = targPos
+#        philPattern = getRandomPhilIm(par['philX'], par['philY'], par['philSize'], 
+#                              par['philCol1'], par['philCol2'])
+#        philStim.setImage(philPattern)
+#        philStim.pos = targPos
         
-        shift = (np.random.randint(1,4)*tl.pxPerDeg[0])*([1,-1][np.random.randint(0,2)])
-        targPos2 = [targPos[0]+shift, targPos[1]]
+        #shift = (np.random.randint(1,4)*tl.pxPerDeg[0])*([1,-1][np.random.randint(0,2)])
+        #targPos2 = [targPos[0]+shift, targPos[1]]
         #======================================================================
         # Display fixdot and wait for fixation
         #======================================================================
         # Gaze contingent start
-        tracker.drawFixBoundry(fixPos[0], fixPos[1], tl.hitDistance[0]*tl.pxPerDeg[0]*2)
         pl.waitForFixation(win, tracker, fixDot, tl.hitDistance[0]*tl.pxPerDeg[0], 
                            tl.maxWaitForFix[0])
 
@@ -201,7 +200,8 @@ def runExp(tl):
         nIncor = np.sum(tIncor)
         trLeft = tNr-(i)
         tracker.drawTrialInfo(block,i+1,nCor,nIncor,trLeft)
-        tracker.drawFixBoundry(targPos[0], targPos[1], tl.hitDistance[0]*tl.pxPerDeg[0]*2)
+        tracker.drawFixBoundry(fixPos[0], fixPos[1], tl.hitDistance[0]*tl.pxPerDeg[0])
+        tracker.drawFixBoundry(targPos[0], targPos[1], tl.hitDistance[0]*tl.pxPerDeg[0])
         time.sleep(1)
         
         #======================================================================

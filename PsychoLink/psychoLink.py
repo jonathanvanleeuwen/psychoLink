@@ -313,11 +313,12 @@ def cleanUp(win, tracker):
         time.sleep(0.2) # give the tracker time to stop
         try:
             os.rename(tracker.EDFDefaultName, tracker.EDFfileName)
-            print 'EDF file was saved as', tracker.EDFfileName
+            print '\nEDF file was saved as', tracker.EDFfileName
         except:
-            print 'Error while renaming EDF file!!'
+            print '\nError while renaming EDF file!!'
+            print tracker.EDFfileName, 'Allready exists!!'
             print 'Manually rename the file!!'
-            print 'Currently saved as', tracker.EDFDefaultName
+            print 'Currently saved as', tracker.EDFDefaultName, '!!'
     if tracker.mouse != False:
         tracker.mouse.setVisible(1)
     win.close()
@@ -559,7 +560,7 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
         text.text           = 'mean error: ' + str(meanError) + ' deg'
         text.pos            = meanFeedPos
         text.draw()
-        text.text           = 'max eror: ' + str(maxError) + ' deg'
+        text.text           = 'max error: ' + str(maxError) + ' deg'
         text.pos            = maxFeedPos
         text.draw()
 
@@ -955,7 +956,7 @@ class eyeLink:
             elif bType == 'circle':
                 x1,y1,x2,y2 = circLinePos(x, y, rad)
                 for idx, (x1,y1,x2,y2) in enumerate(zip(x1,y1,x2,y2)):
-                    self.eyeLinkTracker.drawLine(x1,y1,x2,y2,color[0])
+                    self.eyeLinkTracker.drawLine((x1,y1),(x2,y2),color[0])
             self.eyeLinkTracker.drawCross(x,y, color[1])
             
     def drawEyeText(self, text, pos = False):

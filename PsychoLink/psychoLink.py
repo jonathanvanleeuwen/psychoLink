@@ -20,6 +20,14 @@ import tempfile
 import math
 
 # =============================================================================
+# To Do:
+# =============================================================================#
+# 1:    Test the code with different resolutions
+#
+# 2:    Run an experiment and parse the data to check that everything is 
+#       logged correctly
+#
+# =============================================================================
 # Print instructions
 # =============================================================================
 def aaPrintbasicInstructions():
@@ -859,7 +867,6 @@ class eyeLink:
                                              targetOuterDiameter=self.calDiam,
                                              targetInnerDiameter=self.holeDiam)
             pl.openGraphicsEx(genv)
-            self.mouse.setPos((100-self.win.size[0]/2, (self.win.size[1]/2)-100))
             # Set number of calibration points
             self.eyeLinkTracker.sendCommand("calibration_type=%s"%self.caltype)
             # Set calibration point duration
@@ -1667,8 +1674,16 @@ class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
         self.extra_info = True
         self.setup_cal_display()
 
+    def setMousStart(self):
+        mousStart = (-(self.win.size[0]/2),self.win.size[1]/2)
+        if self.image_size:
+            mousStart = ((self.image_size[0]/2)-(self.win.size[0]/2),  (self.win.size[1]/2)-(self.image_size[1]/2))
+        else:
+            mousStart = (100-self.win.size[0]/2, (self.win.size[1]/2)-100)
+        self.tracker.mouse.setPos(mousStart)
+    
     def get_input_key(self):
-        if self.tracker.activeState != False: 
+        if self.tracker.activeState != False:             
             allowedKeys = ['up','down','left','right', 'return', 'escape',
                            'space', 'c', 'v', 'a', 'i', 'num_add', 
                            'num_subtract']
@@ -1678,9 +1693,9 @@ class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
                 keycode = key 
                 if keycode == 'up':	keycode = pl.CURS_UP
                 elif keycode == 'down':  keycode = pl.CURS_DOWN
-                elif keycode == 'left':  keycode = pl.CURS_LEFT
-                elif keycode == 'right': keycode = pl.CURS_RIGHT
-                elif keycode == 'return':  keycode = pl.ENTER_KEY
+                elif keycode == 'left':  keycode = pl.CURS_LEFT; self.setMousStart()
+                elif keycode == 'right': keycode = pl.CURS_RIGHT; self.setMousStart()
+                elif keycode == 'return':  keycode = pl.ENTER_KEY; self.setMousStart()
                 elif keycode == 'escape':  keycode = pl.ESC_KEY
                 elif keycode == 'space':  keycode = ord(" ")
                 elif keycode == 'c':  keycode = ord("c")

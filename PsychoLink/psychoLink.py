@@ -843,22 +843,11 @@ class eyeLink:
         self.caltype = caltype
         self.calTime = int(calTime)
         
-    # Run calibration or drift correct
-    def calibrate(self,\
-                drift       = False,\
-                driftX      = False,\
-                driftY      = False):
+    # Run calibration
+    def calibrate(self):
         '''
-        Sets the calibration settings\n
-        Then runs either the calibration or the drift correct
+        Runs the calibration
         '''
-        #calibrateText = "Press C to calibrate\n" + \
-        #                "Press V to validate\n" + \
-        #                "Press A to auto-threshold\n"  + \
-        #                "Press Enter to show camera image\n" + \
-        #                "\t(then change between images using the arrow keys)\n\n" + \
-        #                "Press 'Esc' to exit menu"
-
         if self.mode == 'Real':
             genv=EyeLinkCoreGraphicsPsychopy(self.win, self,
                                              targetForegroundColor=self.foreCol,
@@ -873,13 +862,34 @@ class eyeLink:
             self.eyeLinkTracker.sendCommand("automatic_calibration_pacing=%d"%(self.calTime))
             # Set sounds
             pl.setCalibrationSounds(self.targSound, self.corrSound,self.incSound)
-            pl.setDriftCorrectSounds(self.targSound, self.corrSound, self.incSound)
             self.eyeLinkTracker.doTrackerSetup()
             genv.clear_cal_display()
             self.win.flip()
             drawText(self.win, 'Press "Space" to start!')
             self.eyeLinkTracker.startRecording(1,1,1,1)
-                
+    
+    # Run drift correct
+    def driftCorrect(self, x,y):
+        '''
+        Runs  drift correction
+        '''
+        if self.mode == 'Real':
+            genv=EyeLinkCoreGraphicsPsychopy(self.win, self,
+                                             targetForegroundColor=self.foreCol,
+                                             targetBackgroundColor=self.backCol,
+                                             screenColor=self.backCol,
+                                             targetOuterDiameter=self.calDiam,
+                                             targetInnerDiameter=self.holeDiam)
+            pl.openGraphicsEx(genv)
+            # Set number of calibration points
+            self.eyeLinkTracker.sendCommand("calibration_type=%s"%self.caltype)
+            # Set calibration point duration
+            self.eyeLinkTracker.sendCommand("automatic_calibration_pacing=%d"%(self.calTime))
+            # Set sounds
+            pl.setDriftCorrectSounds(self.targSound, self.corrSound, self.incSound)
+            self.eyeLinkTracker.doDriftCorrect(x, y,1,1)
+            genv.clear_cal_display()
+            
     #=========================================================================
     # Methods for talking to the eytracker
     #=========================================================================

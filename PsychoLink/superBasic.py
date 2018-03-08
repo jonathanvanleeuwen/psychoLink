@@ -14,10 +14,10 @@ tracker = pl.eyeLink(win, fileName = 'testing.EDF')
 tracker.calibrate()
 for i in range(25):# Run gaze contingent display
     pl.drawText(win, 'Press "Space" to start!')
-    pl.waitForFixation(win, tracker, fixDot)
+    tracker.waitForFixation(fixDot)
     tracker.startTrial()
     tracker.drawFixBoundry(0,0,100)
-    tracker.sendMsg('var '+str(i))
+    tracker.sendMsg('var '+ 'trialNr '+str(i))
     s = time.time()
     while time.time() - s < 5:
         pos = tracker.getCurSamp()
@@ -28,4 +28,4 @@ for i in range(25):# Run gaze contingent display
         if tracker.checkAbort(): break
     tracker.stopTrial()
     if tracker.ABORTED: break
-pl.cleanUp(win,tracker) 
+tracker.cleanUp() 

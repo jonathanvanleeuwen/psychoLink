@@ -54,7 +54,7 @@ def aaPrintbasicInstructions():
     tracker.startTrial()\n
     # Wait for fixation on fixation dot, additional options to make things pretty, \n
     # this part waits for any sample within boundry, if not fixation returns to calibration window\n
-    pl.waitForFixation(win, tracker, fixDot)\n
+    tracker.waitForFixation(win, tracker, fixDot)\n
     # Draw info about fixation boundries on the eylink computer screen (square)\n
     tracker.drawFixBoundry(fixX,fixY, maxFixDist)\n
     tracker.drawFixBoundry(targX,targY, maxTargHitDist)\n
@@ -78,7 +78,7 @@ def aaPrintbasicInstructions():
     # Stop eyetracker, after each trial\n
     tracker.stopTrial()\n
     # After the experiment or when the experiment is aborted (transfers data and closes graphics)\n
-    pl.cleanUp(win, tracker)\n
+    tracker.cleanUp(win, tracker)\n
     '''
     instructions = '''
     # =============================================================================\n
@@ -103,7 +103,7 @@ def aaPrintbasicInstructions():
     tracker.startTrial()\n
     # Wait for fixation on fixation dot, additional options to make things pretty, \n
     # this part waits for any sample within boundry, if not fixation returns to calibration window\n
-    pl.waitForFixation(win, tracker, fixDot)\n
+    tracker.waitForFixation(win, tracker, fixDot)\n
     # Draw info about fixation boundries on the eylink computer screen (square)\n
     tracker.drawFixBoundry(fixX,fixY, maxFixDist)\n
     tracker.drawFixBoundry(targX,targY, maxTargHitDist)\n
@@ -127,7 +127,7 @@ def aaPrintbasicInstructions():
     # Stop eyetracker, after each trial\n
     tracker.stopTrial()\n
     # After the experiment or when the experiment is aborted (transfers data and closes graphics)\n
-    pl.cleanUp(win, tracker)\n
+    tracker.cleanUp()\n
     '''
     print instructions
 # =============================================================================
@@ -321,12 +321,17 @@ def makeTrialList(header, conditions, reps = 0, zeroPads = 0, shuffle = True):
 	return trialList
 
 def cleanUp(win, tracker):
+    '''
+    '''
+    import warnings
+    warn = '\n"cleanUp()" will be removed in future versions\nUse "tracker.cleanUp()" instead!'
+    warnings.warn(warn, Warning)
     drawText(win, 'Experiment Finished!\n\nTransferring data!', textKey = [0])
     tracker.stopTrial()
     if tracker.mode != 'Dummy':
         time.sleep(0.2)
         tracker.stopRecording()
-        tracker.cleanUp()
+        tracker.cleanUpOld()
         time.sleep(0.2) # give the tracker time to stop
         try:
             os.rename(tracker.EDFDefaultName, tracker.EDFfileName)
@@ -605,6 +610,11 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
     return validationResults
 
 def waitForFixation(win, tracker, fixDot, maxDist = 0, maxWait = 4, nRings=3):
+    '''
+    '''
+    import warnings
+    warn = '\n"waitForFixation()" will be removed in future versions\nUse "tracker.waitForFixation()" instead!'
+    warnings.warn(warn, Warning)
     incorrectFixationText = 'Either you are not fixating on the target or ' +\
     'the eyetracker needs to be recalibrated.\n\nPleas notify the experimenter.\n\n'+\
     'SPACE \t: Try again\n'+\
@@ -1154,6 +1164,109 @@ class eyeLink:
                         break
                     self.window.flip()
         return fix
+
+    def waitForFixation(self, fixDot, maxDist = 0, maxWait = 4, nRings=3):
+        '''
+        '''
+        incorrectFixationText = 'Either you are not fixating on the target or ' +\
+        'the eyetracker needs to be recalibrated.\n\nPleas notify the experimenter.\n\n'+\
+        'SPACE \t: Try again\n'+\
+        'C \t\t: Re-calibrate\n'+\
+        'V \t\t: Validate\n'+\
+        'Q \t\t: Continue without fixation control'
+        
+        # get refreshRate of screen
+        hz = self.win.getActualFrameRate()    
+        self.startRecording()
+        correctFixation = False
+        trStart = time.time()
+        if np.sum(fixDot.fillColor == self.win.color) == 3:
+            lineColor = fixDot.lineColor
+        else:
+            lineColor = fixDot.fillColor
+        
+        # Detrmine the moving ring properties
+        if  maxDist == 0:
+            maxDist = self.pxPerDeg*2
+        perimMaxRad = (maxDist)
+        rad = perimMaxRad
+        self.drawFixBoundry(fixDot.pos[0], fixDot.pos[1], rad)
+        radList= []
+        for i in range(int(hz/0.5)):
+            rad = rad-(perimMaxRad/(hz/0.5))*(2-(rad/perimMaxRad))
+            if rad >= 0:
+                radList.append(rad)
+        radList = np.array(radList)
+        rIdx = [np.floor((len(radList)/nRings)*(i+1))-1 for i in range(nRings)]
+        
+        # Make the circ stim    
+        concCirc = visual.Circle(self.win,radius=perimMaxRad,fillColorSpace='rgb255',\
+                        lineColorSpace='rgb255',lineColor=lineColor,\
+                        fillColor=self.win.color,edges=50,pos=fixDot.pos)
+        
+        while (time.time() - trStart) < maxWait:
+            if self.mode != 'Dummy':
+                fixation = self.getCurSamp()
+                whatToDo = getKey(['c'], waitForKey = False)
+                distance = distBetweenPoints(fixation,fixDot.pos)
+                if distance < maxDist:
+                    correctFixation = True
+                    break
+                if whatToDo[0] == 'c':
+                    break
+            else:
+                avgXY = self.getCurSamp()
+                distance = distBetweenPoints(avgXY,fixDot.pos)
+                if distance < maxDist:
+                    correctFixation = True
+                    break
+                    
+            # Draw animated fix boundry                
+            if time.time() - trStart > 1:
+                # Get the stim radius
+                radList = np.roll(radList,-1)
+                rads = [radList[int(i)] for i in rIdx]
+                # Draw the larger circle first
+                for rad in np.sort(rads)[::-1]:
+                    concCirc.radius = rad
+                    concCirc.draw()
+                    if nRings == 1 and rad == np.min(radList):
+                        if np.sum(concCirc.lineColor == self.win.color)==3:
+                            concCirc.lineColor = fixDot.fillColor
+                        elif np.sum(concCirc.lineColor == fixDot.fillColor) ==3:
+                            concCirc.lineColor = self.win.color
+                
+            fixDot.draw()            
+            self.win.flip()
+            
+            if checkAbort():
+                break
+        
+        # only draw fixDot
+        fixDot.draw()
+        self.win.flip()
+        
+        # If no fixation detected
+        if correctFixation == False:
+            drawText(self.win, incorrectFixationText, textKey = [0])
+            whatToDo = getKey(['c', 'space', 'q', 'v'])
+            if whatToDo[0] == 'c':
+                self.calibrate()
+                correctFixation = self.waitForFixation(fixDot, maxDist, maxWait, nRings)
+            elif whatToDo[0] == 'space':
+                correctFixation = self.waitForFixation(fixDot, maxDist, maxWait, nRings)
+            elif whatToDo[0] == 'q' or whatToDo[0] == 'escape':
+                correctFixation = False
+            elif whatToDo[0] == 'v':
+                calibrationValidation(self.win,\
+                                      self, \
+                                      nrPoints = 9, \
+                                      dotColor = self.foreCol,\
+                                      pxPerDegree = self.pxPerDeg,\
+                                      saveFile = False)
+                correctFixation = self.waitForFixation( fixDot, maxDist, maxWait, nRings)
+        self.stopRecording()
+        return correctFixation
     
     # Check abort
     def checkAbort(self):
@@ -1175,9 +1288,14 @@ class eyeLink:
         Closes eyetracker Graphics\n
         Retrieves data file to current working directory\n
         '''
+        drawText(self.win, 'Experiment Finished!\n\nTransferring data!', textKey = [0])
+        self.stopTrial()
         self.activeState = False
         if self.mode == 'Real':
             if pl.tracker != None:
+                time.sleep(0.2)
+                self.stopRecording()
+                
                 # File transfer and cleanup!
                 self.eyeLinkTracker.setOfflineMode()
                 pl.msecDelay(500);
@@ -1190,8 +1308,49 @@ class eyeLink:
                     self.eyeLinkTracker.receiveDataFile(self.EDFDefaultName, self.EDFDefaultName)
                     sys.stdout = _out
                 self.eyeLinkTracker.close()
-
-
+                
+                 # give the tracker time to stop
+                time.sleep(0.2)
+                try:
+                    os.rename(self.EDFDefaultName, self.EDFfileName)
+                    print '\nEDF file was saved as', self.EDFfileName
+                except:
+                    print '\nError while renaming EDF file!!'
+                    print self.EDFfileName, 'Allready exists!!'
+                    print 'Manually rename the file!!'
+                    print 'Currently saved as', self.EDFDefaultName, '!!'
+        if self.mouse != False:
+            self.mouse.setVisible(1)
+        self.win.close()
+    
+    def cleanUpOld(self):
+        '''
+        Sets eyetracker into offline mode\n
+        Closes data file\n
+        Closes eyetracker conection\n
+        Closes eyetracker Graphics\n
+        Retrieves data file to current working directory\n
+        '''
+        import warnings
+        warn = '\n"tracker.cleanUpOld()" be removed in future versions\nUse "tracker.cleanUp()" instead!'
+        warnings.warn(warn, Warning)
+        
+        self.activeState = False
+        if self.mode == 'Real':
+            if pl.tracker != None:                
+                # File transfer and cleanup!
+                self.eyeLinkTracker.setOfflineMode()
+                pl.msecDelay(500);
+                #Close the file and transfer it to Display PC
+                self.eyeLinkTracker.closeDataFile()
+                # Suppress output printing
+                _out = sys.stdout
+                with open(os.devnull, 'w') as fd:
+                    sys.stdout = fd
+                    self.eyeLinkTracker.receiveDataFile(self.EDFDefaultName, self.EDFDefaultName)
+                    sys.stdout = _out
+                self.eyeLinkTracker.close()
+                
 #==============================================================================
 #  Make class for getting experiment info from user (incomplete)
 #==============================================================================

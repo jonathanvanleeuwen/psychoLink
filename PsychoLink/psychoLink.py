@@ -957,7 +957,7 @@ class eyeLink:
             self.eyeLinkTracker.sendMessage(str(msg))
             time.sleep(2/1000.0)
         elif self.mode == 'Dummy':
-            msg = 'EyeLink Log (Dummy): '+str(msg)
+            msg = 'PsychoLink Log (Dummy): '+str(msg)
             print msg
 
     def getTime(self):

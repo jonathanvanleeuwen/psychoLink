@@ -1274,7 +1274,7 @@ class eyeLink:
         keys = event.getKeys()
         if keys:
             if 'escape' in keys:
-                key , rt = drawText(self.win, 'Stop Experiment?\n\nYes \t= Y \nNo \t\t= N', ['y', 'n'])
+                key , rt = drawText(self.win, 'Stop Experiment?\n\n"Y" \ "N"', ['y', 'n'])
                 if key == 'y' or key == 'escape':
                     self.ABORTED = True
                     return True

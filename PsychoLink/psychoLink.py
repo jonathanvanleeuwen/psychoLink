@@ -528,6 +528,7 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
     # Draw the Dots dot and wait for 1 second between each dot
     for i in range(0,len(gridPoints)):
         drawDots(gridPoints[i])
+        tracker.drawFixBoundry(gridPoints[i][0],gridPoints[i][1],pxPerDegree)
         win.flip()
         xSamples  = []
         ySamples  = []
@@ -991,7 +992,11 @@ class eyeLink:
                 x1,y1,x2,y2 = circLinePos(x, y, rad)
                 for idx, (x1,y1,x2,y2) in enumerate(zip(x1,y1,x2,y2)):
                     self.eyeLinkTracker.drawLine((x1,y1),(x2,y2),color[0])
-            self.eyeLinkTracker.drawCross(x,y, color[1])
+                    
+            # Draw Cross
+            self.eyeLinkTracker.drawLine((x-15, y),(x+15, y) , color[1])
+            self.eyeLinkTracker.drawLine((x, y+15),(x, y-15) , color[1])
+            #self.eyeLinkTracker.drawCross(x,y, color[1])
             
     def drawEyeText(self, text, pos = False):
         '''
@@ -1230,14 +1235,15 @@ class eyeLink:
                 # Draw the larger circle first
                 for rad in np.sort(rads)[::-1]:
                     concCirc.radius = rad
+                    concCirc.setRadius(rad)
                     concCirc.draw()
                     if nRings == 1 and rad == np.min(radList):
                         if np.sum(concCirc.lineColor == self.win.color)==3:
                             concCirc.lineColor = fixDot.fillColor
                         elif np.sum(concCirc.lineColor == fixDot.fillColor) ==3:
                             concCirc.lineColor = self.win.color
-                
-            fixDot.draw()            
+                        
+            fixDot.draw()   
             self.win.flip()
             
             if checkAbort():
@@ -1851,15 +1857,15 @@ class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
         self.eye_image = None
         self.state = None
         self.size = (0, 0)
-        self.extra_info = True
+        self.extra_info = False
         self.setup_cal_display()
 
     def setMousStart(self):
-        mousStart = (-(self.win.size[0]/2),self.win.size[1]/2)
+        mousStart = (-(self.window.size[0]/2),self.window.size[1]/2)
         if self.image_size:
-            mousStart = ((self.image_size[0]/2)-(self.win.size[0]/2),  (self.win.size[1]/2)-(self.image_size[1]/2))
+            mousStart = ((self.image_size[0]/2)-(self.window.size[0]/2),  (self.window.size[1]/2)-(self.image_size[1]/2))
         else:
-            mousStart = (100-self.win.size[0]/2, (self.win.size[1]/2)-100)
+            mousStart = (100-self.window.size[0]/2, (self.window.size[1]/2)-100)
         self.tracker.mouse.setPos(mousStart)
     
     def get_input_key(self):
@@ -1976,22 +1982,27 @@ class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
             try:
                 # Remove the black edges
                 imW, imH = self.rgb_index_array.shape
-                frameRSide = self.rgb_index_array[:, imW/2:]
-                frameLhalf = self.rgb_index_array[imH/2:,:]
-                if np.median(frameRSide) == 0 and np.median(frameLhalf) == 0:
-                    im = self.rgb_index_array[:imW/2, :imH/2]
-                    self.image_scale = 2
+                if not self.extra_info:
+                    frameRSide = self.rgb_index_array[:, imW/2:]
+                    frameLhalf = self.rgb_index_array[imH/2:,:]
+                    if np.median(frameRSide) == 0 and np.median(frameLhalf) == 0:
+                        im = self.rgb_index_array[:imW/2, :imH/2]
+                        self.image_scale = 2
+                    else:
+                        im = self.rgb_index_array
+                    image = scipy.misc.toimage(im, pal=self.rgb_pallete, mode='P')
+                    if self.imgstim_size is None:
+                        maxsz = self.width/2
+                        mx = 1.0
+                        while (mx+1) * self.size[0] <= maxsz:
+                            mx += 1.0
+                        self.imgstim_size = int(self.size[0]*mx), int(self.size[1]*mx)
+                    image = image.resize(self.imgstim_size)
+                    self.image_size = image.size
                 else:
                     im = self.rgb_index_array
-                image = scipy.misc.toimage(im, pal=self.rgb_pallete, mode='P')
-                if self.imgstim_size is None:
-                    maxsz = self.width/2
-                    mx = 1.0
-                    while (mx+1) * self.size[0] <= maxsz:
-                        mx += 1.0
-                    self.imgstim_size = int(self.size[0]*mx), int(self.size[1]*mx)
-                image = image.resize(self.imgstim_size)
-                self.image_size = image.size
+                    image = scipy.misc.toimage(im, pal=self.rgb_pallete, mode='P')
+                    self.image_size = image.size
                 # Does not require saveing to temp file
                 if self.eye_image is None:
                     self.eye_image = visual.ImageStim(self.window, image)
@@ -2002,10 +2013,10 @@ class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
                 self.blankdisplay.draw()
                 self.introscreen.draw()
                 self.eye_image.draw()
+                if self.imagetitlestim:
+                    self.imagetitlestim.draw()
                 if self.extra_info:
                     self.draw_cross_hair()
-                    if self.imagetitlestim:
-                        self.imagetitlestim.draw()
                 self.window.flip()
 
             except Exception, err:

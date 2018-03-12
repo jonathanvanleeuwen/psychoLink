@@ -22,7 +22,7 @@ par['screenDistCm'] = 70.0
 par['units'] = 'pix'
 
 # window
-par['resolution'] = (1920,1080) #(1680 , 1050)
+par['resolution'] = (1680,1050) #(1680 , 1050)
 par['bgColor'] = [150, 150, 150]
 par['screenNr'] = 0
 par['fullscreen'] = False

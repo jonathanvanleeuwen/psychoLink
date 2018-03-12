@@ -754,6 +754,7 @@ class eyeLink:
         self.mouse = event.Mouse(win = win)
         self.activeState = True
         self.ABORTED = False
+        self.fileDest = False
 
         try:
             # Real connection to tracker
@@ -1314,7 +1315,17 @@ class eyeLink:
                 try:
                     os.rename(self.EDFDefaultName, self.EDFfileName)
                     print '\nEDF file was saved as', self.EDFfileName
-                except:
+                    # move the file
+                    if self.fileDest != False:
+                        try:
+                            os.rename(os.path.abspath(self.EDFfileName), 
+                                      self.fileDest+self.EDFfileName)
+                            print 'EDF file was moved to\n', self.fileDest+self.EDFfileName
+                        except:
+                            print '\nError while moving EDF file!!'
+                            print 'Manually move the file!!'
+                            print 'Currently saved as', os.path.abspath(self.EDFfileName), '!!'
+                except: 
                     print '\nError while renaming EDF file!!'
                     print self.EDFfileName, 'Allready exists!!'
                     print 'Manually rename the file!!'

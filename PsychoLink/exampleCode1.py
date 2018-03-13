@@ -7,15 +7,16 @@ import psychoLink as pl
 from psychopy import visual, monitors
 import time
 mon = monitors.Monitor('testMonitor',width=47,distance=75)
-win = visual.Window(units='pix',monitor=mon,size=(1680,1050),colorSpace='rgb255',color = (255,255,255), fullscr=True)
+win = visual.Window(units='pix',monitor=mon,size=(1680,1050),colorSpace='rgb255',color = (255,255,255), fullscr=False)
 fixDot = visual.Circle(win,radius=10,fillColorSpace='rgb255',lineColorSpace='rgb255',lineColor=[255,0,255],fillColor=[255,0,255],edges=50)
 gazeDot = visual.Circle(win,radius=10,fillColorSpace='rgb255',lineColorSpace='rgb255',lineColor=[255,0,0],fillColor=[255,0,0],edges=50)
 tracker = pl.eyeLink(win, fileName = 'testing.EDF')
 tracker.calibrate()
-for i in range(25):# Run gaze contingent display 
+for i in range(25):# Run gaze contingent display
     pl.drawText(win, 'Press "Space" to start!')
     tracker.waitForFixation(fixDot)
     tracker.startTrial()   
+    2/0
     tracker.drawFixBoundry(0,0,100)
     tracker.sendMsg('var '+ 'trialNr '+str(i))
     s = time.time()

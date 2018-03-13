@@ -1643,7 +1643,7 @@ class TextLine(object):
             color = (255,255,255)
 
         self.textLine = visual.TextStim(self.win,
-            text="***********************",
+            text="****************",
             pos=(0,0),
             height = 30,
             color=color, colorSpace='rgb255',
@@ -1654,6 +1654,7 @@ class TextLine(object):
     def draw(self, text=None):
         if text:
             self.textLine.text = text
+            self.textLine.setText(text)
         self.textLine.draw()
 
 
@@ -1982,27 +1983,23 @@ class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
             try:
                 # Remove the black edges
                 imW, imH = self.rgb_index_array.shape
-                if not self.extra_info:
-                    frameRSide = self.rgb_index_array[:, imW/2:]
-                    frameLhalf = self.rgb_index_array[imH/2:,:]
-                    if np.median(frameRSide) == 0 and np.median(frameLhalf) == 0:
-                        im = self.rgb_index_array[:imW/2, :imH/2]
-                        self.image_scale = 2
-                    else:
-                        im = self.rgb_index_array
-                    image = scipy.misc.toimage(im, pal=self.rgb_pallete, mode='P')
-                    if self.imgstim_size is None:
-                        maxsz = self.width/2
-                        mx = 1.0
-                        while (mx+1) * self.size[0] <= maxsz:
-                            mx += 1.0
-                        self.imgstim_size = int(self.size[0]*mx), int(self.size[1]*mx)
-                    image = image.resize(self.imgstim_size)
-                    self.image_size = image.size
+                frameRSide = self.rgb_index_array[:, imW/2:]
+                frameLhalf = self.rgb_index_array[imH/2:,:]
+                if np.median(frameRSide) == 0 and np.median(frameLhalf) == 0:
+                    im = self.rgb_index_array[:imW/2, :imH/2]
+                    self.image_scale = 2
                 else:
                     im = self.rgb_index_array
-                    image = scipy.misc.toimage(im, pal=self.rgb_pallete, mode='P')
-                    self.image_size = image.size
+                    self.image_scale = 4
+                image = scipy.misc.toimage(im, pal=self.rgb_pallete, mode='P')
+                if self.imgstim_size is None:
+                    maxsz = self.width/2
+                    mx = 1.0
+                    while (mx+1) * self.size[0] <= maxsz:
+                        mx += 1.0
+                    self.imgstim_size = int(self.size[0]*mx), int(self.size[1]*mx)
+                image = image.resize(self.imgstim_size)
+                self.image_size = image.size
                 # Does not require saveing to temp file
                 if self.eye_image is None:
                     self.eye_image = visual.ImageStim(self.window, image)
@@ -2054,14 +2051,7 @@ class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
             self.textmsg.draw('Calibration Failed or Incomplete.\nPress "Enter" to return')
             self.window.flip()
         elif pylink_sound_index == pl.CAL_GOOD_BEEP:
-            if self.state == "calibration":
-                txt = 'Calibration Passed.'
-                txt += '\nPress "Enter" to return'
-            elif self.state == "validation":
-                txt = 'Validation Passed.' 
-                txt += '\nPress "Enter" to return'
-            else: 
-                txt = ' '
+            txt = 'Press "v" or "Enter" to continue'
             self.textmsg.draw(txt)
             self.window.flip()
 
@@ -2069,7 +2059,7 @@ class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
     def draw_line(self, x1, y1, x2, y2, color_index):
         """ Used to draw crosshair, color does not work """     
         if self.image_size: 
-            # It asumes the image is in the top left       
+            # It asumes the image is in the top left   
             x1,y1 = topLeftToCenter((x1*self.image_scale,y1*self.image_scale), self.image_size)
             x2,y2 = topLeftToCenter((x2*self.image_scale,y2*self.image_scale), self.image_size)
     

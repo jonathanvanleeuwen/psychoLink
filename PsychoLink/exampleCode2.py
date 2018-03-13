@@ -25,7 +25,7 @@ par['units'] = 'pix'
 par['resolution'] = (1680,1050) #(1680 , 1050)
 par['bgColor'] = [150, 150, 150]
 par['screenNr'] = 0
-par['fullscreen'] = False
+par['fullscreen'] = True
 par['screenCent'] = (0,0)
 par['pxPerDeg'] = pl.angleToPixels(1,
                     par['screenDistCm'], par['widthCm'], par['resolution'])

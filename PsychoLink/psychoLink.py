@@ -881,26 +881,19 @@ class eyeLink:
             self.eLink.startRecording(1,1,1,1)
     
     # Run drift correct
-    def driftCorrect(self, x,y):
+    def driftCorrect(self, fixDot):
         '''
-        Runs  drift correction
+        Runs  drift correction (press "space" to accept)
         '''
         if self.mode == 'Real':
-            genv=EyeLinkCoreGraphicsPsychopy(self.win, self,
-                                             targetForegroundColor=self.foreCol,
-                                             targetBackgroundColor=self.backCol,
-                                             screenColor=self.backCol,
-                                             targetOuterDiameter=self.calDiam,
-                                             targetInnerDiameter=self.holeDiam)
-            pl.openGraphicsEx(genv)
-            # Set number of calibration points
-            self.eLink.sendCommand("calibration_type=%s"%self.caltype)
-            # Set calibration point duration
-            self.eLink.sendCommand("automatic_calibration_pacing=%d"%(self.calTime))
-            # Set sounds
+            xx,yy = fixDot.pos
+            x,y = centerToTopLeft((xx,yy), (self.screenW, self.screenH))
+            # Set sounds (does not work)
             pl.setDriftCorrectSounds(self.targSound, self.corrSound, self.incSound)
-            self.eLink.doDriftCorrect(x, y,1,1)
-            genv.clear_cal_display()
+            fixDot.draw()
+            self.win.flip()
+            time.sleep(0.5)
+            self.eLink.doDriftCorrect(int(x), int(y),0,1)
             
     #=========================================================================
     # Methods for talking to the eytracker
@@ -946,6 +939,7 @@ class eyeLink:
         '''
         if self.mode == 'Real':
             #pl.pylink.endRealTimeMode()
+            self.eLink.sendCommand("record_status_message=NoTitle")
             self.eLink.clearScreen(0)
             self.eLink.stopRecording()
 
@@ -1005,36 +999,23 @@ class eyeLink:
         if self.mode == 'Real':
             if pos == False:
                 x,y = centerToTopLeft((self.screenW/2, self.screenH-30), (self.screenW, self.screenH))
-                self.eLink.drawText(text, (x,y))
+                self.eLink.sendCommand("draw_text=%d %d %d %s "%(x,y,3,text))
             else:
-                pos = centerToTopLeft(pos, (self.screenW, self.screenH))
-                self.eLink.drawText(text, pos)
+                x, y = centerToTopLeft(pos, (self.screenW, self.screenH))
+                self.eLink.sendCommand("draw_text=%d %d %d %s "%(x,y,3,text))
         else:
             print text
             
     def drawTrialInfo(self, block='NA', tNr=999, tCor=999, tInc=999, tLeft=999):
         '''
         Draws the trial information
-        
-        # Try:
-            .echo(text)
-            setting the pos to (column, row) e.g (10,15)
-            self.eLink.sendCommand("draw_text=%d %d %d %s "%(0, 0, 3, text))
-            self.eLink.sendCommand("print_position= %d %d"%pos)
-            self.eLink.sendCommand("echo %s"%(text)) 
         '''
         block = str(block)
-        text = ['block__%s'%(block),'tNr____%s'%(tNr),'tCor___%s'%(tCor),
-                'tInc___%s'%(tInc),'tLeft__%s'%(tLeft)]
         if self.mode == 'Real':
-            pos = (0,0)
-            for txt in text:    
-                self.eLink.drawText(txt)
-                self.eLink.drawText('')
-                self.eLink.sendCommand("draw_text=%d %d %d %s "%(0, 0, 3, txt))
-                self.eLink.sendCommand("print_position= %d %d"%pos)
-                self.eLink.sendCommand("echo %s"%(txt)) 
-                
+            x = self.screenW/2
+            y = self.screenH-30
+            text = 'Block = %s | tNr = %s | tCor = %s | tInc = %s | tLeft = %s' %(block, tNr, tCor, tInc, tLeft)
+            self.eLink.sendCommand("draw_text=%d %d %d %s "%(x,y,3,text))
         else:
             print text
         
@@ -1191,6 +1172,7 @@ class eyeLink:
         # get refreshRate of screen
         hz = self.win.getActualFrameRate()    
         self.startRecording()
+        self.eLink.sendCommand("record_status_message=Fixation_control")
         correctFixation = False
         trStart = time.time()
         if np.sum(fixDot.fillColor == self.win.color) == 3:

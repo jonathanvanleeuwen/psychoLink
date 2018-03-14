@@ -22,9 +22,7 @@ import math
 # =============================================================================
 # To Do:
 # =============================================================================#
-# 1:    Test the code with different resolutions
-#
-# 2:    Run an experiment and parse the data to check that everything is 
+# 1:    Run an experiment and parse the data to check that everything is 
 #       logged correctly
 #
 # =============================================================================

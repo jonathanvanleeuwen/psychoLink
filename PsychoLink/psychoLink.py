@@ -542,6 +542,7 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
 
     else:
         text.text           = 'Incorrect number of validation points,\n please try again with a different number'
+        text.setText('Incorrect number of validation points,\n please try again with a different number')
         text.pos            = (0,0)
         text.draw()
         win.flip()
@@ -616,6 +617,7 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
             # Draw the error values
             errorDeg            = errorDistance[i]/float(pxPerDegree)
             text.text           = str(np.round(errorDeg, 2)) + ' deg'
+            text.setText(str(np.round(errorDeg, 2)) + ' deg')
             text.pos            = (gridPoints[i][0], gridPoints[i][1] - 20)
             text.draw()
 
@@ -623,9 +625,11 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
         maxError    = np.round(np.max(errorDistance)/float(pxPerDegree), 2)
         meanError   = np.round(np.average(errorDistance)/float(pxPerDegree), 2)
         text.text           = 'mean error: ' + str(meanError) + ' deg'
+        text.setText('mean error: ' + str(meanError) + ' deg')
         text.pos            = meanFeedPos
         text.draw()
         text.text           = 'max error: ' + str(maxError) + ' deg'
+        text.setText('max error: ' + str(maxError) + ' deg')
         text.pos            = maxFeedPos
         text.draw()
 

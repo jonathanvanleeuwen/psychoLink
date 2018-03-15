@@ -52,7 +52,7 @@ def aaPrintbasicInstructions():
     tracker.startTrial()\n
     # Wait for fixation on fixation dot, additional options to make things pretty, \n
     # this part waits for any sample within boundry, if not fixation returns to calibration window\n
-    tracker.waitForFixation(win, tracker, fixDot)\n
+    tracker.waitForFixation(fixDot)\n
     # Draw info about fixation boundries on the eylink computer screen (square)\n
     tracker.drawFixBoundry(fixX,fixY, maxFixDist)\n
     tracker.drawFixBoundry(targX,targY, maxTargHitDist)\n
@@ -101,7 +101,7 @@ def aaPrintbasicInstructions():
     tracker.startTrial()\n
     # Wait for fixation on fixation dot, additional options to make things pretty, \n
     # this part waits for any sample within boundry, if not fixation returns to calibration window\n
-    tracker.waitForFixation(win, tracker, fixDot)\n
+    tracker.waitForFixation(fixDot)\n
     # Draw info about fixation boundries on the eylink computer screen (square)\n
     tracker.drawFixBoundry(fixX,fixY, maxFixDist)\n
     tracker.drawFixBoundry(targX,targY, maxTargHitDist)\n
@@ -995,6 +995,23 @@ class eyeLink:
         msg = string\n
         Sends a string (msg) to the eyeTracker log\n
         '''
+        if self.mode == 'Real':
+            self.eLink.sendMessage(str(msg))
+            time.sleep(2/1000.0)
+        elif self.mode == 'Dummy':
+            msg = 'PsychoLink Log (Dummy): '+str(msg)
+            print msg
+            
+    # Send variable to pyLinkLog
+    def sendVar(self,varName = 'noName', value = 'noValue'):
+        '''
+        varName = string: name of the variable\n
+        value = string/int/float: The value of the variable\n
+        Both the varName and value are turned to string when sending\n
+        Sends  "'var '+varName+' '+value" to the eyeTracker log\n
+        Don't put any spaces in rhe varName or in the value!!!\n
+        '''
+        msg = 'var '+str(varName)+' '+ str(value)
         if self.mode == 'Real':
             self.eLink.sendMessage(str(msg))
             time.sleep(2/1000.0)

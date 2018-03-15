@@ -248,6 +248,28 @@ def angleToPixels(angle, screenDist, screenW, screenXY):
 
     return pix
 
+def angleToPixelsWH(angle, screenDist, screenWH, screenXY):
+    '''
+    Function which calculates viusal angle to pixels
+    Both for vertical and horizontal 
+    Input:
+        angle       = visual angle in degrees
+        screenDist  = distance from screen in cm
+        screenWH    = Tuple with screen width and height in cm
+        sceenXY     = tuple with the xy resolution of the screen in pixels
+
+    Output:
+        pix         = Tuple, The number of pixels (Horizontal, Vertical) which is spanned by the angle
+    '''
+    pixSizeW = screenWH[0] / float(screenXY[0])
+    pixSizeH = screenWH[1] / float(screenXY[1])
+    angle = np.radians(angle/2.0)
+    cmOnScreen = np.tan(angle) * float(screenDist)
+    pixW = (cmOnScreen/pixSizeW)*2
+    pixH = (cmOnScreen/pixSizeH)*2
+
+    return pixW, pixH
+
 def pixelsToAngle(pix, screenDist, screenW, screenXY):
     '''
     Function which calculates number of pixels on screen to visual degree
@@ -265,6 +287,28 @@ def pixelsToAngle(pix, screenDist, screenW, screenXY):
     angle       = np.rad2deg(np.arctan(cmOnScreen / screenDist))*2.0
 
     return angle
+
+def pixelsToAngleWH(pix, screenDist, screenWH, screenXY):
+    '''
+    Function which calculates number of pixels on screen to visual degree
+    For both horizontal (with) and vertical (hight)
+    Input:
+        pix         = Tuple, width and height in pixels
+        screenDist  = distance from screen in cm
+        screenWH    = Tuple with screen width and height in cm
+        sceenXY     = tuple with the xy resolution of the screen in pixels
+
+    Output:
+        angle       = Tuple The angle spanned (Horizontal, Vertical) by the number of pixels
+    '''
+    pixSizeW = screenWH[0] / float(screenXY[0])
+    pixSizeH = screenWH[1] / float(screenXY[1])
+    cmOnScreenW = (pix[0]/2.0) * pixSizeW
+    cmOnScreenH = (pix[1]/2.0) * pixSizeH
+    angleW = np.rad2deg(np.arctan(cmOnScreenW / screenDist))*2.0
+    angleH = np.rad2deg(np.arctan(cmOnScreenH / screenDist))*2.0
+                       
+    return angleW, angleH
 
 def makeTrialList(header, conditions, reps = 0, zeroPads = 0, shuffle = True):
 	'''

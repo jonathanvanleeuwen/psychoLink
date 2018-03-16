@@ -1025,8 +1025,8 @@ class eyeLink:
             msg = 'PsychoLink Log (Dummy): '+str(msg)
             print msg
             
-    # Send variable to pyLinkLog
-    def sendVar(self,varName = 'noName', value = 'noValue'):
+    # Log variable to pyLinkLog
+    def logVar(self,varName = 'noName', value = 'noValue'):
         '''
         varName = string: name of the variable\n
         value = string/int/float: The value of the variable\n

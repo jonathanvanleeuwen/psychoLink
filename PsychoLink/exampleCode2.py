@@ -377,7 +377,7 @@ def runBlock(tl): # tl = trialList
         for ii in xrange(0,len(tl.logList[0])):
             varName = tl.logList[0][ii]
             value = tl[varName][i]
-            tracker.sendVar(varName,value)
+            tracker.logVar(varName,value)
             
         #======================================================================
         # Trial cleanup

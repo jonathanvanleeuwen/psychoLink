@@ -18,7 +18,7 @@ for i in range(25):# Run gaze contingent display
     #tracker.driftCorrect(fixDot)
     tracker.startTrial()  
     tracker.drawFixBoundry(0,0,100)
-    tracker.sendVar('trial_Nr', i)
+    tracker.logVar('trial_Nr', i)
     s = time.time()
     while time.time() - s < 5:
         pos = tracker.getCurSamp()

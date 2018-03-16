@@ -408,6 +408,29 @@ def makeSquareGrid(grid_dimXY = [10, 10], x = 0, y = 0, line_lengthXY = [10, 10]
 			gridpositions.append( (current_x, current_y) )
 	return gridpositions
 
+def makeCircleGrid(cx = 0, cy = 0, r = 10, setsize = 8, shuffle =  True):
+    '''
+    Returns a list of tuples with circle positions. \n
+    The positions are spaced an equal distance apart. \n
+    \t cx, cy \t	= coordinates for the middle of the circle. \n
+    \t r 	  \t 	= The radius of the circle. \n
+    \t setsize\t = The number of circle positions to create for the circle.\n
+    \t shuffle 	\t= shuffle the positions (True, False). \n
+    '''
+    # Empty list to hold positions
+    circPos = []
+    # Segment definitions
+    anglesegment = 2*np.pi/setsize
+    # Randomlly shift the orientation of the circle positions
+    jitter = 0
+    if shuffle: jitter = np.random.random_sample()*(2*np.pi)
+    # creates a tupple with x,y coordinates for each position.
+    for i in range(0,setsize):
+        x = r * np.cos(jitter + i*anglesegment) + cx
+        y = r * np.sin(jitter + i*anglesegment) + cy
+        circPos.append( (x,y) )
+    return circPos
+
 def topLeftToCenter(pointXY, screenXY, flipY = False):
     '''
     Function for switching between screen coordinate systems
@@ -1074,10 +1097,11 @@ class eyeLink:
         Draws the trial information
         '''
         block = str(block)
+        text = 'Block = %s | tNr = %s | tCor = %s | tInc = %s | tLeft = %s' \
+        %(block, tNr, tCor, tInc, tLeft)
         if self.mode == 'Real':
             x = self.screenW/2
             y = self.screenH-30
-            text = 'Block = %s | tNr = %s | tCor = %s | tInc = %s | tLeft = %s' %(block, tNr, tCor, tInc, tLeft)
             self.eLink.sendCommand("draw_text=%d %d %d %s "%(x,y,3,text))
         else:
             print text

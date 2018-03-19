@@ -1036,11 +1036,12 @@ class eyeLink:
         '''
         msg = 'var '+str(varName)+' '+ str(value)
         if self.mode == 'Real':
-            self.eLink.sendMessage(str(msg))
+            self.eLink.sendMessage(msg)
             time.sleep(2/1000.0)
         elif self.mode == 'Dummy':
-            msg = 'PsychoLink Log (Dummy): '+str(msg)
+            msg = 'PsychoLink Log (Dummy): '+ msg
             print msg
+            time.sleep(2/1000.0)
 
     def getTime(self):
         '''

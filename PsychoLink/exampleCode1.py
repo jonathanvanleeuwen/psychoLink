@@ -15,7 +15,6 @@ tracker.calibrate()
 for i in range(25):# Run gaze contingent display
     pl.drawText(win, 'Press "Space" to start!')
     tracker.waitForFixation(fixDot)
-    #tracker.driftCorrect(fixDot)
     tracker.startTrial()  
     tracker.drawFixBoundry(0,0,100)
     tracker.logVar('trial_Nr', i)

@@ -15,7 +15,6 @@ import Tkinter as tk
 import tkFileDialog as filedialog
 import scipy
 from scipy import misc
-import psychopy
 import tempfile
 import math
 

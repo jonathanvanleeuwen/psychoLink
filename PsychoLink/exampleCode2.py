@@ -410,7 +410,7 @@ blockList = runBlock(blockList)
 #==============================================================================
 # Save the experiment data
 #==============================================================================
-blockList.to_pickle(saveExpFile)
+#blockList.to_pickle(saveExpFile)
    
 #==============================================================================
 # Exit eyetracker, get .edf and cleanup pyshcopy + eyelink

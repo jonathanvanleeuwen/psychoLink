@@ -131,19 +131,19 @@ def aaPrintbasicInstructions():
 # Required functions
 # =============================================================================
 def distBetweenPoints(point1, point2):
-	'''
-	'''
-	dist = np.sqrt( (point1[0]-point2[0])**2 + (point1[1] - point2[1])**2 )
-	return dist
+    '''
+    '''
+    dist = np.sqrt( (point1[0]-point2[0])**2 + (point1[1] - point2[1])**2 )
+    return dist
 
 def determineAngle(p1, p2):
-	'''
-	'''
-	normx = ((p2[0] - p1[0]))
-	normy = ((p2[1] - p1[1]))
-	narcdeg = math.atan2(normy, normx)
-	sdegree = ((narcdeg * 180)/math.pi)
-	return sdegree
+    '''
+    '''
+    normx = ((p2[0] - p1[0]))
+    normy = ((p2[1] - p1[1]))
+    narcdeg = math.atan2(normy, normx)
+    sdegree = ((narcdeg * 180)/math.pi)
+    return sdegree
 
 def isNumber(s):
     try:
@@ -196,11 +196,11 @@ def getKey(allowedKeys = ['left', 'right'], waitForKey = True, timeOut = 0):
     return key_pressed[-1]
 
 def drawText(win,\
-			text = 'No text specified!',\
-			textKey 	= ['space'],\
-			wrapWidth = 900,\
-			textSize 	= 25,\
-			textColor = [0, 0, 0]):
+            text = 'No text specified!',\
+            textKey     = ['space'],\
+            wrapWidth = 900,\
+            textSize     = 25,\
+            textColor = [0, 0, 0]):
     '''
     '''
     
@@ -208,8 +208,8 @@ def drawText(win,\
         textColor = [255,255,255]
     
     textDisp = visual.TextStim(win, text = text, wrapWidth = wrapWidth,
-				    height = textSize, colorSpace = 'rgb255',
-				    color = textColor)
+                    height = textSize, colorSpace = 'rgb255',
+                    color = textColor)
     textDisp.draw()
     time = core.Clock()
     win.flip()
@@ -222,11 +222,11 @@ def drawText(win,\
     return key[0], rt
 
 def checkAbort():
-	""" """
-	keys = event.getKeys()
-	if keys:
-		if 'escape' in keys:
-			return True
+    """ """
+    keys = event.getKeys()
+    if keys:
+        if 'escape' in keys:
+            return True
             
 def angleToPixels(angle, screenDist, screenW, screenXY):
     '''
@@ -310,56 +310,56 @@ def pixelsToAngleWH(pix, screenDist, screenWH, screenXY):
     return angleW, angleH
 
 def makeTrialList(header, conditions, reps = 0, zeroPads = 0, shuffle = True):
-	'''
-	Returns a numpy array with a counterbalanced trialList. \n
-	Rows are individual trials while columns are conditions. \n
-	\t header    = List with strings for each column \n
-	\t conds    = List of lists: [[1,2,3], range(1,10)]. \n
-	\t reps     = How many times the counterbalanced trialList should be \
-	repeated. \n
-	\t zeroPads = How many empty columns added to the right of the trialList
-	\n Empty columns can be used to store trial spesific information \
-	like reaction times, responses etc.
-	'''
-	conds = conditions[:]
-	if not any(isinstance(el, list) for el in conds):
-		print('A list of lists is required')
+    '''
+    Returns a numpy array with a counterbalanced trialList. \n
+    Rows are individual trials while columns are conditions. \n
+    \t header    = List with strings for each column \n
+    \t conds    = List of lists: [[1,2,3], range(1,10)]. \n
+    \t reps     = How many times the counterbalanced trialList should be \
+    repeated. \n
+    \t zeroPads = How many empty columns added to the right of the trialList
+    \n Empty columns can be used to store trial spesific information \
+    like reaction times, responses etc.
+    '''
+    conds = conditions[:]
+    if not any(isinstance(el, list) for el in conds):
+        print('A list of lists is required')
 
-	# Add zeroPads
-	for i in range(0,zeroPads):
-		conds.append([False])
-	# Get number of conditions (including zeroPads)
-	nConds = len(conds)
+    # Add zeroPads
+    for i in range(0,zeroPads):
+        conds.append([False])
+    # Get number of conditions (including zeroPads)
+    nConds = len(conds)
 
-	for i in range(0,nConds):
-		temp = np.array(conds[i])
-		# Turn vector vertical
-		temp = temp.reshape(len(temp),1)
+    for i in range(0,nConds):
+        temp = np.array(conds[i])
+        # Turn vector vertical
+        temp = temp.reshape(len(temp),1)
 
-		if i == 0:
-			total = temp
-		else:
-			total =  np.tile(total,(len(temp),1))
-			temp = np.repeat(temp,len(total)/len(temp))
-			temp = temp.reshape(len(temp),1)
-			total = np.concatenate((total, temp),1)
+        if i == 0:
+            total = temp
+        else:
+            total =  np.tile(total,(len(temp),1))
+            temp = np.repeat(temp,len(total)/len(temp))
+            temp = temp.reshape(len(temp),1)
+            total = np.concatenate((total, temp),1)
 
-	if shuffle:
-		trialList = np.random.permutation(total)
-	else:
-		trialList = total[:]
+    if shuffle:
+        trialList = np.random.permutation(total)
+    else:
+        trialList = total[:]
 
-	# Add repeats
-	for i in range(0,reps):
-		if shuffle:
-			total 	= np.random.permutation(total)
-			trialList = np.concatenate((trialList, total))
-		else:
-			trialList = np.concatenate((trialList, total))
+    # Add repeats
+    for i in range(0,reps):
+        if shuffle:
+            total     = np.random.permutation(total)
+            trialList = np.concatenate((trialList, total))
+        else:
+            trialList = np.concatenate((trialList, total))
 
-	# make it a pandas dataframe
-	trialList = pd.DataFrame(trialList, columns = header)
-	return trialList
+    # make it a pandas dataframe
+    trialList = pd.DataFrame(trialList, columns = header)
+    return trialList
 
 def cleanUp(win, tracker):
     '''
@@ -387,34 +387,34 @@ def cleanUp(win, tracker):
     win.close()
     
 def makeSquareGrid(grid_dimXY = [10, 10], x = 0, y = 0, line_lengthXY = [10, 10]):
-	'''
+    '''
 
-	Returns a list of tuples with gridpositions.\n
-	\t Grid shape  	= grid_dimXY[0] * grid_dimXY[1] \n
- 	\t x,y    	 	= coordinates for the middle of the grid \n
- 	\t line_length 	= length between each intersection [0] = x,[1] = y \n
-	'''
-	# Left starting position
-	start_x = x - 0.5*grid_dimXY[0]*line_lengthXY[0] + 0.5*line_lengthXY[0]
-	# Top starting position
-	start_y = y - 0.5*grid_dimXY[1]*line_lengthXY[1] + 0.5*line_lengthXY[1]
-	# For loops for making grid
-	gridpositions = []
-	for x_count in range(0, grid_dimXY[0]):
-		current_x = start_x + x_count*line_lengthXY[0]
-		for y_count in range(0, grid_dimXY[1]):
-			current_y = start_y + y_count*line_lengthXY[1]
-			gridpositions.append( (current_x, current_y) )
-	return gridpositions
+    Returns a list of tuples with gridpositions.\n
+    \t Grid shape      = grid_dimXY[0] * grid_dimXY[1] \n
+     \t x,y             = coordinates for the middle of the grid \n
+     \t line_length     = length between each intersection [0] = x,[1] = y \n
+    '''
+    # Left starting position
+    start_x = x - 0.5*grid_dimXY[0]*line_lengthXY[0] + 0.5*line_lengthXY[0]
+    # Top starting position
+    start_y = y - 0.5*grid_dimXY[1]*line_lengthXY[1] + 0.5*line_lengthXY[1]
+    # For loops for making grid
+    gridpositions = []
+    for x_count in range(0, grid_dimXY[0]):
+        current_x = start_x + x_count*line_lengthXY[0]
+        for y_count in range(0, grid_dimXY[1]):
+            current_y = start_y + y_count*line_lengthXY[1]
+            gridpositions.append( (current_x, current_y) )
+    return gridpositions
 
 def makeCircleGrid(cx = 0, cy = 0, r = 10, setsize = 8, shuffle =  True):
     '''
     Returns a list of tuples with circle positions. \n
     The positions are spaced an equal distance apart. \n
-    \t cx, cy \t	= coordinates for the middle of the circle. \n
-    \t r 	  \t 	= The radius of the circle. \n
+    \t cx, cy \t    = coordinates for the middle of the circle. \n
+    \t r       \t     = The radius of the circle. \n
     \t setsize\t = The number of circle positions to create for the circle.\n
-    \t shuffle 	\t= shuffle the positions (True, False). \n
+    \t shuffle     \t= shuffle the positions (True, False). \n
     '''
     # Empty list to hold positions
     circPos = []
@@ -787,8 +787,8 @@ def waitForFixation(win, tracker, fixDot, maxDist = 0, maxWait = 4, nRings=3):
 
 #==============================================================================
 #  TO DO:
-# 	Test Code
-# 	Make a calibration screen so users know what to do
+#     Test Code
+#     Make a calibration screen so users know what to do
 #==============================================================================
 class eyeLink:
     '''
@@ -1461,193 +1461,210 @@ def giveFileName(windowName = 'Please enter Filename'):
 
                 
 class getParticipantInfo(tk.Tk):
-	'''
-     Class for getting participant information
-	'''
-	def __init__(self):
-		tk.Tk.__init__(self)
-		# Set default values with the data type required
-		self.title('Get participant info')
-		self.xSize = 600
-		self.ySize = 600
-		self.padx = 10
-		self.pady = 5
-		self.topDist = 20
-		self.borderWidth = 5
-		self.textFont = ('Helvetica', 12)
-		self.groupFount = ('Helvetica', 9)
-		self.instruct = 'Please enter information'
-		self.addToTrialParse = tk.StringVar()
-		self.currentDate = time.strftime("%d/%m/%Y")
-		self.saveAs = ''
+    '''
+    Class for getting participant information
+    '''
+    def __init__(self):
+        tk.Tk.__init__(self)
+        # Set default values with the data type required
+        self.title('Get participant info')
+        self.xSize = 600
+        self.ySize = 600
+        self.padx = 10
+        self.pady = 5
+        self.topDist = 20
+        self.borderWidth = 5
+        self.textFont = ('Helvetica', 12)
+        self.groupFount = ('Helvetica', 9)
+        self.instruct = 'Please enter information'
+        self.addToTrialParse = tk.StringVar()
+        self.currentDate = time.strftime("%d/%m/%Y")
+        self.saveAs = ''
 
-	# We want to put some instructions in the GUI
-	def makeInstructions(self):
-		self.dispInstruct= tk.StringVar()
-		self.dispInstruct.set(self.instruct)
-		instr = tk.Label(self, \
-			textvariable 	= self.dispInstruct, \
-			font  		= self.textFont)
-		instr.pack(pady = self.topDist)
+    # We want to put some instructions in the GUI
+    def makeInstructions(self):
+        self.dispInstruct= tk.StringVar()
+        self.dispInstruct.set(self.instruct)
+        instr = tk.Label(self, \
+            textvariable     = self.dispInstruct, \
+            font          = self.textFont)
+        instr.pack(pady = self.topDist)
 
-	def makeExperimentInfo(self):
-		subGroup= tk.LabelFrame(self, \
-			text 		= 'Experiment info', \
-			padx 		= self.padx, \
-			pady 		= self.pady, \
-			borderwidth 	= self.borderWidth,\
-			font 		= self.textFont)
-		subGroup.grid(row=0, columnspan=7, sticky='W', \
+    def makeExperimentInfo(self):
+        subGroup= tk.LabelFrame(self, \
+            text         = 'Experiment info', \
+            padx         = self.padx, \
+            pady         = self.pady, \
+            borderwidth     = self.borderWidth,\
+            font         = self.textFont)
+        subGroup.grid(row=0, columnspan=7, sticky='W', \
                  padx=5, pady=5, ipadx=5, ipady=5)
-		subGroup.pack()
+        subGroup.pack()
 
-		# Subject nr entry
-		subjectNrLabel			= tk.Label(subGroup, text="Participant Nr:")
-		sessionNrLabel			= tk.Label(subGroup, text="Session Nr:")
-		subjectNrLabel.grid(row=0, column=0)
-		sessionNrLabel.grid(row=1, column=0)
+        # Subject nr entry
+        subjectNrLabel            = tk.Label(subGroup, text="Participant Nr:")
+        sessionNrLabel            = tk.Label(subGroup, text="Session Nr:")
+        subjectNrLabel.grid(row=0, column=0)
+        sessionNrLabel.grid(row=1, column=0)
 
-		subjectNr 			= range(1,51)
-		sessionNr 		 	= range(1,11)
-		self.subjectNrOptions 	= tk.StringVar()
-		self.sessionNrOptions 	= tk.StringVar()
-		self.subjectNrOptions.set(subjectNr[0])
-		self.sessionNrOptions.set(sessionNr[0])
-		self.subjectNrEntry		= tk.OptionMenu(subGroup, self.subjectNrOptions, *subjectNr)
-		self.sessionNrEntry		= tk.OptionMenu(subGroup, self.sessionNrOptions, *sessionNr)
-		self.subjectNrEntry.grid(row = 0, column = 1)
-		self.sessionNrEntry.grid(row = 1, column = 1)
+        subjectNr             = range(1,51)
+        sessionNr              = range(1,11)
+        self.subjectNrOptions     = tk.StringVar()
+        self.sessionNrOptions     = tk.StringVar()
+        self.subjectNrOptions.set(subjectNr[0])
+        self.sessionNrOptions.set(sessionNr[0])
+        self.subjectNrEntry        = tk.OptionMenu(subGroup, self.subjectNrOptions, *subjectNr)
+        self.sessionNrEntry        = tk.OptionMenu(subGroup, self.sessionNrOptions, *sessionNr)
+        self.subjectNrEntry.grid(row = 0, column = 1)
+        self.sessionNrEntry.grid(row = 1, column = 1)
 
-		saveAsButton = tk.Button(subGroup, \
-			text 	= "Save as", \
-			command 	= self.saveFileName)
-		saveAsButton.grid(row = 2, column = 1)
+        saveAsButton = tk.Button(subGroup, \
+            text     = "Save as", \
+            command     = self.saveFileName)
+        saveAsButton.grid(row = 2, column = 1)
 
-	def makeDemoGraph(self):
-		demoGroup= tk.LabelFrame(self, \
-			text 		= 'Demographics', \
-			padx 		= self.padx, \
-			pady 		= self.pady, \
-			borderwidth 	= self.borderWidth,\
-			font 		= self.textFont)
-		demoGroup.grid(row=0, columnspan=7, sticky='W', \
+    def makeDemoGraph(self):
+        demoGroup= tk.LabelFrame(self, \
+            text         = 'Demographics', \
+            padx         = self.padx, \
+            pady         = self.pady, \
+            borderwidth     = self.borderWidth,\
+            font         = self.textFont)
+        demoGroup.grid(row=0, columnspan=7, sticky='W', \
                  padx=5, pady=5, ipadx=5, ipady=5)
-		demoGroup.pack()
+        demoGroup.pack()
 
-		# Age entry
-		ageLabel 				= tk.Label(demoGroup, text="Date of birth:")
-		dayLabel 				= tk.Label(demoGroup, text="day")
-		monthLabel 			= tk.Label(demoGroup, text="month")
-		yearLabel 			= tk.Label(demoGroup, text="year")
-		ageLabel.grid(row=1, column=0)
-		dayLabel.grid(row=0, column=1)
-		monthLabel.grid(row=0, column=2)
-		yearLabel.grid(row=0, column=3)
+        # Age entry
+        ageLabel                 = tk.Label(demoGroup, text="Date of birth:")
+        dayLabel                 = tk.Label(demoGroup, text="day")
+        monthLabel             = tk.Label(demoGroup, text="month")
+        yearLabel             = tk.Label(demoGroup, text="year")
+        ageLabel.grid(row=1, column=0)
+        dayLabel.grid(row=0, column=1)
+        monthLabel.grid(row=0, column=2)
+        yearLabel.grid(row=0, column=3)
 
-		day 				= range(1,32)
-		month			= range(1,13)
-		year 		 	= range(1960,2020)
-		self.dayOptions 	= tk.StringVar()
-		self.dayOptions.set(day[0])
-		self.monthOptions 	= tk.StringVar()
-		self.monthOptions.set(month[0])
-		self.yearOptions 	= tk.StringVar()
-		self.yearOptions.set(year[0])
-		self.ageEntryDay	= tk.OptionMenu(demoGroup,self.dayOptions, *day)
-		self.ageEntryMonth	= tk.OptionMenu(demoGroup,self.monthOptions, *month)
-		self.ageEntryYear	= tk.OptionMenu(demoGroup,self.yearOptions, *year)
+        day                 = range(1,32)
+        month            = range(1,13)
+        year              = range(1960,2020)
+        self.dayOptions     = tk.StringVar()
+        self.dayOptions.set(day[0])
+        self.monthOptions     = tk.StringVar()
+        self.monthOptions.set(month[0])
+        self.yearOptions     = tk.StringVar()
+        self.yearOptions.set(year[0])
+        self.ageEntryDay    = tk.OptionMenu(demoGroup,self.dayOptions, *day)
+        self.ageEntryMonth    = tk.OptionMenu(demoGroup,self.monthOptions, *month)
+        self.ageEntryYear    = tk.OptionMenu(demoGroup,self.yearOptions, *year)
 
-		self.ageEntryDay.grid(row = 1, column = 1)
-		self.ageEntryMonth.grid(row = 1, column = 2)
-		self.ageEntryYear.grid(row = 1, column = 3)
+        self.ageEntryDay.grid(row = 1, column = 1)
+        self.ageEntryMonth.grid(row = 1, column = 2)
+        self.ageEntryYear.grid(row = 1, column = 3)
 
-		# Eye entry
-		eyeLabel               = tk.Label(demoGroup, text="Occular correction")
-		rightEyeLabel 		= tk.Label(demoGroup, text="Right eye")
-		leftEyeLabel 		= tk.Label(demoGroup, text="Left eye")
-		eyeLabel.grid(row=3, column=0)
-		rightEyeLabel.grid(row=2, column=2)
-		leftEyeLabel.grid(row=2, column=3)
+        # Eye entry
+        eyeLabel               = tk.Label(demoGroup, text="Occular correction")
+        rightEyeLabel         = tk.Label(demoGroup, text="Right eye")
+        leftEyeLabel         = tk.Label(demoGroup, text="Left eye")
+        eyeLabel.grid(row=3, column=0)
+        rightEyeLabel.grid(row=2, column=2)
+        leftEyeLabel.grid(row=2, column=3)
 
-		correction 		= ['No', 'Glasses','Contacts: Soft','Contacts: Hard']
-		right			= np.round(np.arange(-5,5, 0.1),2)
-		left 		 	= np.round(np.arange(-5,5, 0.1),2)
-		self.correctionOptions 	= tk.StringVar()
-		self.correctionOptions.set(correction[0])
-		self.rightOptions = tk.StringVar()
-		self.rightOptions.set(0)
-		self.leftOptions 	= tk.StringVar()
-		self.leftOptions.set(0)
-		self.correctionEntry	= tk.OptionMenu(demoGroup,self.correctionOptions, *correction)
-		self.rightEntry	= tk.OptionMenu(demoGroup,self.rightOptions, *right)
-		self.leftEntry	= tk.OptionMenu(demoGroup,self.leftOptions, *left)
+        correction         = ['No', 'Glasses','Contacts: Soft','Contacts: Hard']
+        right            = np.round(np.arange(-5,5, 0.1),2)
+        left              = np.round(np.arange(-5,5, 0.1),2)
+        self.correctionOptions     = tk.StringVar()
+        self.correctionOptions.set(correction[0])
+        self.rightOptions = tk.StringVar()
+        self.rightOptions.set(0)
+        self.leftOptions     = tk.StringVar()
+        self.leftOptions.set(0)
+        self.correctionEntry    = tk.OptionMenu(demoGroup,self.correctionOptions, *correction)
+        self.rightEntry    = tk.OptionMenu(demoGroup,self.rightOptions, *right)
+        self.leftEntry    = tk.OptionMenu(demoGroup,self.leftOptions, *left)
 
-		self.correctionEntry.grid(row = 3, column = 1)
-		self.rightEntry.grid(row = 3, column = 2)
-		self.leftEntry.grid(row = 3, column = 3)
+        self.correctionEntry.grid(row = 3, column = 1)
+        self.rightEntry.grid(row = 3, column = 2)
+        self.leftEntry.grid(row = 3, column = 3)
 
-		# handedness entry
-		handOptions 			= ['Right', 'Left', 'Ambidextrous']
-		handLabel 			= tk.Label(demoGroup, text="Handedness:")
-		self.handOptions = tk.StringVar()
-		self.handOptions.set(handOptions[0])
-		self.handEntry 		= tk.OptionMenu(demoGroup, self.handOptions, *handOptions)
-		handLabel.grid(row=4, column=0)
-		self.handEntry.grid(row = 4, column = 1)
+        # handedness entry
+        handOptions             = ['Right', 'Left', 'Ambidextrous']
+        handLabel             = tk.Label(demoGroup, text="Handedness:")
+        self.handOptions = tk.StringVar()
+        self.handOptions.set(handOptions[0])
+        self.handEntry         = tk.OptionMenu(demoGroup, self.handOptions, *handOptions)
+        handLabel.grid(row=4, column=0)
+        self.handEntry.grid(row = 4, column = 1)
 
-		# Gender entry
-		genderOptions 			= ['Male', 'Female', 'Other']
-		genderLabel 			= tk.Label(demoGroup, text="Gender:")
-		self.genderOptions = tk.StringVar()
-		self.genderOptions.set(genderOptions[0])
-		self.genderEntry 		= tk.OptionMenu(demoGroup, self.genderOptions, *genderOptions)
-		genderLabel.grid(row=5, column=0)
-		self.genderEntry.grid(row = 5, column = 1)
+        # Gender entry
+        genderOptions             = ['Male', 'Female', 'Other']
+        genderLabel             = tk.Label(demoGroup, text="Gender:")
+        self.genderOptions = tk.StringVar()
+        self.genderOptions.set(genderOptions[0])
+        self.genderEntry         = tk.OptionMenu(demoGroup, self.genderOptions, *genderOptions)
+        genderLabel.grid(row=5, column=0)
+        self.genderEntry.grid(row = 5, column = 1)
 
-	# make the button which closes everything
-	def makeStartButton(self):
-		closeButton = tk.Button(self, \
-			text 	= "Start!", \
-			command 	= self.start)
-		closeButton.pack(side = tk.BOTTOM)
+    # make the button which closes everything
+    def makeStartButton(self):
+        closeButton = tk.Button(self, \
+            text     = "Start!", \
+            command     = self.start)
+        closeButton.pack(side = tk.BOTTOM)
 
-	# Here we make and then run the classifier GUI
-	def classRun(self):
-		self.makeInstructions()
+    # Here we make and then run the classifier GUI
+    def classRun(self):
+        self.makeInstructions()
 
-		self.makeExperimentInfo()
+        self.makeExperimentInfo()
 
-		self.makeDemoGraph()
+        self.makeDemoGraph()
 
-		self.makeStartButton()
+        self.makeStartButton()
 
-		# This starts the GUI
-		self.geometry('{}x{}'.format(self.xSize, self.ySize))
-		self.attributes('-topmost', True)
-		tk.Tk.mainloop(self)
+        # This starts the GUI
+        self.geometry('{}x{}'.format(self.xSize, self.ySize))
+        self.attributes('-topmost', True)
+        tk.Tk.mainloop(self)
 
-	#=========================================================================
-	# Define what happens when buttons are pressed
-	#=========================================================================
-	# This stops and destroys the GUI
-	def start(self):
-		self.ppNr 	 	= int(self.subjectNrOptions.get())
-		self.sessionNr 	= int(self.sessionNrOptions.get())
-		self.handedness  = self.handOptions.get()
-		self.gender 	= self.genderOptions.get()
-		self.birthDay 	= str(self.dayOptions.get()) + '/' + \
-							str(self.monthOptions.get()) + '/' +  \
-							str(self.yearOptions.get())
-		self.occularCorrection	   = self.correctionOptions.get()
-		self.rightEyeCorrection   = float(self.rightOptions.get())
-		self.leftEyeCorrection    = float(self.leftOptions.get())
+    def saveInfo(self):
+        par = {}
+        par['ppNr'] = self.ppNr
+        par['sessionNr'] = self.sessionNr
+        par['ppGender'] = self.gender
+        par['ppHandedness'] = self.handedness
+        par['ppOccCorrection'] = self.occularCorrection
+        par['ppLeftEye'] = self.leftEyeCorrection
+        par['ppRightEye'] = self.rightEyeCorrection
+        par['ppBirthDay'] = self.birthDay
+        par['curDate'] = self.currentDate
+        par['saveAs'] = self.saveAs
+        self.info = par
 
-		if len(self.saveAs) == 0:
-			self.saveAs 	= 'PP' + str(self.ppNr) + 'S' + str(self.sessionNr)
-		self.destroy()
+    #=========================================================================
+    # Define what happens when buttons are pressed
+    #=========================================================================
+    # This stops and destroys the GUI
+    def start(self):
+        self.ppNr          = int(self.subjectNrOptions.get())
+        self.sessionNr     = int(self.sessionNrOptions.get())
+        self.handedness  = self.handOptions.get()
+        self.gender     = self.genderOptions.get()
+        self.birthDay     = str(self.dayOptions.get()) + '/' + \
+                            str(self.monthOptions.get()) + '/' +  \
+                            str(self.yearOptions.get())
+        self.occularCorrection       = self.correctionOptions.get()
+        self.rightEyeCorrection   = float(self.rightOptions.get())
+        self.leftEyeCorrection    = float(self.leftOptions.get())
 
-	def saveFileName(self):
-		self.saveAs 	 	= giveFileName()
+        if len(self.saveAs) == 0:
+            self.saveAs     = 'PP' + str(self.ppNr) + 'S' + str(self.sessionNr)
+
+        
+        self.saveInfo()
+        self.destroy()
+
+    def saveFileName(self):
+        self.saveAs          = giveFileName()
         
         
 # =============================================================================
@@ -1954,7 +1971,7 @@ class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
             key = getKey(allowedKeys, False)[0]
             if key != 'NoKey':
                 keycode = key 
-                if keycode == 'up':	keycode = pl.CURS_UP
+                if keycode == 'up':    keycode = pl.CURS_UP
                 elif keycode == 'down':  keycode = pl.CURS_DOWN
                 elif keycode == 'left':  keycode = pl.CURS_LEFT; self.setMousStart()
                 elif keycode == 'right': keycode = pl.CURS_RIGHT; self.setMousStart()

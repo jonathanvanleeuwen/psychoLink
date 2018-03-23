@@ -788,11 +788,81 @@ def waitForFixation(win, tracker, fixDot, maxDist = 0, maxWait = 4, nRings=3):
     tracker.stopRecording()
     return correctFixation
 
+#==============================================================================
+# Port code class
+#==============================================================================
+class sendPortCode():
+    '''
+    Class for sending port codes:
+        Automaticaly goes to dummy mode if no parallel port
+
+    Requires dlportio.dll !!!
+
+    Never send codes directly after one another, they will be skipped!!
+    Wait for the resetInterval + 2ms between codes
+
+    '''
+    def __init__(self, resetValue=0, resetInterval = 0.001, port = 0x378):
+        self.resetValue     = resetValue
+        self.resetInterval  = resetInterval
+        self.port           = port
+        try:
+            from ctypes import windll
+            self.io             = windll.dlportio
+            self.dummy          = False
+            print '\nThe parallel port was initiated!'
+            print 'Sending port codes!\n'
+        except:
+            print '\nThe parallel port couldn\'t be opened'
+            print 'Set to dummy mode!\n'
+            self.dummy          = True
+            self.io             = False
+
+    def sendCodeAndReset(self, code, resetInterval = False):
+        if resetInterval == False:
+            waitTime = self.resetInterval
+        else:
+            waitTime = resetInterval
+        if code != self.resetValue:
+            # Send port to console
+            if self.dummy == True:
+                print 'portCode: ' + str(code)
+                portSend = time.time()
+                core.wait(waitTime, hogCPUperiod=waitTime)
+                portReset = time.time()
+                print 'portreset: ' + str(self.resetValue)
+                print 'PortOpen for ' + str((portReset - portSend)*1000) + 'ms'
+
+            # Actually send port codes
+            elif self.dummy == False:
+                # Send port code
+                try:
+                    self.io.DlPortWritePortUchar(self.port, int(code))
+                except:
+                    print 'Failed to send trigger!'
+                # wait for a set time
+                core.wait(waitTime, hogCPUperiod=waitTime)
+                # Reset the port
+                try:
+                    self.io.DlPortWritePortUchar(self.port, int(self.resetValue))
+                except:
+                    print 'Failed to reset trigger!'
+
+    def sendCode(self, code):
+        # Send port to console
+        if self.dummy == True:
+            print 'portCode: ' + str(int(code))
+
+        # Actually send port codes
+        elif self.dummy == False:
+            # Send port code
+            try:
+                self.io.DlPortWritePortUchar(self.port, int(code))
+            except:
+                print 'Failed to send trigger!'
 
 #==============================================================================
-#  TO DO:
-#     Test Code
-#     Make a calibration screen so users know what to do
+# PsychoLink
 #==============================================================================
 class eyeLink:
     '''
@@ -828,6 +898,7 @@ class eyeLink:
         self.activeState = True
         self.ABORTED = False
         self.fileDest = False
+        self.PPort = sendPortCode() 
 
         try:
             # Real connection to tracker

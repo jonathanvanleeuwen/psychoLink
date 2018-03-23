@@ -1257,7 +1257,7 @@ class eyeLink:
                     self.window.flip()
         return fix
 
-    def waitForFixation(self, fixDot, maxDist = 0, maxWait = 4, nRings=3):
+    def waitForFixation(self, fixDot, maxDist = 0, maxWait = 4, nRings=3, fixTime = 200):
         '''
         '''
         incorrectFixationText = 'Either you are not fixating on the target or ' +\
@@ -1297,21 +1297,39 @@ class eyeLink:
         concCirc = visual.Circle(self.win,radius=perimMaxRad,fillColorSpace='rgb255',\
                         lineColorSpace='rgb255',lineColor=lineColor,\
                         fillColor=self.win.color,edges=50,pos=fixDot.pos)
-        
+        sampCount = 0
+        stopCount = fixTime/(1000.0/hz) # stops after approx 200 ms
         while (time.time() - trStart) < maxWait:
             if self.mode != 'Dummy':
                 fixation = self.getCurSamp()
                 whatToDo = getKey(['c'], waitForKey = False)
                 distance = distBetweenPoints(fixation,fixDot.pos)
+                
+                # Check if sample is within boundry
                 if distance < maxDist:
-                    correctFixation = True
-                    break
+                    sampCount+=1
+                else:
+                    sampCount = 0
+                    
                 if whatToDo[0] == 'c':
+                    break
+                
+                # If enough samples within boundry
+                if sampCount >= stopCount:
+                    correctFixation = True
                     break
             else:
                 avgXY = self.getCurSamp()
                 distance = distBetweenPoints(avgXY,fixDot.pos)
+                
+                # Check if sample is within boundry
                 if distance < maxDist:
+                    sampCount+=1
+                else:
+                    sampCount = 0
+                    
+                # If enough samples within boundry
+                if sampCount >= stopCount:
                     correctFixation = True
                     break
                     

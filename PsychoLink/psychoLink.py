@@ -803,9 +803,10 @@ class sendPortCode():
 
     '''
     def __init__(self, resetValue=0, resetInterval = 0.001, port = 0x378):
-        self.resetValue     = resetValue
-        self.resetInterval  = resetInterval
-        self.port           = port
+        #self.resetValue     = resetValue
+        #self.resetInterval  = resetInterval
+        #self.port           = port
+        self.setSettings()
         try:
             from ctypes import windll
             self.io             = windll.dlportio
@@ -818,6 +819,11 @@ class sendPortCode():
             self.dummy          = True
             self.io             = False
 
+    def setSettings(self, resetValue=0, resetInterval = 0.001, port = 0x378):
+        self.resetValue     = resetValue
+        self.resetInterval  = resetInterval
+        self.port           = port
+        
     def sendCodeAndReset(self, code, resetInterval = False):
         if resetInterval == False:
             waitTime = self.resetInterval

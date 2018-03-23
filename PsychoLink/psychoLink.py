@@ -4,7 +4,11 @@ Created on Sat Feb 17 16:00:17 2018
 
 @author: Jonathan
 """
-import pylink as pl
+try:
+    import pylink as pl
+except:
+    pl = False
+    print 'Pylink not found, running dummy'
 import time
 import numpy as np
 from psychopy import visual, core, event
@@ -189,7 +193,7 @@ def getKey(allowedKeys = ['left', 'right'], waitForKey = True, timeOut = 0):
 
     else:
         # Get key
-        key_pressed = event.getKeys(timeStamped=True)
+        key_pressed = event.getKeys(allowedKeys, timeStamped=True)
         if not key_pressed:
             key_pressed = [['NoKey']]
 
@@ -223,7 +227,7 @@ def drawText(win,\
 
 def checkAbort():
     """ """
-    keys = event.getKeys()
+    keys = event.getKeys(['escape'])
     if keys:
         if 'escape' in keys:
             return True
@@ -839,11 +843,17 @@ class eyeLink:
 
         except:
             #or for dummy mode connection
-            self.eLink = pl.EyeLink(None)
             self.mode = 'Dummy'
-            error = '\n\tNo eye-tracker found at: "' + address + \
-                '"\n\tEntering DummyMode\n' +\
-                '\tUsing Mouse Position\n\n\tPress "Space" to start'
+            if pl:
+                self.eLink = pl.EyeLink(None)
+                error = '\n\tNo eye-tracker found at: "' + address + \
+                    '"\n\tEntering DummyMode\n' +\
+                    '\tUsing Mouse Position\n\n\tPress "Space" to start'
+            else:
+                self.eLink = False
+                error = '\n\tPylink module not found!'+\
+                    '"\n\tEntering DummyMode\n' +\
+                    '\tUsing Mouse Position\n\n\tPress "Space" to start'
             print( "\nError: %s" % error )
             self.mouse.setVisible(1)
             drawText(self.win, error)
@@ -973,11 +983,12 @@ class eyeLink:
         self.startRecording()
         time.sleep(10/1000.0)
         self.sendMsg('start_trial')
-        if trialNr != False:
-            self.eLink.sendCommand("record_status_message=trialNr_%d"%(int(trialNr)))
-        else:
-            self.eLink.sendCommand("record_status_message=trialNr_XX")
-        
+        if self.mode == 'Real':
+            if trialNr != False:
+                self.eLink.sendCommand("record_status_message=trialNr_%d"%(int(trialNr)))
+            else:
+                self.eLink.sendCommand("record_status_message=trialNr_XX")
+            
     def stopTrial(self):
         '''
         Stops eyetracker and sends stop trial message
@@ -1259,7 +1270,8 @@ class eyeLink:
         # get refreshRate of screen
         hz = self.win.getActualFrameRate()    
         self.startRecording()
-        self.eLink.sendCommand("record_status_message=Fixation_control")
+        if self.mode == 'Real':
+            self.eLink.sendCommand("record_status_message=Fixation_control")
         correctFixation = False
         trStart = time.time()
         if np.sum(fixDot.fillColor == self.win.color) == 3:
@@ -1354,7 +1366,7 @@ class eyeLink:
     # Check abort
     def checkAbort(self):
         """ """
-        keys = event.getKeys()
+        keys = event.getKeys(['escape'])
         if keys:
             if 'escape' in keys:
                 key , rt = drawText(self.win, 'Stop Experiment?\n\n"Y" \ "N"', ['y', 'n'])

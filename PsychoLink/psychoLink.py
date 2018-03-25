@@ -19,7 +19,6 @@ import Tkinter as tk
 import tkFileDialog as filedialog
 import scipy
 from scipy import misc
-import tempfile
 import math
 
 # =============================================================================
@@ -2047,8 +2046,6 @@ class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
         EyeLinkCoreGraphicsPsychopy.WINDOW_BACKGROUND_COLOR=screenColor
         EyeLinkCoreGraphicsPsychopy.CALIBRATION_POINT_OUTER_RADIUS=targetOuterDiameter/2.0,targetOuterDiameter/2.0
         EyeLinkCoreGraphicsPsychopy.CALIBRATION_POINT_INNER_RADIUS=targetInnerDiameter/2.0,targetInnerDiameter/2.0
-
-        self.tmp_file = os.path.join(tempfile.gettempdir(),'_eleye.png')
 
         self.blankdisplay = BlankScreen(self.window,self.WINDOW_BACKGROUND_COLOR)
         self.textmsg = TextLine(self.window)

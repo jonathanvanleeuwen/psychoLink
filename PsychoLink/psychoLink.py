@@ -7,14 +7,21 @@ Created on Sat Feb 17 16:00:17 2018
 try:
     import pylink as pl
 except:
+    import warnings
     pl = False
-    print 'Pylink not found, running dummy'
+    warnings.warn('Pylink not found, running dummy mode', Warning)
 import time
 import numpy as np
 from psychopy import visual, core, event
 import os
 import sys
-import pandas as pd
+try:
+    import pandas as pd
+except:
+    import warnings
+    pd = False
+    warn = 'Pandas not imported!\nmakeTrialList will return array and not dataframe!\nSaving calibration will not work!'
+    warnings.warn(warn, Warning)
 import Tkinter as tk
 import tkFileDialog as filedialog
 import scipy
@@ -312,7 +319,7 @@ def pixelsToAngleWH(pix, screenDist, screenWH, screenXY):
                        
     return angleW, angleH
 
-def makeTrialList(header, conditions, reps = 0, zeroPads = 0, shuffle = True):
+def makeTrialList(header, conditions, reps = 0, shuffle = True):
     '''
     Returns a numpy array with a counterbalanced trialList. \n
     Rows are individual trials while columns are conditions. \n
@@ -320,7 +327,6 @@ def makeTrialList(header, conditions, reps = 0, zeroPads = 0, shuffle = True):
     \t conds    = List of lists: [[1,2,3], range(1,10)]. \n
     \t reps     = How many times the counterbalanced trialList should be \
     repeated. \n
-    \t zeroPads = How many empty columns added to the right of the trialList
     \n Empty columns can be used to store trial spesific information \
     like reaction times, responses etc.
     '''
@@ -329,6 +335,7 @@ def makeTrialList(header, conditions, reps = 0, zeroPads = 0, shuffle = True):
         print('A list of lists is required')
 
     # Add zeroPads
+    zeroPads = len(header) - len(conds)
     for i in range(0,zeroPads):
         conds.append([False])
     # Get number of conditions (including zeroPads)
@@ -361,7 +368,8 @@ def makeTrialList(header, conditions, reps = 0, zeroPads = 0, shuffle = True):
             trialList = np.concatenate((trialList, total))
 
     # make it a pandas dataframe
-    trialList = pd.DataFrame(trialList, columns = header)
+    if pd != False:
+        trialList = pd.DataFrame(trialList, columns = header)
     return trialList
 
 def cleanUp(win, tracker):

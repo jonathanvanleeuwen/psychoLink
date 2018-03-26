@@ -136,88 +136,6 @@ def aaPrintbasicInstructions():
 #==============================================================================
 # Numpy doc formating example    
 #==============================================================================
-'''
-Compute the weighted average along the specified axis.
-
-Parameters
-----------
-a : array_like
-    Array containing data to be averaged. If `a` is not an array, a
-    conversion is attempted.
-axis : int, optional
-    Axis along which to average `a`. If `None`, averaging is done over
-    the flattened array.
-weights : array_like, optional
-    An array of weights associated with the values in `a`. Each value in
-    `a` contributes to the average according to its associated weight.
-    The weights array can either be 1-D (in which case its length must be
-    the size of `a` along the given axis) or of the same shape as `a`.
-    If `weights=None`, then all data in `a` are assumed to have a
-    weight equal to one.
-returned : bool, optional
-    Default is `False`. If `True`, the tuple (`average`, `sum_of_weights`)
-    is returned, otherwise only the average is returned.
-    If `weights=None`, `sum_of_weights` is equivalent to the number of
-    elements over which the average is taken.
-
-
-Returns
--------
-average, [sum_of_weights] : array_type or double
-    Return the average along the specified axis. When returned is `True`,
-    return a tuple with the average as the first element and the sum
-    of the weights as the second element. The return type is `Float`
-    if `a` is of integer type, otherwise it is of the same type as `a`.
-    `sum_of_weights` is of the same type as `average`.
-
-
-Examples
---------
->>> data = range(1,5)
->>> data
-[1, 2, 3, 4]
->>> np.average(data)
-2.5
->>> np.average(range(1,11), weights=range(10,0,-1))
-4.0
-
->>> data = np.arange(6).reshape((3,2))
->>> data
-array([[0, 1],
-       [2, 3],
-       [4, 5]])
->>> np.average(data, axis=1, weights=[1./4, 3./4])
-array([ 0.75,  2.75,  4.75])
->>> np.average(data, weights=[1./4, 3./4])
-Traceback (most recent call last):
-...
-TypeError: Axis must be specified when shapes of a and weights differ.
-'''
-###
-# In other words
-'''
-One line description
-
-Parameters
-----------
-par1 : type
-    description
-par2 : type
-    description
-    
-Returns
--------
-returnData : type
-    description
-    
-
-Examples
---------
->>> how to use
->>> output
-'''
-
-
 # Copy this for easy insertion
 '''
 One line description
@@ -1433,11 +1351,6 @@ class eyeLink:
             self.mouse.setVisible(1)
             drawText(self.win, error)
             self.win.flip()
-            
-            # For testing intro screen settings in dummy mode
-            #introscreen = IntroScreen(self.win)
-            #introscreen.draw()
-            #self.win.flip()
             
         self.setEyeLinkSettings(screenW = win.size[0], screenH = win.size[1])
         self.setCalibrationOptions(backCol = win.color)

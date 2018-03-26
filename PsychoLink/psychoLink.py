@@ -370,6 +370,10 @@ def makeTrialList(header, conditions, reps = 0, shuffle = True):
     # make it a pandas dataframe
     if pd != False:
         trialList = pd.DataFrame(trialList, columns = header)
+    else:
+        import warnings
+        warn = '\nmakeTrialList\nPandas not found, returns np.array, not dataframe!'
+        warnings.warn(warn, Warning)
     return trialList
 
 def cleanUp(win, tracker):
@@ -674,17 +678,22 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
         else:
             # Make the results
             validationResults = np.array([gridPoints, gazePositions, errorDistance])
-            validationResults = pd.DataFrame(validationResults)
-            # Save results
-            if saveFile != False:
-                itt = 1
-                while itt < 100:
-                    saveFileName = saveFile + 'Validation' + str(itt) + '.p'
-                    fileFound = os.path.isfile(saveFileName)
-                    if fileFound == False:
-                        validationResults.to_pickle(saveFileName)
-                        break
-                    itt += 1
+            if pd != False:
+                validationResults = pd.DataFrame(validationResults)
+                # Save results
+                if saveFile != False:
+                    itt = 1
+                    while itt < 100:
+                        saveFileName = saveFile + 'Validation' + str(itt) + '.p'
+                        fileFound = os.path.isfile(saveFileName)
+                        if fileFound == False:
+                            validationResults.to_pickle(saveFileName)
+                            break
+                        itt += 1
+            else:
+                import warnings
+                warn = '\nSave validation results\nPandas not found, Does not save results!'
+                warnings.warn(warn, Warning)
     win.flip()
     tracker.stopRecording()
     return validationResults

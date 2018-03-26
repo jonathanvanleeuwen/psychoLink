@@ -925,7 +925,7 @@ class eyeLink:
         try:
             # Real connection to tracker
             self.eLink = pl.EyeLink(address)
-            self.eLink.openDataFile(self.EDFDefaultName)
+            self.pylink.openDataFile(self.EDFDefaultName)
             pl.flushGetkeyQueue()
             self.mode = 'Real'
             self.mouse.setVisible(0)
@@ -977,25 +977,25 @@ class eyeLink:
         self.screenH = screenH
         if self.mode == 'Real':
             # Send screen info to eyelink
-            self.eLink.sendCommand("screen_pixel_coords = 0 0 %d %d" %(screenW, screenH))
-            self.eLink.sendMessage("DISPLAY_COORDS 0 0 %d %d" %(screenW, screenH))
+            self.pylink.sendCommand("screen_pixel_coords = 0 0 %d %d" %(screenW, screenH))
+            self.pylink.sendMessage("DISPLAY_COORDS 0 0 %d %d" %(screenW, screenH))
 
             # Set saccade velocity settings
-            if (self.eLink.getTrackerVersion()== 2):
-                self.eLink.sendCommand("select_parser_configuration 0")
+            if (self.pylink.getTrackerVersion()== 2):
+                self.pylink.sendCommand("select_parser_configuration 0")
             else:
-                self.eLink.sendCommand("saccade_velocity_threshold = "+str(vel))
-                self.eLink.sendCommand("saccade_acceleration_threshold = "+str(acc))
+                self.pylink.sendCommand("saccade_velocity_threshold = "+str(vel))
+                self.pylink.sendCommand("saccade_acceleration_threshold = "+str(acc))
 
             # Send events to filter to eyelink
             # Also try to record some data with HREF in the sample and link filter
             # And then try to look at the ascii file for parsing the data
             
-            self.eLink.setFileEventFilter("LEFT,RIGHT,FIXATION,SACCADE,BLINK,MESSAGE,BUTTON")
-            self.eLink.setFileSampleFilter("LEFT,RIGHT,GAZE,AREA,GAZERES,STATUS")
-            self.eLink.setLinkEventFilter("LEFT,RIGHT,FIXATION,SACCADE,BLINK,BUTTON")
-            self.eLink.setLinkSampleFilter("LEFT,RIGHT,GAZE,GAZERES,AREA,STATUS")
-            self.eLink.sendCommand("button_function 5 'accept_target_fixation'")
+            self.pylink.setFileEventFilter("LEFT,RIGHT,FIXATION,SACCADE,BLINK,MESSAGE,BUTTON")
+            self.pylink.setFileSampleFilter("LEFT,RIGHT,GAZE,AREA,GAZERES,STATUS")
+            self.pylink.setLinkEventFilter("LEFT,RIGHT,FIXATION,SACCADE,BLINK,BUTTON")
+            self.pylink.setLinkSampleFilter("LEFT,RIGHT,GAZE,GAZERES,AREA,STATUS")
+            self.pylink.sendCommand("button_function 5 'accept_target_fixation'")
 
     #=========================================================================
     # Running drift correct and calibration procedure (make psychopy screen)
@@ -1040,16 +1040,16 @@ class eyeLink:
                                              targetInnerDiameter=self.holeDiam)
             pl.openGraphicsEx(genv)
             # Set number of calibration points
-            self.eLink.sendCommand("calibration_type=%s"%self.caltype)
+            self.pylink.sendCommand("calibration_type=%s"%self.caltype)
             # Set calibration point duration
-            self.eLink.sendCommand("automatic_calibration_pacing=%d"%(self.calTime))
+            self.pylink.sendCommand("automatic_calibration_pacing=%d"%(self.calTime))
             # Set sounds
             pl.setCalibrationSounds(self.targSound, self.corrSound,self.incSound)
-            self.eLink.doTrackerSetup()
+            self.pylink.doTrackerSetup()
             genv.clear_cal_display()
             self.win.flip()
             drawText(self.win, 'Press "Space" to start!')
-            self.eLink.startRecording(1,1,1,1)
+            self.pylink.startRecording(1,1,1,1)
     
     # Run drift correct
     def driftCorrect(self, fixDot):
@@ -1064,7 +1064,7 @@ class eyeLink:
             fixDot.draw()
             self.win.flip()
             time.sleep(0.5)
-            self.eLink.doDriftCorrect(int(x), int(y),0,1)
+            self.pylink.doDriftCorrect(int(x), int(y),0,1)
             
     #=========================================================================
     # Methods for talking to the eytracker
@@ -1078,9 +1078,9 @@ class eyeLink:
         self.sendMsg('start_trial')
         if self.mode == 'Real':
             if trialNr != False:
-                self.eLink.sendCommand("record_status_message=trialNr_%d"%(int(trialNr)))
+                self.pylink.sendCommand("record_status_message=trialNr_%d"%(int(trialNr)))
             else:
-                self.eLink.sendCommand("record_status_message=trialNr_XX")
+                self.pylink.sendCommand("record_status_message=trialNr_XX")
             
     def stopTrial(self):
         '''
@@ -1096,10 +1096,10 @@ class eyeLink:
         Starts recording\n
         '''
         if self.mode == 'Real':
-            self.eLink.clearScreen(0)
+            self.pylink.clearScreen(0)
             time.sleep(0.1)
             # Start Recording
-            self.eLink.startRecording(1,1,1,1)            
+            self.pylink.startRecording(1,1,1,1)            
             time.sleep(0.1)
             #begin the realtime mode
             #pl.pylink.beginRealTimeMode(200)
@@ -1111,9 +1111,9 @@ class eyeLink:
         '''
         if self.mode == 'Real':
             #pl.pylink.endRealTimeMode()
-            self.eLink.sendCommand("record_status_message=NoTitle")
-            self.eLink.clearScreen(0)
-            self.eLink.stopRecording()
+            self.pylink.sendCommand("record_status_message=NoTitle")
+            self.pylink.clearScreen(0)
+            self.pylink.stopRecording()
 
     # Send message to pyLinkLog
     def sendMsg(self,msg = ''):
@@ -1122,7 +1122,7 @@ class eyeLink:
         Sends a string (msg) to the eyeTracker log\n
         '''
         if self.mode == 'Real':
-            self.eLink.sendMessage(str(msg))
+            self.pylink.sendMessage(str(msg))
             time.sleep(2/1000.0)
         elif self.mode == 'Dummy':
             msg = 'PsychoLink Log (Dummy): '+str(msg)
@@ -1139,7 +1139,7 @@ class eyeLink:
         '''
         msg = 'var '+str(varName)+' '+ str(value)
         if self.mode == 'Real':
-            self.eLink.sendMessage(msg)
+            self.pylink.sendMessage(msg)
             time.sleep(2/1000.0)
         elif self.mode == 'Dummy':
             msg = 'PsychoLink Log (Dummy): '+ msg
@@ -1155,7 +1155,7 @@ class eyeLink:
         '''
         timeStamp = False
         if self.mode == 'Real':
-            curSamp = self.eLink.getNewestSample()
+            curSamp = self.pylink.getNewestSample()
             timeStamp = curSamp.getTime()
         return timeStamp
 
@@ -1171,16 +1171,16 @@ class eyeLink:
             if bType == 'square':
                 rad *=2
                 xL, yL = (x-rad/2, y-rad/2)
-                self.eLink.drawBox(xL,yL,rad,rad, color[0])
+                self.pylink.drawBox(xL,yL,rad,rad, color[0])
             elif bType == 'circle':
                 x1,y1,x2,y2 = circLinePos(x, y, rad)
                 for idx, (x1,y1,x2,y2) in enumerate(zip(x1,y1,x2,y2)):
-                    self.eLink.drawLine((x1,y1),(x2,y2),color[0])
+                    self.pylink.drawLine((x1,y1),(x2,y2),color[0])
                     
             # Draw Cross
-            self.eLink.drawLine((x-15, y),(x+15, y) , color[1])
-            self.eLink.drawLine((x, y+15),(x, y-15) , color[1])
-            #self.eLink.drawCross(x,y, color[1])
+            self.pylink.drawLine((x-15, y),(x+15, y) , color[1])
+            self.pylink.drawLine((x, y+15),(x, y-15) , color[1])
+            #self.pylink.drawCross(x,y, color[1])
             
     def drawEyeText(self, text, pos = False):
         '''
@@ -1189,10 +1189,10 @@ class eyeLink:
         if self.mode == 'Real':
             if pos == False:
                 x,y = centerToTopLeft((self.screenW/2, self.screenH-30), (self.screenW, self.screenH))
-                self.eLink.sendCommand("draw_text=%d %d %d %s "%(x,y,3,text))
+                self.pylink.sendCommand("draw_text=%d %d %d %s "%(x,y,3,text))
             else:
                 x, y = centerToTopLeft(pos, (self.screenW, self.screenH))
-                self.eLink.sendCommand("draw_text=%d %d %d %s "%(x,y,3,text))
+                self.pylink.sendCommand("draw_text=%d %d %d %s "%(x,y,3,text))
         else:
             print text
             
@@ -1206,7 +1206,7 @@ class eyeLink:
         if self.mode == 'Real':
             x = self.screenW/2
             y = self.screenH-30
-            self.eLink.sendCommand("draw_text=%d %d %d %s "%(x,y,3,text))
+            self.pylink.sendCommand("draw_text=%d %d %d %s "%(x,y,3,text))
         else:
             print text
         
@@ -1217,7 +1217,7 @@ class eyeLink:
         If running in dummy mode it returns mouse position\n
         '''
         if self.mode == 'Real':
-            curSamp = self.eLink.getNewestSample()
+            curSamp = self.pylink.getNewestSample()
             if curSamp != None:
                 if curSamp.isRightSample():
                     gazePos = curSamp.getRightEye().getGaze()
@@ -1260,8 +1260,8 @@ class eyeLink:
         if self.mode == 'Real':
             start = time.time()
             while True and (time.time() - start) <= timeout:
-                event = self.eLink.getNextData()
-                event = self.eLink.getFloatData()
+                event = self.pylink.getNextData()
+                event = self.pylink.getFloatData()
                 if event != None:
                     if event.getType() == 6 or checkAbort() == False:
                         esacc[0] = event.getStartTime()
@@ -1316,8 +1316,8 @@ class eyeLink:
         if self.mode == 'Real':
             start = time.time()
             while True and (time.time() - start) <= timeout:
-                event = self.eLink.getNextData()
-                event = self.eLink.getFloatData()
+                event = self.pylink.getNextData()
+                event = self.pylink.getFloatData()
                 if event != None:
                     if event.getType() == 7:
                         fixStart = event.getStartTime()
@@ -1364,7 +1364,7 @@ class eyeLink:
         hz = self.win.getActualFrameRate()    
         self.startRecording()
         if self.mode == 'Real':
-            self.eLink.sendCommand("record_status_message=Fixation_control")
+            self.pylink.sendCommand("record_status_message=Fixation_control")
         correctFixation = False
         trStart = time.time()
         if np.sum(fixDot.fillColor == self.win.color) == 3:
@@ -1503,17 +1503,17 @@ class eyeLink:
                 self.stopRecording()
                 
                 # File transfer and cleanup!
-                self.eLink.setOfflineMode()
+                self.pylink.setOfflineMode()
                 pl.msecDelay(500);
                 #Close the file and transfer it to Display PC
-                self.eLink.closeDataFile()
+                self.pylink.closeDataFile()
                 # Suppress output printing
                 _out = sys.stdout
                 with open(os.devnull, 'w') as fd:
                     sys.stdout = fd
-                    self.eLink.receiveDataFile(self.EDFDefaultName, self.EDFDefaultName)
+                    self.pylink.receiveDataFile(self.EDFDefaultName, self.EDFDefaultName)
                     sys.stdout = _out
-                self.eLink.close()
+                self.pylink.close()
                 
                  # give the tracker time to stop
                 time.sleep(0.2)
@@ -1555,17 +1555,17 @@ class eyeLink:
         if self.mode == 'Real':
             if pl.tracker != None:                
                 # File transfer and cleanup!
-                self.eLink.setOfflineMode()
+                self.pylink.setOfflineMode()
                 pl.msecDelay(500);
                 #Close the file and transfer it to Display PC
-                self.eLink.closeDataFile()
+                self.pylink.closeDataFile()
                 # Suppress output printing
                 _out = sys.stdout
                 with open(os.devnull, 'w') as fd:
                     sys.stdout = fd
-                    self.eLink.receiveDataFile(self.EDFDefaultName, self.EDFDefaultName)
+                    self.pylink.receiveDataFile(self.EDFDefaultName, self.EDFDefaultName)
                     sys.stdout = _out
-                self.eLink.close()
+                self.pylink.close()
                 
 #==============================================================================
 #  Make class for getting experiment info from user (incomplete)

@@ -232,6 +232,7 @@ Examples
 --------
 >>> 
 >>> 
+
 '''
 
 
@@ -384,16 +385,38 @@ def getKey(allowedKeys = ['left', 'right'], waitForKey = True, timeOut = 0):
     Gets a keypress by using the event.waitKeys or event.getKeys from
     the psychopy module
     
+    The escape key is allways allowed. 
+    
     Parameters
     ----------
+    allowedKeys : list, list fo strings
+        The list should contain all allowed keys
+    waitForKey : Bool
+        If True, the code waits until one of the keys defined in allowedkeys
+        or escape has been pressed
+    timeOut : int or float, positive value
+        Only has effect if waitForKey == True\n
+        If set to 0, the function waits until an allowed key is pressed\n
+        If set to any other positive value, breaks after timeOut seconds
         
     Returns
     -------
+    key_pressed : tuple with two items
+        The first index returns the Key\n
+        The second index returns the timestamp\n
+        The timestamp is in seconds after psychopy initialization and does not 
+        reflect the duration waited for the key press\n
+        If timeOut or no key is pressed, returns ['NoKey', 9999]
+        
+    Note
+    --------
+    The function requires an active psychopy window
     
     Examples
     --------
-    >>> 
-    >>> 
+    >>> key = getKey(allowedKeys = ['left', 'right'], waitForKey = True, timeOut = 0)
+    >>> key # the 'left' key is pressed after 156 seconds'
+    ('left', 156.5626505338878)
     '''
     if waitForKey:
         while True:
@@ -415,29 +438,52 @@ def getKey(allowedKeys = ['left', 'right'], waitForKey = True, timeOut = 0):
         # Get key
         key_pressed = event.getKeys(allowedKeys, timeStamped=True)
         if not key_pressed:
-            key_pressed = [['NoKey']]
+            key_pressed = [['NoKey', 9999]]
 
     return key_pressed[-1]
 
 def drawText(win,\
             text = 'No text specified!',\
-            textKey     = ['space'],\
+            textKey = ['space'],\
             wrapWidth = 900,\
-            textSize     = 25,\
+            textSize = 25,\
             textColor = [0, 0, 0]):
     '''
-    One line description
+    Draw a string on a psychopy window and waits for a keypress, allways tries 
+    to draw the text in the center of the screen.
     
     Parameters
     ----------
+    win : psychopy window
+        An instance of an active psychopy window on which to draw the text
+    text : string
+        The text to draw
+    textKey : list
+        A list of the allowed keys to press to exit the function. The function
+        will block code execution until the specified key or escape is pressed
+    wrapWidth : int
+        The number of characters to display per line. If there are more 
+        characters on one line than specified in wrapWith the text will 
+        continue on the next line
+    textSize : int
+        The height of the text in pixels
+    textColor : list of [R,G,B] values
+        The color in which to draw the text, [R,G,B]
         
     Returns
     -------
+    key : string
+        The key pressed 
+    rt : float
+        The time from text display onset until keypress in seconds
     
     Examples
     --------
-    >>> 
-    >>> 
+    >>> key, rt = pl.drawText(win, 'Press "Space" to continue!')
+    >>> key
+    'space'
+    >>> rt
+    1.2606524216243997
     '''
     
     if np.sum(np.array(textColor) == 0) ==3 and np.sum(win.color < 100) == 3:
@@ -459,35 +505,59 @@ def drawText(win,\
 
 def checkAbort():
     '''
-    One line description
-    
-    Parameters
-    ----------
+    Checks whether the escape key has been pressed, does not block code
         
     Returns
     -------
+    abort : Bool
+        True if escape has been pressed
+        False if escape has not been pressed
     
     Examples
     --------
-    >>> 
-    >>> 
+    >>> abort = checkAbort
+    >>> abort
+    False
     '''
     keys = event.getKeys(['escape'])
     if keys:
         if 'escape' in keys:
             return True
+        else:
+            return False
+    else:
+        return False
             
 def angleToPixels(angle, screenDist, screenW, screenXY):
     '''
-    Function which calculates viusal angle to pixels
-    Input:
-        angle       = visual angle in degrees
-        screenDist  = distance from screen in cm
-        screenW     = The width of the screen in cm
-        sceenXY     = tuple with the xy resolution of the screen in pixels
-
-    Output:
-        pix         = The number of pixels (Horizontal) which is spanned by the angle
+    Calculate the number of pixels which equals a specified angle in visual
+    degrees, given parameters. Calculates the pixels based on the width of
+    the screen. If the pixels are not square, a sepperate conversion needs
+    to be done with the height of the screen.\n
+    "angleToPixelsWH" returns pixels for width and height. 
+    
+    Parameters
+    ----------
+    angle : float or int
+        The angle to convert in visual degrees
+    screenDist : float or int
+        Viewing distance in cm
+    screenW : float or int
+        The width of the screen in cm
+    screenXY : tuple, ints
+        The resolution of the screen (width - x, height - y), pixels
+        
+    Returns
+    -------
+    pix : float
+        The number of pixels which corresponds to the visual degree in angle,
+        horizontaly
+    
+    Examples
+    --------
+    >>>  pix = angleToPixels(1, 75, 47.5, (1920,1080))
+    >>> pix
+    52.912377341863817
     '''
     pixSize     = screenW / float(screenXY[0])
     angle       = np.radians(angle/2.0)
@@ -498,16 +568,37 @@ def angleToPixels(angle, screenDist, screenW, screenXY):
 
 def angleToPixelsWH(angle, screenDist, screenWH, screenXY):
     '''
-    Function which calculates viusal angle to pixels
-    Both for vertical and horizontal 
-    Input:
-        angle       = visual angle in degrees
-        screenDist  = distance from screen in cm
-        screenWH    = Tuple with screen width and height in cm
-        sceenXY     = tuple with the xy resolution of the screen in pixels
-
-    Output:
-        pix         = Tuple, The number of pixels (Horizontal, Vertical) which is spanned by the angle
+    Calculate the number of pixels which equals a specified angle in visual
+    degrees, given parameters.
+    
+    Parameters
+    ----------
+    angle : float or int
+        The angle to convert in visual degrees
+    screenDist : float or int
+        Viewing distance in cm
+    screenWH : tuple, floats or ints
+        The width and height of the screen in cm (width, height)
+    screenXY : tuple, ints
+        The resolution of the screen (width - x, height - y), pixels
+        
+    Returns
+    -------
+    pixW : float
+        The number of pixels which corresponds to the visual degree in angle,
+        horizontaly (width)
+    pixH : float
+        The number of pixels which corresponds to the visual degree in angle,
+        vertically (height)
+    
+    Examples
+    --------
+    >>>  pixW, pixH = angleToPixelsWH(1, 75, (47.5, 30), (1920,1080))
+    >>> pixW
+    52.912377341863817
+    >> pixH
+    47.125086070097467
+    
     '''
     pixSizeW = screenWH[0] / float(screenXY[0])
     pixSizeH = screenWH[1] / float(screenXY[1])
@@ -515,20 +606,38 @@ def angleToPixelsWH(angle, screenDist, screenWH, screenXY):
     cmOnScreen = np.tan(angle) * float(screenDist)
     pixW = (cmOnScreen/pixSizeW)*2
     pixH = (cmOnScreen/pixSizeH)*2
-
     return pixW, pixH
 
 def pixelsToAngle(pix, screenDist, screenW, screenXY):
     '''
-    Function which calculates number of pixels on screen to visual degree
-    Input:
-        pix         = visual angle in degrees
-        screenDist  = distance from screen in cm
-        screenW     = The width of the screen in cm
-        sceenXY     = tuple with the xy resolution of the screen in pixels
+    Calculate the visual angle on the screen in degrees given a number of 
+    pixels. Calculates the distance based on the width of
+    the screen. If the pixels are not square, a sepperate conversion needs
+    to be done with the height of the screen.\n
+    "pixelsToAngleWH" returns visual degrees for width and height. 
+    
+    Parameters
+    ----------
+    pix : float or int
+        The pixels to convert in number of pixels
+    screenDist : float or int
+        Viewing distance in cm
+    screenW : float or int
+        The width of the screen in cm
+    screenXY : tuple, ints
+        The resolution of the screen (width - x, height - y), pixels
+        
+    Returns
+    -------
+    angle : float
+        The angle which spans the given number of pixels, horizontally
+    
+    Examples
+    --------
+    >>>  deg = pixelsToAngle(55, 75, 47.5, (1920,1080))
+    >>> deg
+    1.0394522117965745
 
-    Output:
-        angle       = The angle spanned (Horizontal) by the number of pixels
     '''
     pixSize     = screenW / float(screenXY[0])
     cmOnScreen  = (pix/2.0) * pixSize
@@ -538,16 +647,37 @@ def pixelsToAngle(pix, screenDist, screenW, screenXY):
 
 def pixelsToAngleWH(pix, screenDist, screenWH, screenXY):
     '''
-    Function which calculates number of pixels on screen to visual degree
-    For both horizontal (with) and vertical (hight)
-    Input:
-        pix         = Tuple, width and height in pixels
-        screenDist  = distance from screen in cm
-        screenWH    = Tuple with screen width and height in cm
-        sceenXY     = tuple with the xy resolution of the screen in pixels
-
-    Output:
-        angle       = Tuple The angle spanned (Horizontal, Vertical) by the number of pixels
+    Calculate the visual angle on the screen in degrees given a number of 
+    pixels.
+    
+    Parameters
+    ----------
+    pix : tuple, floats or ints
+        The pixels to convert in nr of pixels. (horizontal, vertical) 
+    screenDist : float or int
+        Viewing distance in cm
+    screenWH : tuple, floats or ints
+        The width and height of the screen in cm (width, height)
+    screenXY : tuple, ints
+        The resolution of the screen (width - x, height - y), pixels
+        
+    Returns
+    -------
+    degW : float
+        The number of pixels which corresponds to the visual degree in angle,
+        horizontaly (width)
+    degH : float
+        The number of pixels which corresponds to the visual degree in angle,
+        vertically (height)
+    
+    Examples
+    --------
+    >>>  degW, degH = pixelsToAngleWH((55, 55), 75, (47.5, 30), (1920,1080))
+    >>> degW
+    1.0394522117965745
+    >> degH
+    1.1670958930600797
+    
     '''
     pixSizeW = screenWH[0] / float(screenXY[0])
     pixSizeH = screenWH[1] / float(screenXY[1])
@@ -560,14 +690,57 @@ def pixelsToAngleWH(pix, screenDist, screenWH, screenXY):
 
 def makeTrialList(header, conditions, reps = 0, shuffle = True):
     '''
-    Returns a numpy array with a counterbalanced trialList. \n
-    Rows are individual trials while columns are conditions. \n
-    \t header    = List with strings for each column \n
-    \t conds    = List of lists: [[1,2,3], range(1,10)]. \n
-    \t reps     = How many times the counterbalanced trialList should be \
-    repeated. \n
-    \n Empty columns can be used to store trial spesific information \
-    like reaction times, responses etc.
+    Create a counterbalanced trialList in a pandas dataframe.  
+    
+    Parameters
+    ----------
+    header : list of strings
+        Each string representing a column name. The names will be matched 
+        sequentially to the conditions in the conditions parameter. If there 
+        are more headers than conditions, the additional header columns will
+        be filled with a bool - False
+    conditions : list of list
+        Each list should contain the different possibilities of that condition.
+        They will be matched with the header parameter. The column with the
+        first condition will get the string name in the first index of header
+    reps : int
+        The number of times the counterbalanced trialList is to be repeated.
+        0 = no repeats, 1 = 1 repeat etc
+    shuffle : Bool
+        Indicate whether or not the counterbalanced trial list should be 
+        shuffled. If set to True and reps > 0, each counterbalanced list will 
+        be shufled sepperatly before being added to the output dataframe
+        
+    Returns
+    -------
+    trialList : pandas dataframe
+    
+    Examples
+    --------
+    >>> header = ['start', 'end']
+    >>> conditions = [['left', 'right'],['up', 'down']]
+    >>> trialList = makeTrialList(header, conditions)
+    >>> trialList
+       start   end
+    0   left  down
+    1   left    up
+    2  right    up
+    3  right  down
+    
+    >>> header = ['start', 'end', 'response', 'correct']
+    >>> conditions = [['left', 'right'],['up', 'down']]
+    >>> trialList = makeTrialList(header, conditions, 1, False)
+    >>> trialList
+       start   end response correct
+    0   left    up    False   False
+    1  right    up    False   False
+    2   left  down    False   False
+    3  right  down    False   False
+    4   left    up    False   False
+    5  right    up    False   False
+    6   left  down    False   False
+    7  right  down    False   False
+        
     '''
     conds = conditions[:]
     if not any(isinstance(el, list) for el in conds):
@@ -614,37 +787,48 @@ def makeTrialList(header, conditions, reps = 0, shuffle = True):
         warn = '\nmakeTrialList\nPandas not found, returns np.array, not dataframe!'
         warnings.warn(warn, Warning)
     return trialList
-
-def cleanUp(win, tracker):
-    import warnings
-    warn = '\n"cleanUp()" will be removed in future versions\nUse "tracker.cleanUp()" instead!'
-    warnings.warn(warn, Warning)
-    drawText(win, 'Experiment Finished!\n\nTransferring data!', textKey = [0])
-    tracker.stopTrial()
-    if tracker.mode != 'Dummy':
-        time.sleep(0.2)
-        tracker.stopRecording()
-        tracker.cleanUpOld()
-        time.sleep(0.2) # give the tracker time to stop
-        try:
-            os.rename(tracker.EDFDefaultName, tracker.EDFfileName)
-            print '\nEDF file was saved as', tracker.EDFfileName
-        except:
-            print '\nError while renaming EDF file!!'
-            print tracker.EDFfileName, 'Allready exists!!'
-            print 'Manually rename the file!!'
-            print 'Currently saved as', tracker.EDFDefaultName, '!!'
-    if tracker.mouse != False:
-        tracker.mouse.setVisible(1)
-    win.close()
     
-def makeSquareGrid(grid_dimXY = [10, 10], x = 0, y = 0, line_lengthXY = [10, 10]):
+def makeSquareGrid(x=0, y=0, grid_dimXY=[10, 10], line_lengthXY=[10, 10]):
     '''
+    Creates the coordinates for a square grid. 
+    
+    Parameters
+    ----------
+    x : float or int
+        The center x position of the grid
+    y : float or int
+        The center y position of the grid
+    grid_dimXY : list, positive integers
+        The size of the grid, e.g. the number of points in each direction
+    line_lengthXY : list, positive floats or ints
+        The length between each grid intersection, [width, height]
+        
+    Returns
+    -------
+    gridpositions : list of tuples
+        Each tuple contains the (x,y) position of one of the grid intersections
+    
+    Examples
+    --------
+    >>> gridpositions = makeSquareGrid(0,0,[4,4],[10,10])
+    >>> gridpositions
+    [(-15.0, -15.0),
+     (-15.0, -5.0),
+     (-15.0, 5.0),
+     (-15.0, 15.0),
+     (-5.0, -15.0),
+     (-5.0, -5.0),
+     (-5.0, 5.0),
+     (-5.0, 15.0),
+     (5.0, -15.0),
+     (5.0, -5.0),
+     (5.0, 5.0),
+     (5.0, 15.0),
+     (15.0, -15.0),
+     (15.0, -5.0),
+     (15.0, 5.0),
+     (15.0, 15.0)]
 
-    Returns a list of tuples with gridpositions.\n
-    \t Grid shape      = grid_dimXY[0] * grid_dimXY[1] \n
-     \t x,y             = coordinates for the middle of the grid \n
-     \t line_length     = length between each intersection [0] = x,[1] = y \n
     '''
     # Left starting position
     start_x = x - 0.5*grid_dimXY[0]*line_lengthXY[0] + 0.5*line_lengthXY[0]
@@ -661,12 +845,49 @@ def makeSquareGrid(grid_dimXY = [10, 10], x = 0, y = 0, line_lengthXY = [10, 10]
 
 def makeCircleGrid(cx = 0, cy = 0, r = 10, setsize = 8, shuffle =  True):
     '''
-    Returns a list of tuples with circle positions. \n
-    The positions are spaced an equal distance apart. \n
-    \t cx, cy \t    = coordinates for the middle of the circle. \n
-    \t r       \t     = The radius of the circle. \n
-    \t setsize\t = The number of circle positions to create for the circle.\n
-    \t shuffle     \t= shuffle the positions (True, False). \n
+    Returns a list of tuples with positions on an imaginary circle  around
+    a point. All the points are equally spaced around the circle.
+    
+    Parameters
+    ----------
+    cx : float or int
+        X coorindate of the imaginary circle
+    cy : float or int
+        Y coorindate of the imaginary circle
+    r : float or int
+        The radius of the imaginary circle
+    setsize : int, positive
+        The number of positions to be returned
+    shuffle : Bool
+        If True, the positions on the circle will be shuffled, the positions
+        will be equally spaced on the grid, but everytime the function is 
+        called, it will return different points on the imaginary circle\n
+        If False, similair to True, but the positions on the imaginary circle
+        will always be the same
+        
+    Returns
+    -------
+    circPos : list of tuples
+        Each tuple contains the (x,y) position of one of the circle positions
+    
+    Examples
+    --------
+    >>> circPos = makeCircleGrid(0,0, 10, 5, False)
+    >>> circPos
+    [(10.0, 0.0),
+     (3.0901699437494745, 9.5105651629515346),
+     (-8.0901699437494727, 5.8778525229247327),
+     (-8.0901699437494745, -5.87785252292473),
+     (3.0901699437494723, -9.5105651629515364)]
+    
+    >>> circPos = makeCircleGrid(0,0, 10, 5, True)
+    >>> circPos
+    [(-6.0636954133354148, -7.9518298481730012),
+     (5.6888546621411695, -8.2241675951450972),
+     (9.5796009515969587, 2.8690147451978461),
+     (0.23166432460658745, 9.9973162219019844),
+     (-9.4364245250092988, 3.3096664762182675)]
+    
     '''
     # Empty list to hold positions
     circPos = []
@@ -684,8 +905,30 @@ def makeCircleGrid(cx = 0, cy = 0, r = 10, setsize = 8, shuffle =  True):
 
 def topLeftToCenter(pointXY, screenXY, flipY = False):
     '''
-    Function for switching between screen coordinate systems
-    Switches from (0,0) as top left to (0,0) as center
+    Takes a coordinate given in topLeft reference frame and transforms it
+    to center based coordiantes. Switches from (0,0) as top left to 
+    (0,0) as center
+    
+    Parameters
+    ----------
+    pointXY : tuple
+        The topLeft coordinate which is to be transformed
+    screenXY : tuple, ints
+        The (x,y) dimensions of the grid or screen
+    flipY : Bool
+        If True, flips the y coordinates    
+    
+    Returns
+    -------
+    newPos : tuple
+        The (x,y) position in center based coordinates
+    
+    Examples
+    --------
+    >>> newPos = topLeftToCenter((100,100), (1920,1080), False)
+    >>> newPos
+    (-860.0, 440.0)
+    
     '''
     newX = pointXY[0] - (screenXY[0]/2.0)
     newY = (screenXY[1]/2.0) - pointXY[1]
@@ -695,10 +938,30 @@ def topLeftToCenter(pointXY, screenXY, flipY = False):
 
 def centerToTopLeft(pointXY, screenXY, flipY = True):
     '''
-    Function for switching between screen coordinate systems
-    Switches from (0,0) as center to (0,0) as top left
-    Assumes negative y values are up and positve values are down
-    if flip = True, assumes negative y values are down and positive up
+    Takes a coordinate given in a centered reference frame and transforms it
+    to topLeft based coordiantes. Switches from (0,0) as center to 
+    (0,0) as topLeft
+    
+    Parameters
+    ----------
+    pointXY : tuple
+        The center based coordinate which is to be transformed
+    screenXY : tuple, ints
+        The (x,y) dimensions of the grid or screen
+    flipY : Bool
+        If True, flips the y coordinates    
+        
+    Returns
+    -------
+    newPos : tuple
+        The (x,y) position in topLeft based coordinates
+    
+    Examples
+    --------
+    >>> newPos = centerToTopLeft((100,100), (1920,1080), False)
+    >>> newPos
+    (1060, 640)
+
     '''
     newX = pointXY[0] + (screenXY[0]/2)
     if flipY == False:
@@ -709,27 +972,53 @@ def centerToTopLeft(pointXY, screenXY, flipY = True):
 
 def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor = [0,0,0], pxPerDegree = 47, saveFile = False):
     '''
-    Function for determining the accuracy of a spatial signal
-    Flips the screen empty before returning
-    Background has the same color as the window which is supplied.
-    The median values returned for validation accuracy are determined by taking the median
-    of the x and y samples from 300ms after validation dot onset until 2000ms after validation
-    dot onset (median of 1700ms of samples).
-    Samples are collected every 0.5ms the median is determined based on the median of the unique x and y positions
+    Custom calibration validation using psychoLink. It uses the background 
+    color which is set in win. Flips the screen empty before returning.
+    The median values returned for validation accuracy are determined by 
+    taking the median of the x and y samples from 300ms after validation dot 
+    onset until 2000ms after validation dot onset (median of 1700ms of 
+    samples). Samples are collected every 0.5ms the median is determined based 
+    on the median of the unique x and y positions
+    
+    Waits for a space press before starting and before exiting the 
+    feedback screen
+    
+    Parameters
+    ----------
+    win : psychopy window
+        An instance of an active psychopy window on which to draw the text
+    tracker : 
+        An active version of the psychoLink tracker class
+    topLeft : Bool
+        If True, assumes topLeft coordinate system\n
+        If False, assumes centre based coordinates
+    nrPoints : int
+        The number of calibration points to use, allowed input:\n
+        9,13,15 or 25
+    dotColor : list, [R,G,B]
+        The RGB color of the validation dot
+    pxPerDegree : float
+        The number of pixels that equal 1 visual degree
+    saveFile : Bool
+        If True, saves the results to pandas dataframe in working directory\n
+        If False, does not save results
 
-    Inputs:
-        win                 = Psychopy window to draw stimuli on
-        xySamp              = Function to get (x,y) smaple from (xySamp is called: "(x,y) = xySamp()")
-        topLeft             = Whethe rthe xySamp needs to be transformed from top left to centre
-        nrPoints            = The number of points used for validation (9, 13, 15 or 25)
-        dotColor            = RGB color value list to select the dot color
-        pxPerDegree         = Number of pixels per degree of visual angle
-
-    Returns:
-        validationResults   = [3,nrPoints] list,
-                                1st row returns the validation point coordinates (x,y)
-                                2nd row returns (x,y) tuple with the median coordinates of xySamp()
-                                3rd row returns list with the pixel distance between the 1st row and 2nd row
+    Returns
+    -------
+    validationResults : 3 X nrPoints, np.array
+        1st row returns the validation point coordinates (x,y)\n
+        2nd row returns (x,y) tuple with the median coordinates of xySamp()\n
+        3rd row returns list with the pixel distance between the 1st row 
+        and 2nd row
+    
+    Examples
+    --------
+    >>> validationResults = calibrationValidation(win, tracker)
+    >>> validationResults.loc[:,:2] # Only Showing the first three points
+                      0                1                2
+    0  (-765.0, -450.0)  (765.0, -450.0)  (-765.0, 450.0)
+    1  (-760.5, -446.0)  (756.0, -450.0)  (-765.0, 449.0)
+    2            6.0208                9                1
     '''
     # Get required information from the supplied window
     xSize, ySize        = win.size
@@ -935,112 +1224,6 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
     tracker.stopRecording()
     return validationResults
 
-def waitForFixation(win, tracker, fixDot, maxDist = 0, maxWait = 4, nRings=3):
-    '''
-    '''
-    import warnings
-    warn = '\n"waitForFixation()" will be removed in future versions\nUse "tracker.waitForFixation()" instead!'
-    warnings.warn(warn, Warning)
-    incorrectFixationText = 'Either you are not fixating on the target or ' +\
-    'the eyetracker needs to be recalibrated.\n\nPleas notify the experimenter.\n\n'+\
-    'SPACE \t: Try again\n'+\
-    'C \t\t: Re-calibrate\n'+\
-    'V \t\t: Validate\n'+\
-    'Q \t\t: Continue without fixation control'
-    
-    # get refreshRate of screen
-    hz = win.getActualFrameRate()    
-    tracker.startRecording()
-    correctFixation = False
-    trStart = time.time()
-    if np.sum(fixDot.fillColor == win.color) == 3:
-        lineColor = fixDot.lineColor
-    else:
-        lineColor = fixDot.fillColor
-    
-    # Detrmine the moving ring properties
-    if  maxDist == 0:
-        maxDist = tracker.pxPerDeg*2
-    perimMaxRad = (maxDist)
-    rad = perimMaxRad
-    tracker.drawFixBoundry(fixDot.pos[0], fixDot.pos[1], rad)
-    radList= []
-    for i in range(int(hz/0.5)):
-        rad = rad-(perimMaxRad/(hz/0.5))*(2-(rad/perimMaxRad))
-        if rad >= 0:
-            radList.append(rad)
-    radList = np.array(radList)
-    rIdx = [np.floor((len(radList)/nRings)*(i+1))-1 for i in range(nRings)]
-    
-    # Make the circ stim    
-    concCirc = visual.Circle(win,radius=perimMaxRad,fillColorSpace='rgb255',\
-                    lineColorSpace='rgb255',lineColor=lineColor,\
-                    fillColor=win.color,edges=50,pos=fixDot.pos)
-    
-    while (time.time() - trStart) < maxWait:
-        if tracker.mode != 'Dummy':
-            fixation = tracker.getCurSamp()
-            whatToDo = getKey(['c'], waitForKey = False)
-            distance = distBetweenPoints(fixation,fixDot.pos)
-            if distance < maxDist:
-                correctFixation = True
-                break
-            if whatToDo[0] == 'c':
-                break
-        else:
-            avgXY = tracker.getCurSamp()
-            distance = distBetweenPoints(avgXY,fixDot.pos)
-            if distance < maxDist:
-                correctFixation = True
-                break
-                
-        # Draw animated fix boundry                
-        if time.time() - trStart > 1:
-            # Get the stim radius
-            radList = np.roll(radList,-1)
-            rads = [radList[int(i)] for i in rIdx]
-            # Draw the larger circle first
-            for rad in np.sort(rads)[::-1]:
-                concCirc.radius = rad
-                concCirc.draw()
-                if nRings == 1 and rad == np.min(radList):
-                    if np.sum(concCirc.lineColor == win.color)==3:
-                        concCirc.lineColor = fixDot.fillColor
-                    elif np.sum(concCirc.lineColor == fixDot.fillColor) ==3:
-                        concCirc.lineColor = win.color
-            
-        fixDot.draw()            
-        win.flip()
-        
-        if checkAbort():
-            break
-    
-    # only draw fixDot
-    fixDot.draw()
-    win.flip()
-    
-    # If no fixation detected
-    if correctFixation == False:
-        drawText(win, incorrectFixationText, textKey = [0])
-        whatToDo = getKey(['c', 'space', 'q', 'v'])
-        if whatToDo[0] == 'c':
-            tracker.calibrate()
-            correctFixation = waitForFixation(win, tracker, fixDot, maxDist, maxWait, nRings)
-        elif whatToDo[0] == 'space':
-            correctFixation     = waitForFixation(win, tracker, fixDot, maxDist, maxWait, nRings)
-        elif whatToDo[0] == 'q' or whatToDo[0] == 'escape':
-            correctFixation = False
-        elif whatToDo[0] == 'v':
-            calibrationValidation(win,\
-                                  tracker, \
-                                  nrPoints        = 9, \
-                                  dotColor        = tracker.foreCol,\
-                                  pxPerDegree     = tracker.pxPerDeg,\
-                                  saveFile        = False)
-            correctFixation = waitForFixation(win, tracker, fixDot, maxDist, maxWait, nRings)
-    tracker.stopRecording()
-    return correctFixation
-
 #==============================================================================
 # Port code class
 #==============================================================================
@@ -1053,12 +1236,12 @@ class sendPortCode():
 
     Never send codes directly after one another, they will be skipped!!
     Wait for the resetInterval + 2ms between codes
+    
+    Is automatically initiated when using the psychoLink eyetracking class.
+    Initiates to: tracker.PPort
 
     '''
-    def __init__(self, resetValue=0, resetInterval = 0.001, port = 0x378):
-        #self.resetValue     = resetValue
-        #self.resetInterval  = resetInterval
-        #self.port           = port
+    def __init__(self):
         self.setSettings()
         try:
             from ctypes import windll
@@ -1074,39 +1257,57 @@ class sendPortCode():
 
     def setSettings(self, resetValue=0, resetInterval = 0.001, port = 0x378):
         '''
-        One line description
+        Sets the settings for sendPort code class
         
         Parameters
         ----------
-            
-        Returns
-        -------
+        resetValue : int: 0-255
+            The value to which the parallel port will be reset when using
+            "sendCodeAndReset"
+        resetInterval : float, positive
+            The time to block code execution after setting the parallel port 
+            before resetting the parallel port, when using "sendCodeAndReset".
+            Time interval is in seconds
+        port : hexidecimal
+            The parallel port adress
         
         Examples
         --------
-        >>> 
-        >>> 
+        Initiate the class and set the resetvalue to 10 and wait time to 
+        10ms
+        >>> PPort = sendPortCode()
+        >>> PPort.setSettings(10, 0.01, 0x378)
         '''
         self.resetValue     = resetValue
         self.resetInterval  = resetInterval
         self.port           = port
         
-    def sendCodeAndReset(self, code, resetInterval = False):
+    def sendCodeAndReset(self, code, resetInterval = 0):
         '''
-        One line description
+        Set the parallel port code. Then waits for a set time and then 
+        finaly resets the parallelport.
+        
+        Prints to console if it is unable to connect with the parallel port
         
         Parameters
         ----------
-            
-        Returns
-        -------
+        code : int, 0-255
+            The value to set the parallel port
+        resetInterval : float or int, positive
+            If set to 0, then the resetinterval set in "setSettings" is used.
+            If not 0, waits for the given float or int in seconds
         
         Examples
         --------
-        >>> 
-        >>> 
+        Initiates and sends code (output is dummy mode)\n
+        Resets the portcode after approx 10ms
+        >>> PPort = sendPortCode()
+        >>> PPort.sendCodeAndReset(200, 0.01)
+        portCode: 200
+        portreset: 0
+        PortOpen for 9.99999046326ms
         '''
-        if resetInterval == False:
+        if resetInterval == 0:
             waitTime = self.resetInterval
         else:
             waitTime = resetInterval
@@ -1137,18 +1338,20 @@ class sendPortCode():
 
     def sendCode(self, code):
         '''
-        One line description
+        Set the parallel port code. 
+        Prints to console if it is unable to connect with the parallel port
         
         Parameters
         ----------
+        code : int, 0-255
+            The value to set the parallel port
             
-        Returns
-        -------
-        
         Examples
         --------
-        >>> 
-        >>> 
+        Initiates and sends code (output is dummy mode)
+        >>> PPort = sendPortCode()
+        >>> PPort.sendCode(200)
+        portCode: 200
         '''
         # Send port to console
         if self.dummy == True:

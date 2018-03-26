@@ -28,12 +28,7 @@ import scipy
 from scipy import misc
 import math
 
-# =============================================================================
-# To Do:
-# =============================================================================#
-# 1:    Run an experiment and parse the data to check that everything is 
-#       logged correctly
-#
+
 # =============================================================================
 # Print instructions
 # =============================================================================
@@ -137,25 +132,200 @@ def aaPrintbasicInstructions():
     tracker.cleanUp()\n
     '''
     print instructions
+    
+#==============================================================================
+# Numpy doc formating example    
+#==============================================================================
+'''
+Compute the weighted average along the specified axis.
+
+Parameters
+----------
+a : array_like
+    Array containing data to be averaged. If `a` is not an array, a
+    conversion is attempted.
+axis : int, optional
+    Axis along which to average `a`. If `None`, averaging is done over
+    the flattened array.
+weights : array_like, optional
+    An array of weights associated with the values in `a`. Each value in
+    `a` contributes to the average according to its associated weight.
+    The weights array can either be 1-D (in which case its length must be
+    the size of `a` along the given axis) or of the same shape as `a`.
+    If `weights=None`, then all data in `a` are assumed to have a
+    weight equal to one.
+returned : bool, optional
+    Default is `False`. If `True`, the tuple (`average`, `sum_of_weights`)
+    is returned, otherwise only the average is returned.
+    If `weights=None`, `sum_of_weights` is equivalent to the number of
+    elements over which the average is taken.
+
+
+Returns
+-------
+average, [sum_of_weights] : array_type or double
+    Return the average along the specified axis. When returned is `True`,
+    return a tuple with the average as the first element and the sum
+    of the weights as the second element. The return type is `Float`
+    if `a` is of integer type, otherwise it is of the same type as `a`.
+    `sum_of_weights` is of the same type as `average`.
+
+
+Examples
+--------
+>>> data = range(1,5)
+>>> data
+[1, 2, 3, 4]
+>>> np.average(data)
+2.5
+>>> np.average(range(1,11), weights=range(10,0,-1))
+4.0
+
+>>> data = np.arange(6).reshape((3,2))
+>>> data
+array([[0, 1],
+       [2, 3],
+       [4, 5]])
+>>> np.average(data, axis=1, weights=[1./4, 3./4])
+array([ 0.75,  2.75,  4.75])
+>>> np.average(data, weights=[1./4, 3./4])
+Traceback (most recent call last):
+...
+TypeError: Axis must be specified when shapes of a and weights differ.
+'''
+###
+# In other words
+'''
+One line description
+
+Parameters
+----------
+par1 : type
+    description
+par2 : type
+    description
+    
+Returns
+-------
+returnData : type
+    description
+    
+
+Examples
+--------
+>>> how to use
+>>> output
+'''
+
+
+# Copy this for easy insertion
+'''
+One line description
+
+Parameters
+----------
+    
+Returns
+-------
+
+Examples
+--------
+>>> 
+>>> 
+'''
+
+
+
 # =============================================================================
 # Required functions
 # =============================================================================
-def distBetweenPoints(point1, point2):
+def distBetweenPoints(p1, p2):
     '''
+    Calculates the distance between two points in a grid
+    
+    Parameters
+    ----------
+    p1 : tuple
+        A tuple containing the (x,y) coordinates of the first point
+    p2 : tuple
+        A tuple containing the (x,y) coordinates of the second point    
+        
+    Returns
+    -------
+    dist : float
+        The euclidian distance between the two points, the function assumes
+        that the y-scalying and x-scaling are the same
+    
+    Examples
+    --------
+    >>> dist = distBetweenPoints((0,0), (10,10))
+    >>> dist
+    14.142135623730951
     '''
-    dist = np.sqrt( (point1[0]-point2[0])**2 + (point1[1] - point2[1])**2 )
+    dist = np.sqrt( (p1[0]-p2[0])**2 + (p1[1] - p2[1])**2 )
     return dist
 
 def determineAngle(p1, p2):
     '''
+    Determines the angle in degrees between two points
+    
+    Parameters
+    ----------
+    p1 : tuple
+        A tuple containing the (x,y) coordinates of the first point
+    p1 : tuple
+        A tuple containing the (x,y) coordinates of the second point  
+        
+    Returns
+    -------
+    degree : float
+        The angle between two points
+        Returns values between -180 and 180. 
+        Positive values reflect the top half of a circle.
+        Negative values reflect the bottom half of a circle.
+            
+    Examples
+    --------
+    >>> degree = determineAngle((0,0),(10,10))
+    >>> degree
+    45.0
+    
+    >>> degree = determineAngle((0,0),(-10,-10))
+    >>> degree
+    -135.0
+    
     '''
     normx = ((p2[0] - p1[0]))
     normy = ((p2[1] - p1[1]))
     narcdeg = math.atan2(normy, normx)
-    sdegree = ((narcdeg * 180)/math.pi)
-    return sdegree
+    degree = ((narcdeg * 180)/math.pi)
+    return degree
 
 def isNumber(s):
+    '''
+    Tests whether an input is a number
+    
+    Parameters
+    ----------
+    s : string or a number
+        Any string or number which needs to be typechecked as a number
+        
+    Returns
+    -------
+    isNum : Bool
+        Returns True if 's' can be converted to a float
+        Returns False if converting 's' results in an error
+    
+    Examples
+    --------
+    >>> isNum = isNumber('5')
+    >>> isNum
+    True
+    
+    >>> isNum = isNumber('s')
+    >>> isNum
+    False
+    '''
     try:
         float(s)
         return True
@@ -164,7 +334,37 @@ def isNumber(s):
     
 def circLinePos(cx = 0, cy = 0, r = 10, setsize = 50):
     '''
-    Returns, x1, y11, x2, y2, to make a circle with lines \n
+    Returns a list of 4 arrays which contain the line start and endpoints
+    from which a circle can be drawn
+    
+    Parameters
+    ----------
+    cx : int or float
+        The center X coordinate of the circle  
+    cy : int or float
+        The center Y coordinate of the circle
+    r : int or float
+        The radius of the circle
+    setsize : int
+        The number of lines to use for drawing the circle
+        
+    Returns
+    -------
+    x1,y1,x2,y2 : np.arrays with floats
+        x1 = The start x position of each line\n
+        y1 = The start y position of each line\n
+        x2 = The end x position of each line\n
+        y2 = the end y position of each line
+    
+    Examples
+    --------
+    >>> x1,y1,x2,y2 = circLinePos(0, 0, 10, 5)
+    >>> x1,y1,x2,y2
+    (array([ 10.        ,   3.09016994,  -8.09016994,  -8.09016994,   3.09016994]),
+     array([ 0.        ,  9.51056516,  5.87785252, -5.87785252, -9.51056516]),
+     array([  3.09016994,  10.        ,   3.09016994,  -8.09016994,  -8.09016994]),
+     array([-9.51056516,  0.        ,  9.51056516,  5.87785252, -5.87785252]))
+    
     '''
     # Empty list to hold positions
     circPos = []
@@ -180,7 +380,21 @@ def circLinePos(cx = 0, cy = 0, r = 10, setsize = 50):
     return arr1[:,0], arr1[:,1], arr2[:,0], arr2[:,1]
 
 def getKey(allowedKeys = ['left', 'right'], waitForKey = True, timeOut = 0):
-    """ """
+    '''
+    Gets a keypress by using the event.waitKeys or event.getKeys from
+    the psychopy module
+    
+    Parameters
+    ----------
+        
+    Returns
+    -------
+    
+    Examples
+    --------
+    >>> 
+    >>> 
+    '''
     if waitForKey:
         while True:
             # Get key
@@ -212,6 +426,18 @@ def drawText(win,\
             textSize     = 25,\
             textColor = [0, 0, 0]):
     '''
+    One line description
+    
+    Parameters
+    ----------
+        
+    Returns
+    -------
+    
+    Examples
+    --------
+    >>> 
+    >>> 
     '''
     
     if np.sum(np.array(textColor) == 0) ==3 and np.sum(win.color < 100) == 3:
@@ -232,7 +458,20 @@ def drawText(win,\
     return key[0], rt
 
 def checkAbort():
-    """ """
+    '''
+    One line description
+    
+    Parameters
+    ----------
+        
+    Returns
+    -------
+    
+    Examples
+    --------
+    >>> 
+    >>> 
+    '''
     keys = event.getKeys(['escape'])
     if keys:
         if 'escape' in keys:
@@ -377,8 +616,6 @@ def makeTrialList(header, conditions, reps = 0, shuffle = True):
     return trialList
 
 def cleanUp(win, tracker):
-    '''
-    '''
     import warnings
     warn = '\n"cleanUp()" will be removed in future versions\nUse "tracker.cleanUp()" instead!'
     warnings.warn(warn, Warning)
@@ -836,11 +1073,39 @@ class sendPortCode():
             self.io             = False
 
     def setSettings(self, resetValue=0, resetInterval = 0.001, port = 0x378):
+        '''
+        One line description
+        
+        Parameters
+        ----------
+            
+        Returns
+        -------
+        
+        Examples
+        --------
+        >>> 
+        >>> 
+        '''
         self.resetValue     = resetValue
         self.resetInterval  = resetInterval
         self.port           = port
         
     def sendCodeAndReset(self, code, resetInterval = False):
+        '''
+        One line description
+        
+        Parameters
+        ----------
+            
+        Returns
+        -------
+        
+        Examples
+        --------
+        >>> 
+        >>> 
+        '''
         if resetInterval == False:
             waitTime = self.resetInterval
         else:
@@ -871,6 +1136,20 @@ class sendPortCode():
                     print 'Failed to reset trigger!'
 
     def sendCode(self, code):
+        '''
+        One line description
+        
+        Parameters
+        ----------
+            
+        Returns
+        -------
+        
+        Examples
+        --------
+        >>> 
+        >>> 
+        '''
         # Send port to console
         if self.dummy == True:
             print 'portCode: ' + str(int(code))
@@ -1011,7 +1290,20 @@ class eyeLink:
                 incSound    = "on",\
                 caltype     = 'HV9',\
                 calTime     = 1000):
+        '''
+        One line description
         
+        Parameters
+        ----------
+            
+        Returns
+        -------
+        
+        Examples
+        --------
+        >>> 
+        >>> 
+        '''
         # Set the options
         if np.sum(np.array(backCol) < 100) == 3 and np.sum(np.array(foreCol) == 0) ==3:
             foreCol = (255,255,255)
@@ -1476,7 +1768,20 @@ class eyeLink:
     
     # Check abort
     def checkAbort(self):
-        """ """
+        '''
+        One line description
+        
+        Parameters
+        ----------
+            
+        Returns
+        -------
+        
+        Examples
+        --------
+        >>> 
+        >>> 
+        '''
         keys = event.getKeys(['escape'])
         if keys:
             if 'escape' in keys:

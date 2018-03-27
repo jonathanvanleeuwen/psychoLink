@@ -132,28 +132,6 @@ def aaPrintbasicInstructions():
     tracker.cleanUp()\n
     '''
     print instructions
-    
-#==============================================================================
-# Numpy doc formating example    
-#==============================================================================
-# Copy this for easy insertion
-'''
-One line description
-
-Parameters
-----------
-    
-Returns
--------
-
-Examples
---------
->>> 
->>> 
-
-'''
-
-
 
 # =============================================================================
 # Required functions
@@ -473,7 +451,7 @@ def angleToPixels(angle, screenDist, screenW, screenXY):
     
     Examples
     --------
-    >>>  pix = angleToPixels(1, 75, 47.5, (1920,1080))
+    >>> pix = angleToPixels(1, 75, 47.5, (1920,1080))
     >>> pix
     52.912377341863817
     '''
@@ -511,7 +489,7 @@ def angleToPixelsWH(angle, screenDist, screenWH, screenXY):
     
     Examples
     --------
-    >>>  pixW, pixH = angleToPixelsWH(1, 75, (47.5, 30), (1920,1080))
+    >>> pixW, pixH = angleToPixelsWH(1, 75, (47.5, 30), (1920,1080))
     >>> pixW
     52.912377341863817
     >> pixH
@@ -552,7 +530,7 @@ def pixelsToAngle(pix, screenDist, screenW, screenXY):
     
     Examples
     --------
-    >>>  deg = pixelsToAngle(55, 75, 47.5, (1920,1080))
+    >>> deg = pixelsToAngle(55, 75, 47.5, (1920,1080))
     >>> deg
     1.0394522117965745
 
@@ -590,7 +568,7 @@ def pixelsToAngleWH(pix, screenDist, screenWH, screenXY):
     
     Examples
     --------
-    >>>  degW, degH = pixelsToAngleWH((55, 55), 75, (47.5, 30), (1920,1080))
+    >>> degW, degH = pixelsToAngleWH((55, 55), 75, (47.5, 30), (1920,1080))
     >>> degW
     1.0394522117965745
     >> degH
@@ -2113,7 +2091,7 @@ class eyeLink:
             promting the user about recalibration. In seconds. 
         nRings : int
             The number of rings to use for constricting circles
-        fixTime: int
+        fixTime : int
             The duration of contiguous samples within the boundry that are
             required for succesful fixation.
             

@@ -2366,20 +2366,32 @@ def giveFileName(windowName = 'Please enter Filename'):
                 
 class getParticipantInfo(tk.Tk):
     '''
-    One line description
+    This class is usefull for getting participant and session information. 
+    Use this at the start of each experiment to get the participant number,
+    date of birth etc
     
-    Parameters
-    ----------
-        
     Returns
     -------
+    info.info : OrderedDict
+        A dictionary with participant information
     
     Examples
     --------
-    >>> 
-    >>> 
-
-    Class for getting participant information
+    >>> import psychoLink as pl
+    >>> info = pl.getParticipantInfo() # initiate
+    >>> info.classRun() # Run
+    >>> ppInfo = info.info #Save information to dict
+    >>> ppInfo
+    OrderedDict([('ppNr', 1),
+                 ('sessionNr', 1),
+                 ('ppGender', 'Male'),
+                 ('ppHandedness', 'Right'),
+                 ('ppOccCorrection', 'No'),
+                 ('ppLeftEye', 0.0),
+                 ('ppRightEye', 0.0),
+                 ('ppBirthDay', '1/1/1960'),
+                 ('curDate', '27/03/2018'),
+                 ('saveAs', 'PP1S1')])
     '''
     def __init__(self):
         tk.Tk.__init__(self)
@@ -2544,7 +2556,8 @@ class getParticipantInfo(tk.Tk):
         tk.Tk.mainloop(self)
 
     def saveInfo(self):
-        par = {}
+        from collections import OrderedDict
+        par = OrderedDict()
         par['ppNr'] = self.ppNr
         par['sessionNr'] = self.sessionNr
         par['ppGender'] = self.gender

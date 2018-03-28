@@ -1282,19 +1282,30 @@ class eyeLink:
     
     All eyelink API code can be accessed using tracker.pylink
     
+    To initiate the eyetracker the window units has to be 
+    set to pix
+    
     Parameters
     ----------
     win : psychopy window
         An instance of an active psychopy window on which to draw the text
-    address : string
-        The network address that is connected to the eyelink. By default
-        this should be "100.1.1.1"
     fileName : string
         The name of the eyedata file. Remeber that it should always end
         with .EDF
     fileDest : string 
         The directory to save the eyedata file. Defaults to False. If False
         the data will be saved in the working directory
+    screenWidth : float or int
+        The with of the screen, in cm. Only works if the psychopy window
+        was initiated without a psychopy monitor object, else uses the psychopy 
+        monitor values.
+    screenDist : float or int
+        The distance between the participant and the screen, in cm. Only 
+        works if the psychopy window was initiated without a psychopy 
+        monitor object, else uses the psychopy monitor values.
+    address : string
+        The network address that is connected to the eyelink. By default
+        this should be "100.1.1.1"
     
     Returns
     -------
@@ -1307,21 +1318,31 @@ class eyeLink:
     Examples
     --------
     The examples assume that the psychoLink module is imported from a 
-    different script 
+    different script. To initiate the eyetracker the window units has to be 
+    set to pix
     
     >>> import psychoLink as pl
     >>> from psychopy import visual, monitors
     >>> mon = monitors.Monitor('testMonitor',width=47,distance=75)
     >>> win = visual.Window(units='pix',monitor=mon,size=(1680,1050),
-    colorSpace='rgb255',color = (255,255,255), screen = 1, fullscr=False)
+    colorSpace='rgb255',color = (255,255,255), screen = 0, fullscr=False)
     >>> tracker = pl.eyeLink(win, fileName='someName.EDF', fileDest = "C:\Users\User1\Desktop\\")
+    
+    The absolute minimum of inputs required to initiate the eyetracker. Keep in 
+    mind that to get correct distances etc, the values for distance and width
+    should be set for each eyetarcker setup, but it is not required. It is not
+    a good idea to only use the default settings
+    
+    >>> import psychoLink as pl
+    >>> from psychopy import visual
+    >>> win = visual.Window(units='pix')
+    >>> tracker = pl.eyeLink(win)
     '''
-
     #=========================================================================
     # Initiate Eyetracker or use mouse if no eyetracker found
     #=========================================================================
     def __init__(self, win, fileName='XX.EDF', fileDest=False, 
-                 address="100.1.1.1", screenWidth=47.5, screenDist = 75):
+                 screenWidth=47.5, screenDist=75, address="100.1.1.1"):
         '''
         Initiates the eyetracker. If no eyetracker is found or pylink is not
         installed, it enteres dummy mode. Is called when the eyeLink class
@@ -1340,14 +1361,16 @@ class eyeLink:
             the data will be saved in the working directory
         screenWidth : float or int
             The with of the screen, in cm. Only works if the psychopy window
-            was initiated without a psychopy monitor object
+            was initiated without a psychopy monitor object, else uses the 
+            psychopy monitor values.
         screenDist : float or int
             The distance between the participant and the screen, in cm. Only 
             works if the psychopy window was initiated without a psychopy 
-            monitor object
+            monitor object, else uses the psychopy monitor values.
         address : string
             The network address that is connected to the eyelink. By default
             this should be "100.1.1.1"
+            
         Examples
         --------
         The examples assume that the psychoLink module is imported from a 
@@ -1404,13 +1427,12 @@ class eyeLink:
         self.setEyeLinkSettings(screenW = win.size[0], screenH = win.size[1])
         self.setCalibrationOptions(backCol = win.color)
         try: 
-            screenDist = win.scrDistCM
-            screenWidth = win.scrWidthCM
-            self.pxPerDeg = angleToPixels(1, screenDist, screenWidth, win.size)
+            screenD = win.scrDistCM
+            screenW = win.scrWidthCM
+            self.pxPerDeg = angleToPixels(1, screenD, screenW, win.size)
         except:
             self.pxPerDeg = angleToPixels(1, screenDist, screenWidth, win.size)
-        #self.pxPerDeg = angleToPixels(1, win.scrDistCM, win.scrWidthCM, win.size)
-        
+
     #=========================================================================
     # Set settings for eyetracker
     #=========================================================================

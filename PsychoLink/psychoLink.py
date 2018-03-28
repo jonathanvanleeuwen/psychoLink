@@ -1344,45 +1344,7 @@ class eyeLink:
     def __init__(self, win, fileName='XX.EDF', fileDest=False, 
                  screenWidth=47.5, screenDist=75, address="100.1.1.1"):
         '''
-        Initiates the eyetracker. If no eyetracker is found or pylink is not
-        installed, it enteres dummy mode. Is called when the eyeLink class
-        is iniated. It always prints whether or not the eyetracker was 
-        initiated or if dummy mode was initiated. 
-        
-        Parameters
-        ----------
-        win : psychopy window
-            An instance of an active psychopy window on which to draw the text
-        fileName : string
-            The name of the eyedata file. Remeber that it should always end
-            with .EDF
-        fileDest : string 
-            The directory to save the eyedata file. Defaults to False. If False
-            the data will be saved in the working directory
-        screenWidth : float or int
-            The with of the screen, in cm. Only works if the psychopy window
-            was initiated without a psychopy monitor object, else uses the 
-            psychopy monitor values.
-        screenDist : float or int
-            The distance between the participant and the screen, in cm. Only 
-            works if the psychopy window was initiated without a psychopy 
-            monitor object, else uses the psychopy monitor values.
-        address : string
-            The network address that is connected to the eyelink. By default
-            this should be "100.1.1.1"
-            
-        Examples
-        --------
-        The examples assume that the psychoLink module is imported from a 
-        different script 
-        
-        >>> import psychoLink as pl
-        >>> from psychopy import visual, monitors
-        >>> mon = monitors.Monitor('testMonitor',width=47,distance=75)
-        >>> win = visual.Window(units='pix',monitor=mon,size=(1680,1050),
-        colorSpace='rgb255',color = (255,255,255), screen = 1, fullscr=False)
-        >>> tracker = pl.eyeLink(win, fileName='someName.EDF', fileDest = "C:\Users\User1\Desktop\\")
-        
+        see pl.tracker documentation
         '''
         self.win = win
         address = str(address)

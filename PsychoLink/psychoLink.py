@@ -32,106 +32,106 @@ import math
 # =============================================================================
 # Print instructions
 # =============================================================================
-def aaPrintbasicInstructions():
-    '''
-    # =============================================================================\n
-    # Important psycholink and tracker functions (everything is in pixel values)\n
-    # \n
-    # These are the most important functions when using psychoLink for \n
-    # running and experiment    \n
-    #    \n
-    # It has additional functions, check the psycholink.py file or\n
-    # type : 'tracker.' and then press "tab"\n
-    # type : 'pl.' and then press "tab" \n
-    # This should give you the additional options \n
-    #    \n
-    # =============================================================================\n
-    # Initiate eyetracker\n
-    tracker = pl.eyeLink(win) # win = psychopy window\n
-    # Optional, set specific options for calibration\n
-    tracker.setCalibrationOptions()\n
-    # Start calibration\n
-    tracker.calibrate()\n
-    # Start eyetracker before each trial, optional you can add trial number\n
-    tracker.startTrial()\n
-    # Wait for fixation on fixation dot, additional options to make things pretty, \n
-    # this part waits for any sample within boundry, if not fixation returns to calibration window\n
-    tracker.waitForFixation(fixDot)\n
-    # Draw info about fixation boundries on the eylink computer screen (square)\n
-    tracker.drawFixBoundry(fixX,fixY, maxFixDist)\n
-    tracker.drawFixBoundry(targX,targY, maxTargHitDist)\n
-    # Draw trial info on eyelink computer screen\n
-    tracker.drawTrialInfo(blockType,tNr,nCor,nIncor,trLeft)\n
-    # Get current eyePosition\n
-    tracker.getCurSamp()\n
-    # Wait for end of saccade, specify how long to wait for the end of a saccade\n
-    tracker.getEsacc(blockDuration)\n
-    # Wait for a fixation to start (this waits for an actual fixation event, and \n
-    # does not draw circles and reset to calibration)\n
-    tracker.waitForFixStart(fixXY)\n
-    # Get the euclidian distance between two points, e.g. gaze and fixation\n
-    pl.distBetweenPoints(point1XY, point2XY)\n
-    # Send a message to the EDF file (usefull for saving data, automatically waits 2 ms after sending info)\n
-    tracker.sendMsg('var '+str(variable))\n
-    win.callOnFlip(tracker.sendMsg, 'var '+str(variable)) # if message should be simultaniously with flip\n
-    # Check if the escape button has been pressed\n
-    pl.checkAbort()\n
-    tracker.checkAbort() # This also draws "exit?"\n
-    # Stop eyetracker, after each trial\n
-    tracker.stopTrial()\n
-    # After the experiment or when the experiment is aborted (transfers data and closes graphics)\n
-    tracker.cleanUp(win, tracker)\n
-    '''
-    instructions = '''
-    # =============================================================================\n
-    # Important psycholink and tracker functions (everything is in pixel values)\n
-    # \n
-    # These are the most important functions when using psychoLink for \n
-    # running and experiment    \n
-    #    \n
-    # It has additional functions, check the psycholink.py file or\n
-    # type : 'tracker.' and then press "tab"\n
-    # type : 'pl.' and then press "tab" \n
-    # This should give you the additional options \n
-    #    \n
-    # =============================================================================\n
-    # Initiate eyetracker\n
-    tracker = pl.eyeLink(win) # win = psychopy window\n
-    # Optional, set specific options for calibration\n
-    tracker.setCalibrationOptions()\n
-    # Start calibration\n
-    tracker.calibrate()\n
-    # Start eyetracker before each trial, optional you can add trial number\n
-    tracker.startTrial()\n
-    # Wait for fixation on fixation dot, additional options to make things pretty, \n
-    # this part waits for any sample within boundry, if not fixation returns to calibration window\n
-    tracker.waitForFixation(fixDot)\n
-    # Draw info about fixation boundries on the eylink computer screen (square)\n
-    tracker.drawFixBoundry(fixX,fixY, maxFixDist)\n
-    tracker.drawFixBoundry(targX,targY, maxTargHitDist)\n
-    # Draw trial info on eyelink computer screen\n
-    tracker.drawTrialInfo(blockType,tNr,nCor,nIncor,trLeft)\n
-    # Get current eyePosition\n
-    tracker.getCurSamp()\n
-    # Wait for end of saccade, specify how long to wait for the end of a saccade\n
-    tracker.getEsacc(blockDuration)\n
-    # Wait for a fixation to start (this waits for an actual fixation event, and \n
-    # does not draw circles and reset to calibration)\n
-    tracker.waitForFixStart(fixXY)\n
-    # Get the euclidian distance between two points, e.g. gaze and fixation\n
-    pl.distBetweenPoints(point1XY, point2XY)\n
-    # Send a message to the EDF file (usefull for saving data, automatically waits 2 ms after sending info)\n
-    tracker.sendMsg('var '+str(variable))\n
-    win.callOnFlip(tracker.sendMsg, 'var '+str(variable)) # if message should be simultaniously with flip\n
-    # Check if the escape button has been pressed\n
-    pl.checkAbort()\n
-    tracker.checkAbort() # This also draws "exit?"\n
-    # Stop eyetracker, after each trial\n
-    tracker.stopTrial()\n
-    # After the experiment or when the experiment is aborted (transfers data and closes graphics)\n
-    tracker.cleanUp()\n
-    '''
-    print instructions
+#def aaPrintbasicInstructions():
+'''
+# =============================================================================\n
+# Important psycholink and tracker functions (everything is in pixel values)\n
+# \n
+# These are the most important functions when using psychoLink for \n
+# running and experiment    \n
+#    \n
+# It has additional functions, check the psycholink.py file or\n
+# type : 'tracker.' and then press "tab"\n
+# type : 'pl.' and then press "tab" \n
+# This should give you the additional options \n
+#    \n
+# =============================================================================\n
+# Initiate eyetracker\n
+tracker = pl.eyeLink(win) # win = psychopy window\n
+# Optional, set specific options for calibration\n
+tracker.setCalibrationOptions()\n
+# Start calibration\n
+tracker.calibrate()\n
+# Start eyetracker before each trial, optional you can add trial number\n
+tracker.startTrial()\n
+# Wait for fixation on fixation dot, additional options to make things pretty, \n
+# this part waits for any sample within boundry, if not fixation returns to calibration window\n
+tracker.waitForFixation(fixDot)\n
+# Draw info about fixation boundries on the eylink computer screen (square)\n
+tracker.drawFixBoundry(fixX,fixY, maxFixDist)\n
+tracker.drawFixBoundry(targX,targY, maxTargHitDist)\n
+# Draw trial info on eyelink computer screen\n
+tracker.drawTrialInfo(blockType,tNr,nCor,nIncor,trLeft)\n
+# Get current eyePosition\n
+tracker.getCurSamp()\n
+# Wait for end of saccade, specify how long to wait for the end of a saccade\n
+tracker.getEsacc(blockDuration)\n
+# Wait for a fixation to start (this waits for an actual fixation event, and \n
+# does not draw circles and reset to calibration)\n
+tracker.waitForFixStart(fixXY)\n
+# Get the euclidian distance between two points, e.g. gaze and fixation\n
+pl.distBetweenPoints(point1XY, point2XY)\n
+# Send a message to the EDF file (usefull for saving data, automatically waits 2 ms after sending info)\n
+tracker.sendMsg('var '+str(variable))\n
+win.callOnFlip(tracker.sendMsg, 'var '+str(variable)) # if message should be simultaniously with flip\n
+# Check if the escape button has been pressed\n
+pl.checkAbort()\n
+tracker.checkAbort() # This also draws "exit?"\n
+# Stop eyetracker, after each trial\n
+tracker.stopTrial()\n
+# After the experiment or when the experiment is aborted (transfers data and closes graphics)\n
+tracker.cleanUp(win, tracker)\n
+'''
+instructions = '''
+# =============================================================================\n
+# Important psycholink and tracker functions (everything is in pixel values)\n
+# \n
+# These are the most important functions when using psychoLink for \n
+# running and experiment    \n
+#    \n
+# It has additional functions, check the psycholink.py file or\n
+# type : 'tracker.' and then press "tab"\n
+# type : 'pl.' and then press "tab" \n
+# This should give you the additional options \n
+#    \n
+# =============================================================================\n
+# Initiate eyetracker\n
+tracker = pl.eyeLink(win) # win = psychopy window\n
+# Optional, set specific options for calibration\n
+tracker.setCalibrationOptions()\n
+# Start calibration\n
+tracker.calibrate()\n
+# Start eyetracker before each trial, optional you can add trial number\n
+tracker.startTrial()\n
+# Wait for fixation on fixation dot, additional options to make things pretty, \n
+# this part waits for any sample within boundry, if not fixation returns to calibration window\n
+tracker.waitForFixation(fixDot)\n
+# Draw info about fixation boundries on the eylink computer screen (square)\n
+tracker.drawFixBoundry(fixX,fixY, maxFixDist)\n
+tracker.drawFixBoundry(targX,targY, maxTargHitDist)\n
+# Draw trial info on eyelink computer screen\n
+tracker.drawTrialInfo(blockType,tNr,nCor,nIncor,trLeft)\n
+# Get current eyePosition\n
+tracker.getCurSamp()\n
+# Wait for end of saccade, specify how long to wait for the end of a saccade\n
+tracker.getEsacc(blockDuration)\n
+# Wait for a fixation to start (this waits for an actual fixation event, and \n
+# does not draw circles and reset to calibration)\n
+tracker.waitForFixStart(fixXY)\n
+# Get the euclidian distance between two points, e.g. gaze and fixation\n
+pl.distBetweenPoints(point1XY, point2XY)\n
+# Send a message to the EDF file (usefull for saving data, automatically waits 2 ms after sending info)\n
+tracker.sendMsg('var '+str(variable))\n
+win.callOnFlip(tracker.sendMsg, 'var '+str(variable)) # if message should be simultaniously with flip\n
+# Check if the escape button has been pressed\n
+pl.checkAbort()\n
+tracker.checkAbort() # This also draws "exit?"\n
+# Stop eyetracker, after each trial\n
+tracker.stopTrial()\n
+# After the experiment or when the experiment is aborted (transfers data and closes graphics)\n
+tracker.cleanUp()\n
+'''
+print instructions
 
 
 # =============================================================================
@@ -2808,6 +2808,8 @@ class IntroScreen(object):
             s.draw()
 
 class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
+    '''
+    '''
     WINDOW_BACKGROUND_COLOR = (128,128,128)
     CALIBRATION_POINT_OUTER_RADIUS = 15.0,15.0
     CALIBRATION_POINT_OUTER_EDGE_COUNT = 64

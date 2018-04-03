@@ -1,0 +1,626 @@
+# psychoLink functions
+**List of functions**
+* [angleToPixels](#angletopixelsanglescreendistscreenwscreenxy)<br/>
+* [angleToPixelsWH](#angletopixelswhanglescreendistscreenwhscreenxy)<br/>
+* [calibrationValidation](#calibrationvalidationwintrackertopleftfalsenrpoints9dotcolor000pxperdegree47savefilefalse)<br/>
+* [centerToTopLeft](#centertotopleftpointxyscreenxyflipytrue)<br/>
+* [checkAbort](#checkabort)<br/>
+* [circLinePos](#circlineposcx0cy0r10setsize50)<br/>
+* [determineAngle](#determineanglep1p2)<br/>
+* [distBetweenPoints](#distbetweenpointsp1p2)<br/>
+* [getKey](#getkeyallowedkeys'left''right'waitforkeytruetimeout0)<br/>
+* [isNumber](#isnumbers)<br/>
+* [makeCircleGrid](#makecirclegridcx0cy0r10setsize8shuffletrue)<br/>
+* [makeSquareGrid](#makesquaregridx0y0grid_dimxy1010line_lengthxy1010)<br/>
+* [makeTrialList](#maketriallistheaderconditionsreps0shuffletrue)<br/>
+* [pixelsToAngle](#pixelstoanglepixscreendistscreenwscreenxy)<br/>
+* [pixelsToAngleWH](#pixelstoanglewhpixscreendistscreenwhscreenxy)<br/>
+* [topLeftToCenter](#toplefttocenterpointxyscreenxyflipyfalse)<br/>
+
+
+#### angleToPixels(angle,screenDist,screenW,screenXY):
+
+    '''
+    Calculate the number of pixels which equals a specified angle in visual
+    degrees, given parameters. Calculates the pixels based on the width of
+    the screen. If the pixels are not square, a sepperate conversion needs
+    to be done with the height of the screen.\n
+    "angleToPixelsWH" returns pixels for width and height. 
+    
+    Parameters
+    ----------
+    angle : float or int
+        The angle to convert in visual degrees
+    screenDist : float or int
+        Viewing distance in cm
+    screenW : float or int
+        The width of the screen in cm
+    screenXY : tuple, ints
+        The resolution of the screen (width - x, height - y), pixels
+        
+    Returns
+    -------
+    pix : float
+        The number of pixels which corresponds to the visual degree in angle,
+        horizontaly
+    
+    Examples
+    --------
+    >>> pix = angleToPixels(1, 75, 47.5, (1920,1080))
+    >>> pix
+    52.912377341863817
+    '''
+
+
+
+#### angleToPixelsWH(angle,screenDist,screenWH,screenXY):
+
+    '''
+    Calculate the number of pixels which equals a specified angle in visual
+    degrees, given parameters.
+    
+    Parameters
+    ----------
+    angle : float or int
+        The angle to convert in visual degrees
+    screenDist : float or int
+        Viewing distance in cm
+    screenWH : tuple, floats or ints
+        The width and height of the screen in cm (width, height)
+    screenXY : tuple, ints
+        The resolution of the screen (width - x, height - y), pixels
+        
+    Returns
+    -------
+    pixW : float
+        The number of pixels which corresponds to the visual degree in angle,
+        horizontaly (width)
+    pixH : float
+        The number of pixels which corresponds to the visual degree in angle,
+        vertically (height)
+    
+    Examples
+    --------
+    >>> pixW, pixH = angleToPixelsWH(1, 75, (47.5, 30), (1920,1080))
+    >>> pixW
+    52.912377341863817
+    >> pixH
+    47.125086070097467
+    
+    '''
+
+
+
+#### calibrationValidation(win,tracker,topLeft=False,nrPoints=9,dotColor=[0,0,0],pxPerDegree=47,saveFile=False):
+
+    '''
+    Custom calibration validation using psychoLink. It uses the background 
+    color which is set in win. Flips the screen empty before returning.
+    The median values returned for validation accuracy are determined by 
+    taking the median of the x and y samples from 300ms after validation dot 
+    onset until 2000ms after validation dot onset (median of 1700ms of 
+    samples). Samples are collected every 0.5ms the median is determined based 
+    on the median of the unique x and y positions
+    
+    Waits for a space press before starting and before exiting the 
+    feedback screen
+    
+    Parameters
+    ----------
+    win : psychopy window
+        An instance of an active psychopy window on which to draw the text
+    tracker : 
+        An active version of the psychoLink tracker class
+    topLeft : Bool
+        If True, assumes topLeft coordinate system\n
+        If False, assumes centre based coordinates
+    nrPoints : int
+        The number of calibration points to use, allowed input:\n
+        9,13,15 or 25
+    dotColor : list, [R,G,B]
+        The RGB color of the validation dot
+    pxPerDegree : float
+        The number of pixels that equal 1 visual degree
+    saveFile : Bool
+        If True, saves the results to pandas dataframe in working directory\n
+        If False, does not save results
+
+    Returns
+    -------
+    validationResults : 3 X nrPoints, np.array
+        1st row returns the validation point coordinates (x,y)\n
+        2nd row returns (x,y) tuple with the median coordinates of xySamp()\n
+        3rd row returns list with the pixel distance between the 1st row 
+        and 2nd row
+    
+    Examples
+    --------
+    >>> validationResults = calibrationValidation(win, tracker)
+    >>> validationResults.loc[:,:2] # Only Showing the first three points
+                      0                1                2
+    0  (-765.0, -450.0)  (765.0, -450.0)  (-765.0, 450.0)
+    1  (-760.5, -446.0)  (756.0, -450.0)  (-765.0, 449.0)
+    2            6.0208                9                1
+    '''
+
+
+
+#### centerToTopLeft(pointXY,screenXY,flipY=True):
+
+    '''
+    Takes a coordinate given in a centered reference frame and transforms it
+    to topLeft based coordiantes. Switches from (0,0) as center to 
+    (0,0) as topLeft
+    
+    Parameters
+    ----------
+    pointXY : tuple
+        The center based coordinate which is to be transformed
+    screenXY : tuple, ints
+        The (x,y) dimensions of the grid or screen
+    flipY : Bool
+        If True, flips the y coordinates    
+        
+    Returns
+    -------
+    newPos : tuple
+        The (x,y) position in topLeft based coordinates
+    
+    Examples
+    --------
+    >>> newPos = centerToTopLeft((100,100), (1920,1080), False)
+    >>> newPos
+    (1060, 640)
+
+    '''
+
+
+
+#### checkAbort():
+
+    '''
+    Checks whether the escape key has been pressed, does not block code
+        
+    Returns
+    -------
+    abort : Bool
+        True if escape has been pressed
+        False if escape has not been pressed
+    
+    Examples
+    --------
+    >>> abort = checkAbort
+    >>> abort
+    False
+    '''
+
+
+
+#### circLinePos(cx=0,cy=0,r=10,setsize=50):
+
+    '''
+    Returns a list of 4 arrays which contain the line start and endpoints
+    from which a circle can be drawn
+    
+    Parameters
+    ----------
+    cx : int or float
+        The center X coordinate of the circle  
+    cy : int or float
+        The center Y coordinate of the circle
+    r : int or float
+        The radius of the circle
+    setsize : int
+        The number of lines to use for drawing the circle
+        
+    Returns
+    -------
+    x1,y1,x2,y2 : np.arrays with floats
+        x1 = The start x position of each line\n
+        y1 = The start y position of each line\n
+        x2 = The end x position of each line\n
+        y2 = the end y position of each line
+    
+    Examples
+    --------
+    >>> x1,y1,x2,y2 = circLinePos(0, 0, 10, 5)
+    >>> x1,y1,x2,y2
+    (array([ 10.        ,   3.09016994,  -8.09016994,  -8.09016994,   3.09016994]),
+     array([ 0.        ,  9.51056516,  5.87785252, -5.87785252, -9.51056516]),
+     array([  3.09016994,  10.        ,   3.09016994,  -8.09016994,  -8.09016994]),
+     array([-9.51056516,  0.        ,  9.51056516,  5.87785252, -5.87785252]))
+    
+    '''
+
+
+
+#### determineAngle(p1,p2):
+
+    '''
+    Determines the angle in degrees between two points
+    
+    Parameters
+    ----------
+    p1 : tuple
+        A tuple containing the (x,y) coordinates of the first point
+    p1 : tuple
+        A tuple containing the (x,y) coordinates of the second point  
+        
+    Returns
+    -------
+    degree : float
+        The angle between two points
+        Returns values between -180 and 180. 
+        Positive values reflect the top half of a circle.
+        Negative values reflect the bottom half of a circle.
+            
+    Examples
+    --------
+    >>> degree = determineAngle((0,0),(10,10))
+    >>> degree
+    45.0
+    
+    >>> degree = determineAngle((0,0),(-10,-10))
+    >>> degree
+    -135.0
+    
+    '''
+
+
+
+#### distBetweenPoints(p1,p2):
+
+    '''
+    Calculates the distance between two points in a grid
+    
+    Parameters
+    ----------
+    p1 : tuple
+        A tuple containing the (x,y) coordinates of the first point
+    p2 : tuple
+        A tuple containing the (x,y) coordinates of the second point    
+        
+    Returns
+    -------
+    dist : float
+        The euclidian distance between the two points, the function assumes
+        that the y-scalying and x-scaling are the same
+    
+    Examples
+    --------
+    >>> dist = distBetweenPoints((0,0), (10,10))
+    >>> dist
+    14.142135623730951
+    '''
+
+
+
+#### getKey(allowedKeys=['left','right'],waitForKey=True,timeOut=0):
+
+    '''
+    Gets a keypress by using the event.waitKeys or event.getKeys from
+    the psychopy module
+    
+    The escape key is allways allowed. 
+    
+    Parameters
+    ----------
+    allowedKeys : list, list fo strings
+        The list should contain all allowed keys
+    waitForKey : Bool
+        If True, the code waits until one of the keys defined in allowedkeys
+        or escape has been pressed
+    timeOut : int or float, positive value
+        Only has effect if waitForKey == True\n
+        If set to 0, the function waits until an allowed key is pressed\n
+        If set to any other positive value, breaks after timeOut seconds
+        
+    Returns
+    -------
+    key_pressed : tuple with two items
+        The first index returns the Key\n
+        The second index returns the timestamp\n
+        The timestamp is in seconds after psychopy initialization and does not 
+        reflect the duration waited for the key press\n
+        If timeOut or no key is pressed, returns ['NoKey', 9999]
+        
+    Note
+    --------
+    The function requires an active psychopy window
+    
+    Examples
+    --------
+    >>> key = getKey(allowedKeys = ['left', 'right'], waitForKey = True, timeOut = 0)
+    >>> key # the 'left' key is pressed after 156 seconds'
+    ('left', 156.5626505338878)
+    '''
+
+
+
+#### isNumber(s):
+
+    '''
+    Tests whether an input is a number
+    
+    Parameters
+    ----------
+    s : string or a number
+        Any string or number which needs to be typechecked as a number
+        
+    Returns
+    -------
+    isNum : Bool
+        Returns True if 's' can be converted to a float
+        Returns False if converting 's' results in an error
+    
+    Examples
+    --------
+    >>> isNum = isNumber('5')
+    >>> isNum
+    True
+    
+    >>> isNum = isNumber('s')
+    >>> isNum
+    False
+    '''
+
+
+
+#### makeCircleGrid(cx=0,cy=0,r=10,setsize=8,shuffle=True):
+
+    '''
+    Returns a list of tuples with positions on an imaginary circle  around
+    a point. All the points are equally spaced around the circle.
+    
+    Parameters
+    ----------
+    cx : float or int
+        X coorindate of the imaginary circle
+    cy : float or int
+        Y coorindate of the imaginary circle
+    r : float or int
+        The radius of the imaginary circle
+    setsize : int, positive
+        The number of positions to be returned
+    shuffle : Bool
+        If True, the positions on the circle will be shuffled, the positions
+        will be equally spaced on the grid, but everytime the function is 
+        called, it will return different points on the imaginary circle\n
+        If False, similair to True, but the positions on the imaginary circle
+        will always be the same
+        
+    Returns
+    -------
+    circPos : list of tuples
+        Each tuple contains the (x,y) position of one of the circle positions
+    
+    Examples
+    --------
+    >>> circPos = makeCircleGrid(0,0, 10, 5, False)
+    >>> circPos
+    [(10.0, 0.0),
+     (3.0901699437494745, 9.5105651629515346),
+     (-8.0901699437494727, 5.8778525229247327),
+     (-8.0901699437494745, -5.87785252292473),
+     (3.0901699437494723, -9.5105651629515364)]
+    
+    >>> circPos = makeCircleGrid(0,0, 10, 5, True)
+    >>> circPos
+    [(-6.0636954133354148, -7.9518298481730012),
+     (5.6888546621411695, -8.2241675951450972),
+     (9.5796009515969587, 2.8690147451978461),
+     (0.23166432460658745, 9.9973162219019844),
+     (-9.4364245250092988, 3.3096664762182675)]
+    
+    '''
+
+
+
+#### makeSquareGrid(x=0,y=0,grid_dimXY=[10,10],line_lengthXY=[10,10]):
+
+    '''
+    Creates the coordinates for a square grid. 
+    
+    Parameters
+    ----------
+    x : float or int
+        The center x position of the grid
+    y : float or int
+        The center y position of the grid
+    grid_dimXY : list, positive integers
+        The size of the grid, e.g. the number of points in each direction
+    line_lengthXY : list, positive floats or ints
+        The length between each grid intersection, [width, height]
+        
+    Returns
+    -------
+    gridpositions : list of tuples
+        Each tuple contains the (x,y) position of one of the grid intersections
+    
+    Examples
+    --------
+    >>> gridpositions = makeSquareGrid(0,0,[4,4],[10,10])
+    >>> gridpositions
+    [(-15.0, -15.0),
+     (-15.0, -5.0),
+     (-15.0, 5.0),
+     (-15.0, 15.0),
+     (-5.0, -15.0),
+     (-5.0, -5.0),
+     (-5.0, 5.0),
+     (-5.0, 15.0),
+     (5.0, -15.0),
+     (5.0, -5.0),
+     (5.0, 5.0),
+     (5.0, 15.0),
+     (15.0, -15.0),
+     (15.0, -5.0),
+     (15.0, 5.0),
+     (15.0, 15.0)]
+
+    '''
+
+
+
+#### makeTrialList(header,conditions,reps=0,shuffle=True):
+
+    '''
+    Create a counterbalanced trialList in a pandas dataframe.  
+    
+    Parameters
+    ----------
+    header : list of strings
+        Each string representing a column name. The names will be matched 
+        sequentially to the conditions in the conditions parameter. If there 
+        are more headers than conditions, the additional header columns will
+        be filled with a bool - False
+    conditions : list of list
+        Each list should contain the different possibilities of that condition.
+        They will be matched with the header parameter. The column with the
+        first condition will get the string name in the first index of header
+    reps : int
+        The number of times the counterbalanced trialList is to be repeated.
+        0 = no repeats, 1 = 1 repeat etc
+    shuffle : Bool
+        Indicate whether or not the counterbalanced trial list should be 
+        shuffled. If set to True and reps > 0, each counterbalanced list will 
+        be shufled sepperatly before being added to the output dataframe
+        
+    Returns
+    -------
+    trialList : pandas dataframe
+    
+    Examples
+    --------
+    >>> header = ['start', 'end']
+    >>> conditions = [['left', 'right'],['up', 'down']]
+    >>> trialList = makeTrialList(header, conditions)
+    >>> trialList
+       start   end
+    0   left  down
+    1   left    up
+    2  right    up
+    3  right  down
+    
+    >>> header = ['start', 'end', 'response', 'correct']
+    >>> conditions = [['left', 'right'],['up', 'down']]
+    >>> trialList = makeTrialList(header, conditions, 1, False)
+    >>> trialList
+       start   end response correct
+    0   left    up    False   False
+    1  right    up    False   False
+    2   left  down    False   False
+    3  right  down    False   False
+    4   left    up    False   False
+    5  right    up    False   False
+    6   left  down    False   False
+    7  right  down    False   False
+        
+    '''
+
+
+
+#### pixelsToAngle(pix,screenDist,screenW,screenXY):
+
+    '''
+    Calculate the visual angle on the screen in degrees given a number of 
+    pixels. Calculates the distance based on the width of
+    the screen. If the pixels are not square, a sepperate conversion needs
+    to be done with the height of the screen.\n
+    "pixelsToAngleWH" returns visual degrees for width and height. 
+    
+    Parameters
+    ----------
+    pix : float or int
+        The pixels to convert in number of pixels
+    screenDist : float or int
+        Viewing distance in cm
+    screenW : float or int
+        The width of the screen in cm
+    screenXY : tuple, ints
+        The resolution of the screen (width - x, height - y), pixels
+        
+    Returns
+    -------
+    angle : float
+        The angle which spans the given number of pixels, horizontally
+    
+    Examples
+    --------
+    >>> deg = pixelsToAngle(55, 75, 47.5, (1920,1080))
+    >>> deg
+    1.0394522117965745
+
+    '''
+
+
+
+#### pixelsToAngleWH(pix,screenDist,screenWH,screenXY):
+
+    '''
+    Calculate the visual angle on the screen in degrees given a number of 
+    pixels.
+    
+    Parameters
+    ----------
+    pix : tuple, floats or ints
+        The pixels to convert in nr of pixels. (horizontal, vertical) 
+    screenDist : float or int
+        Viewing distance in cm
+    screenWH : tuple, floats or ints
+        The width and height of the screen in cm (width, height)
+    screenXY : tuple, ints
+        The resolution of the screen (width - x, height - y), pixels
+        
+    Returns
+    -------
+    degW : float
+        The number of pixels which corresponds to the visual degree in angle,
+        horizontaly (width)
+    degH : float
+        The number of pixels which corresponds to the visual degree in angle,
+        vertically (height)
+    
+    Examples
+    --------
+    >>> degW, degH = pixelsToAngleWH((55, 55), 75, (47.5, 30), (1920,1080))
+    >>> degW
+    1.0394522117965745
+    >> degH
+    1.1670958930600797
+    
+    '''
+
+
+
+#### topLeftToCenter(pointXY,screenXY,flipY=False):
+
+    '''
+    Takes a coordinate given in topLeft reference frame and transforms it
+    to center based coordiantes. Switches from (0,0) as top left to 
+    (0,0) as center
+    
+    Parameters
+    ----------
+    pointXY : tuple
+        The topLeft coordinate which is to be transformed
+    screenXY : tuple, ints
+        The (x,y) dimensions of the grid or screen
+    flipY : Bool
+        If True, flips the y coordinates    
+    
+    Returns
+    -------
+    newPos : tuple
+        The (x,y) position in center based coordinates
+    
+    Examples
+    --------
+    >>> newPos = topLeftToCenter((100,100), (1920,1080), False)
+    >>> newPos
+    (-860.0, 440.0)
+    
+    '''
+
+
+

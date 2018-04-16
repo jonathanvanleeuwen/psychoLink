@@ -28,112 +28,6 @@ import scipy
 from scipy import misc
 import math
 
-
-# =============================================================================
-# Print instructions
-# =============================================================================
-#def aaPrintbasicInstructions():
-'''
-# =============================================================================\n
-# Important psycholink and tracker functions (everything is in pixel values)\n
-# \n
-# These are the most important functions when using psychoLink for \n
-# running and experiment    \n
-#    \n
-# It has additional functions, check the psycholink.py file or\n
-# type : 'tracker.' and then press "tab"\n
-# type : 'pl.' and then press "tab" \n
-# This should give you the additional options \n
-#    \n
-# =============================================================================\n
-# Initiate eyetracker\n
-tracker = pl.eyeLink(win) # win = psychopy window\n
-# Optional, set specific options for calibration\n
-tracker.setCalibrationOptions()\n
-# Start calibration\n
-tracker.calibrate()\n
-# Start eyetracker before each trial, optional you can add trial number\n
-tracker.startTrial()\n
-# Wait for fixation on fixation dot, additional options to make things pretty, \n
-# this part waits for any sample within boundry, if not fixation returns to calibration window\n
-tracker.waitForFixation(fixDot)\n
-# Draw info about fixation boundries on the eylink computer screen (square)\n
-tracker.drawFixBoundry(fixX,fixY, maxFixDist)\n
-tracker.drawFixBoundry(targX,targY, maxTargHitDist)\n
-# Draw trial info on eyelink computer screen\n
-tracker.drawTrialInfo(blockType,tNr,nCor,nIncor,trLeft)\n
-# Get current eyePosition\n
-tracker.getCurSamp()\n
-# Wait for end of saccade, specify how long to wait for the end of a saccade\n
-tracker.getEsacc(blockDuration)\n
-# Wait for a fixation to start (this waits for an actual fixation event, and \n
-# does not draw circles and reset to calibration)\n
-tracker.waitForFixStart(fixXY)\n
-# Get the euclidian distance between two points, e.g. gaze and fixation\n
-pl.distBetweenPoints(point1XY, point2XY)\n
-# Send a message to the EDF file (usefull for saving data, automatically waits 2 ms after sending info)\n
-tracker.sendMsg('var '+str(variable))\n
-win.callOnFlip(tracker.sendMsg, 'var '+str(variable)) # if message should be simultaniously with flip\n
-# Check if the escape button has been pressed\n
-pl.checkAbort()\n
-tracker.checkAbort() # This also draws "exit?"\n
-# Stop eyetracker, after each trial\n
-tracker.stopTrial()\n
-# After the experiment or when the experiment is aborted (transfers data and closes graphics)\n
-tracker.cleanUp(win, tracker)\n
-'''
-instructions = '''
-# =============================================================================\n
-# Important psycholink and tracker functions (everything is in pixel values)\n
-# \n
-# These are the most important functions when using psychoLink for \n
-# running and experiment    \n
-#    \n
-# It has additional functions, check the psycholink.py file or\n
-# type : 'tracker.' and then press "tab"\n
-# type : 'pl.' and then press "tab" \n
-# This should give you the additional options \n
-#    \n
-# =============================================================================\n
-# Initiate eyetracker\n
-tracker = pl.eyeLink(win) # win = psychopy window\n
-# Optional, set specific options for calibration\n
-tracker.setCalibrationOptions()\n
-# Start calibration\n
-tracker.calibrate()\n
-# Start eyetracker before each trial, optional you can add trial number\n
-tracker.startTrial()\n
-# Wait for fixation on fixation dot, additional options to make things pretty, \n
-# this part waits for any sample within boundry, if not fixation returns to calibration window\n
-tracker.waitForFixation(fixDot)\n
-# Draw info about fixation boundries on the eylink computer screen (square)\n
-tracker.drawFixBoundry(fixX,fixY, maxFixDist)\n
-tracker.drawFixBoundry(targX,targY, maxTargHitDist)\n
-# Draw trial info on eyelink computer screen\n
-tracker.drawTrialInfo(blockType,tNr,nCor,nIncor,trLeft)\n
-# Get current eyePosition\n
-tracker.getCurSamp()\n
-# Wait for end of saccade, specify how long to wait for the end of a saccade\n
-tracker.getEsacc(blockDuration)\n
-# Wait for a fixation to start (this waits for an actual fixation event, and \n
-# does not draw circles and reset to calibration)\n
-tracker.waitForFixStart(fixXY)\n
-# Get the euclidian distance between two points, e.g. gaze and fixation\n
-pl.distBetweenPoints(point1XY, point2XY)\n
-# Send a message to the EDF file (usefull for saving data, automatically waits 2 ms after sending info)\n
-tracker.sendMsg('var '+str(variable))\n
-win.callOnFlip(tracker.sendMsg, 'var '+str(variable)) # if message should be simultaniously with flip\n
-# Check if the escape button has been pressed\n
-pl.checkAbort()\n
-tracker.checkAbort() # This also draws "exit?"\n
-# Stop eyetracker, after each trial\n
-tracker.stopTrial()\n
-# After the experiment or when the experiment is aborted (transfers data and closes graphics)\n
-tracker.cleanUp()\n
-'''
-print instructions
-
-
 # =============================================================================
 # Required functions
 # =============================================================================
@@ -151,8 +45,8 @@ def distBetweenPoints(p1, p2):
     Returns
     -------
     dist : float
-        The euclidian distance between the two points, the function assumes
-        that the y-scalying and x-scaling are the same
+        The Euclidian distance between the two points, the function assumes
+        that the y-scaling and x-scaling are the same
     
     Examples
     --------
@@ -206,7 +100,7 @@ def isNumber(s):
     Parameters
     ----------
     s : string or a number
-        Any string or number which needs to be typechecked as a number
+        Any string or number which needs to be type-checked as a number
         
     Returns
     -------
@@ -282,7 +176,7 @@ def getKey(allowedKeys = ['left', 'right'], waitForKey = True, timeOut = 0):
     Gets a keypress by using the event.waitKeys or event.getKeys from
     the psychopy module
     
-    The escape key is allways allowed. 
+    The escape key is always allowed. 
     
     Parameters
     ----------
@@ -346,7 +240,7 @@ def drawText(win,\
             textSize = 25,\
             textColor = [0, 0, 0]):
     '''
-    Draw a string on a psychopy window and waits for a keypress, allways tries 
+    Draw a string on a psychopy window and waits for a keypress, always tries 
     to draw the text in the center of the screen.
     
     Parameters
@@ -429,7 +323,7 @@ def angleToPixels(angle, screenDist, screenW, screenXY):
     '''
     Calculate the number of pixels which equals a specified angle in visual
     degrees, given parameters. Calculates the pixels based on the width of
-    the screen. If the pixels are not square, a sepperate conversion needs
+    the screen. If the pixels are not square, a separate conversion needs
     to be done with the height of the screen.\n
     "angleToPixelsWH" returns pixels for width and height. 
     
@@ -448,7 +342,7 @@ def angleToPixels(angle, screenDist, screenW, screenXY):
     -------
     pix : float
         The number of pixels which corresponds to the visual degree in angle,
-        horizontaly
+        horizontally
     
     Examples
     --------
@@ -483,7 +377,7 @@ def angleToPixelsWH(angle, screenDist, screenWH, screenXY):
     -------
     pixW : float
         The number of pixels which corresponds to the visual degree in angle,
-        horizontaly (width)
+        horizontally (width)
     pixH : float
         The number of pixels which corresponds to the visual degree in angle,
         vertically (height)
@@ -509,7 +403,7 @@ def pixelsToAngle(pix, screenDist, screenW, screenXY):
     '''
     Calculate the visual angle on the screen in degrees given a number of 
     pixels. Calculates the distance based on the width of
-    the screen. If the pixels are not square, a sepperate conversion needs
+    the screen. If the pixels are not square, a separate conversion needs
     to be done with the height of the screen.\n
     "pixelsToAngleWH" returns visual degrees for width and height. 
     
@@ -562,7 +456,7 @@ def pixelsToAngleWH(pix, screenDist, screenWH, screenXY):
     -------
     degW : float
         The number of pixels which corresponds to the visual degree in angle,
-        horizontaly (width)
+        horizontally (width)
     degH : float
         The number of pixels which corresponds to the visual degree in angle,
         vertically (height)
@@ -606,7 +500,7 @@ def makeTrialList(header, conditions, reps = 0, shuffle = True):
     shuffle : Bool
         Indicate whether or not the counterbalanced trial list should be 
         shuffled. If set to True and reps > 0, each counterbalanced list will 
-        be shufled sepperatly before being added to the output dataframe
+        be shuffled separately before being added to the output dataframe
         
     Returns
     -------
@@ -748,9 +642,9 @@ def makeCircleGrid(cx = 0, cy = 0, r = 10, setsize = 8, shuffle =  True):
     Parameters
     ----------
     cx : float or int
-        X coorindate of the imaginary circle
+        X coordinate of the imaginary circle
     cy : float or int
-        Y coorindate of the imaginary circle
+        Y coordinate of the imaginary circle
     r : float or int
         The radius of the imaginary circle
     setsize : int, positive
@@ -759,7 +653,7 @@ def makeCircleGrid(cx = 0, cy = 0, r = 10, setsize = 8, shuffle =  True):
         If True, the positions on the circle will be shuffled, the positions
         will be equally spaced on the grid, but everytime the function is 
         called, it will return different points on the imaginary circle\n
-        If False, similair to True, but the positions on the imaginary circle
+        If False, similar to True, but the positions on the imaginary circle
         will always be the same
         
     Returns
@@ -803,7 +697,7 @@ def makeCircleGrid(cx = 0, cy = 0, r = 10, setsize = 8, shuffle =  True):
 def topLeftToCenter(pointXY, screenXY, flipY = False):
     '''
     Takes a coordinate given in topLeft reference frame and transforms it
-    to center based coordiantes. Switches from (0,0) as top left to 
+    to center-based coordiantes. Switches from (0,0) as top left to 
     (0,0) as center
     
     Parameters
@@ -818,7 +712,7 @@ def topLeftToCenter(pointXY, screenXY, flipY = False):
     Returns
     -------
     newPos : tuple
-        The (x,y) position in center based coordinates
+        The (x,y) position in center-based coordinates
     
     Examples
     --------
@@ -842,7 +736,7 @@ def centerToTopLeft(pointXY, screenXY, flipY = True):
     Parameters
     ----------
     pointXY : tuple
-        The center based coordinate which is to be transformed
+        The center-based coordinate which is to be transformed
     screenXY : tuple, ints
         The (x,y) dimensions of the grid or screen
     flipY : Bool
@@ -888,7 +782,7 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
         An active version of the psychoLink tracker class
     topLeft : Bool
         If True, assumes topLeft coordinate system\n
-        If False, assumes centre based coordinates
+        If False, assumes center based coordinates
     nrPoints : int
         The number of calibration points to use, allowed input:\n
         9,13,15 or 25
@@ -1031,7 +925,7 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
     # Draw the Dots dot and wait for 1 second between each dot
     for i in range(0,len(gridPoints)):
         drawDots(gridPoints[i])
-        tracker.drawFixBoundry(gridPoints[i][0],gridPoints[i][1],pxPerDegree)
+        tracker.drawFixboundary(gridPoints[i][0],gridPoints[i][1],pxPerDegree)
         win.flip()
         xSamples  = []
         ySamples  = []
@@ -1127,7 +1021,7 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
 class sendPortCode():
     '''
     Class for sending port codes:
-        Automaticaly goes to dummy mode if no parallel port
+        Automatically goes to dummy mode if no parallel port
 
     Requires dlportio.dll !!!
 
@@ -1165,8 +1059,8 @@ class sendPortCode():
             The time to block code execution after setting the parallel port 
             before resetting the parallel port, when using "sendCodeAndReset".
             Time interval is in seconds
-        port : hexidecimal
-            The parallel port adress
+        port : hexadecimal
+            The parallel port address
         
         Examples
         --------
@@ -1268,14 +1162,14 @@ class sendPortCode():
 class eyeLink:
     '''
     Initiates the eyetracker. If no eyetracker is found or pylink is not
-    installed, it enteres dummy mode. Is called when the eyeLink class
-    is iniated. It always prints whether or not the eyetracker was 
+    installed, it enters dummy mode. Is called when the eyeLink class
+    is initiated. It always prints whether or not the eyetracker was 
     initiated or if dummy mode was initiated. 
     
     See : https://github.com/jonathanvanleeuwen/psychoLink/wiki
     for more documentation and examples.
     
-    All function documentation assumes that the class is initated as 'tracker'.
+    All function documentation assumes that the class is initiated as 'tracker'.
     See the example below for how to correctly initiate the class.
     
     The class for sending parallel port codes is automatically initiated as
@@ -1331,7 +1225,7 @@ class eyeLink:
     
     The absolute minimum of inputs required to initiate the eyetracker. Keep in 
     mind that to get correct distances etc, the values for distance and width
-    should be set for each eyetarcker setup, but it is not required. It is not
+    should be set for each eyetracker setup, but it is not required. It is not
     a good idea to only use the default settings
     
     >>> import psychoLink as pl
@@ -1648,7 +1542,7 @@ class eyeLink:
         Send a message to the eyetracker data file. If logging variables
         use tracker.logVar() instead. This function is better to use if 
         there are timing crucial messages to be sent to the eyetracker log 
-        file. Be sure to wait atleast 2ms between each call to this function. 
+        file. Be sure to wait at least 2ms between each call to this function. 
         The eyelink system needs a minimum of 2ms between each message to
         to keep stable performance. If dummy mode, prints the message to 
         the console.
@@ -1695,11 +1589,11 @@ class eyeLink:
         ----------
         varName : str, int or float
             The name of the variable you are logging in the eyelink data
-            file. The value passed will be turned to a string before sending the 
-            message
+            file. The value passed will be turned into a string before sending 
+            the message
         value : str, int or float
             The value corresponding to the "varName". The value will be turned
-            to a string before the message is send.
+            into a string before the message is sent.
         
         Examples
         --------
@@ -1738,10 +1632,10 @@ class eyeLink:
             timeStamp = curSamp.getTime()
         return timeStamp
 
-    def drawFixBoundry(self, x, y, rad, bType = 'circle', color = [2,4]):
+    def drawFixboundary(self, x, y, rad, bType = 'circle', color = [2,4]):
         '''
-        Draws a cross and a boundry on the eyelink host PC screen. The boundry
-        is usefull for the experimenter to determine if the participant is
+        Draws a cross and a boundary on the eyelink host PC screen. The boundary
+        is useful for the experimenter to determine if the participant is
         looking at the target, or whether the calibration is still good. 
 
         The eyetracker needs to be in recording mode for this to work.
@@ -1749,26 +1643,26 @@ class eyeLink:
         Parameters
         ----------
         x : int or float
-            The x center of the cross, center based coordinates
+            The x center of the cross, center-based coordinates
         y : int or float
-            The y center of the cross, center based coordinates 
+            The y center of the cross, center-based coordinates 
         rad : int or float
-            If bType == 'circle', it is the radius of the circle boundry\n
+            If bType == 'circle', it is the radius of the circle boundary\n
             If bType == 'square', it is the width and height of the square
-            boundry. The radius is in pixels     
+            boundary. The radius is in pixels     
         bType : string
-            The type of shape used to draw boundry. Options: 'circle'
+            The type of shape used to draw the boundary. Options: 'circle'
             or 'square'.
         color : list, 2 ints
             The first value is the color of the fixation cross, the second
-            color is the color of the boundry. Color values can be 0-15, 
+            color is the color of the boundary. Color values can be 0-15, 
             inclusive.
         
         Examples
         --------
-        Draw a fixdot and boundry in the center of the host Pc screen.
+        Draw a fixdot and boundary in the center of the host Pc screen.
         
-        >>> tracker.drawFixBoundry(0, 0, 100)
+        >>> tracker.drawFixboundary(0, 0, 100)
 
         '''
         if self.mode == 'Real':
@@ -1800,7 +1694,7 @@ class eyeLink:
             The string of text to display on the host pc
             
         pos : tuple
-            The (x,y) position to draw the text, in center based coordinates\n
+            The (x,y) position to draw the text, in center-based coordinates\n
             If no pos given, then draws along the bottom of the screen
         
         Examples
@@ -1867,7 +1761,7 @@ class eyeLink:
         Returns
         -------
         curSamp : tuple
-            The (x,y) gaze position on the screen. In center based coordinates.
+            The (x,y) gaze position on the screen. In center-based coordinates.
         
         Examples
         --------
@@ -1912,7 +1806,7 @@ class eyeLink:
         list with false values
         The eyetracker needs to be in recording mode for this to work.
         By pressing escape you can manually exit the function. This is 
-        usefull if timeout is set to a very long interval. 
+        useful if timeout is set to a very long interval. 
         
         Parameters
         ----------
@@ -1940,7 +1834,7 @@ class eyeLink:
         Note
         --------
         This blocks code execution for the duration of timeout. Don't use this 
-        function if you are simultaniously updating the window or running any
+        function if you are simultaneously updating the window or running any
         other code in the background. 
         '''
         esacc = [False, False, False, False, False, False]
@@ -1972,9 +1866,9 @@ class eyeLink:
         
         If running in dummy mode, returns the mouse position. It flips
         the window every refresh rate, any stimulus not set to
-        autodraw = True, will be remved if running in dummy mode.
+        autodraw = True, will be removed if running in dummy mode.
         By pressing escape you can manually exit the function. This is 
-        usefull if timeout is set to a very long interval. 
+        useful if timeout is set to a very long interval. 
         The eyetracker needs to be in recording mode for this to work.
         
         Parameters
@@ -1982,12 +1876,12 @@ class eyeLink:
         fixXY : tuple, two ints or floats
             If none, waits for the first fixation start, else the function 
             returns the first fixation that starts within a certain distance
-            (dist) of the given x and y coordinates. Assumes center based 
+            (dist) of the given x and y coordinates. Assumes center-based 
             coordinates. The input should be (x,y).
         offset :  float or int
             The maximum distance from fixXY which is acceptable, the radius 
             in pixels. 
-            If fixXY is given, then waits intil the satrt of a fixation that
+            If fixXY is given, then waits until the start of a fixation that
             is a maximum of "offset" number of pixels away from the fixXY
         timeout : int or float
             The duration to block code execution and look for the start of a 
@@ -2062,11 +1956,11 @@ class eyeLink:
         '''
         Wait for the start of a fixation in the area around a fixDot. 
         The function does not use eyelink events, but rather waits until
-        a certain number of gaze samples are all within the boundry. 
-        If aftre a second there still has not been enough contiguous samples
-        within the boundry, contracting circles will be shown around the 
+        a certain number of gaze samples are all within the boundary. 
+        If after a second there still has not been enough contiguous samples
+        within the boundary, contracting circles will be shown around the 
         fixDot. If after the set maximum time not enough contiguous samples
-        have been detected, it will promt the user for recalibration or 
+        have been detected, it will prompt the user for recalibration or 
         validation. 
         
         Press escape to prematurely exit. 
@@ -2086,18 +1980,18 @@ class eyeLink:
             monitor width and distance properties. 
         maxWait : int or float
             The maximum time to wait for a correct fixation before 
-            promting the user about recalibration. In seconds. 
+            prompting the user about recalibration. In seconds. 
         nRings : int
             The number of rings to use for constricting circles
         fixTime : int
-            The duration of contiguous samples within the boundry that are
-            required for succesful fixation.
+            The duration of contiguous samples within the boundary that are
+            required for successful fixation.
             
         Returns
         -------
         correctFixation : Bool
             True if the fixation was correct
-            False if the fixation was incorret
+            False if the fixation was incorrect
         
         Examples
         --------
@@ -2131,7 +2025,7 @@ class eyeLink:
             maxDist = self.pxPerDeg*2
         perimMaxRad = (maxDist)
         rad = perimMaxRad
-        self.drawFixBoundry(fixDot.pos[0], fixDot.pos[1], rad)
+        self.drawFixboundary(fixDot.pos[0], fixDot.pos[1], rad)
         radList= []
         for i in range(int(hz/0.5)):
             rad = rad-(perimMaxRad/(hz/0.5))*(2-(rad/perimMaxRad))
@@ -2152,7 +2046,7 @@ class eyeLink:
                 whatToDo = getKey(['c'], waitForKey = False)
                 distance = distBetweenPoints(fixation,fixDot.pos)
                 
-                # Check if sample is within boundry
+                # Check if sample is within boundary
                 if distance < maxDist:
                     sampCount+=1
                 else:
@@ -2161,7 +2055,7 @@ class eyeLink:
                 if whatToDo[0] == 'c':
                     break
                 
-                # If enough samples within boundry
+                # If enough samples within boundary
                 if sampCount >= stopCount:
                     correctFixation = True
                     break
@@ -2169,18 +2063,18 @@ class eyeLink:
                 avgXY = self.getCurSamp()
                 distance = distBetweenPoints(avgXY,fixDot.pos)
                 
-                # Check if sample is within boundry
+                # Check if sample is within boundary
                 if distance < maxDist:
                     sampCount+=1
                 else:
                     sampCount = 0
                     
-                # If enough samples within boundry
+                # If enough samples within boundary
                 if sampCount >= stopCount:
                     correctFixation = True
                     break
                     
-            # Draw animated fix boundry                
+            # Draw animated fix boundary                
             if time.time() - trStart > 1:
                 # Get the stim radius
                 radList = np.roll(radList,-1)
@@ -2232,10 +2126,10 @@ class eyeLink:
     def checkAbort(self):
         '''
         Checks whether escape has been pressed. If escape has been pressed 
-        it promts the user of it should really abort. If abort is selected
+        it prompts the user of it should really abort. If abort is selected
         then it sets the tracker.ABORT flag to True
         
-        It does not actually exit any of the remaing code, you have to 
+        It does not actually exit any of the remaining code, you have to 
         make sure the experiments stops if the escape key has been pressed. 
         This function only detects the escape key press. 
             
@@ -2342,7 +2236,7 @@ def giveFileName(windowName = 'Please enter Filename'):
                 
 class getParticipantInfo(tk.Tk):
     '''
-    This class is usefull for getting participant and session information. 
+    This class is useful for getting participant and session information. 
     Use this at the start of each experiment to get the participant number,
     date of birth etc
     
@@ -2808,8 +2702,6 @@ class IntroScreen(object):
             s.draw()
 
 class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
-    '''
-    '''
     WINDOW_BACKGROUND_COLOR = (128,128,128)
     CALIBRATION_POINT_OUTER_RADIUS = 15.0,15.0
     CALIBRATION_POINT_OUTER_EDGE_COUNT = 64

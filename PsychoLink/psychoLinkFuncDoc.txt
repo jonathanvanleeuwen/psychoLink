@@ -23,7 +23,7 @@
     '''
     Calculate the number of pixels which equals a specified angle in visual
     degrees, given parameters. Calculates the pixels based on the width of
-    the screen. If the pixels are not square, a sepperate conversion needs
+    the screen. If the pixels are not square, a separate conversion needs
     to be done with the height of the screen.\n
     "angleToPixelsWH" returns pixels for width and height. 
     
@@ -42,7 +42,7 @@
     -------
     pix : float
         The number of pixels which corresponds to the visual degree in angle,
-        horizontaly
+        horizontally
     
     Examples
     --------
@@ -74,7 +74,7 @@
     -------
     pixW : float
         The number of pixels which corresponds to the visual degree in angle,
-        horizontaly (width)
+        horizontally (width)
     pixH : float
         The number of pixels which corresponds to the visual degree in angle,
         vertically (height)
@@ -113,7 +113,7 @@
         An active version of the psychoLink tracker class
     topLeft : Bool
         If True, assumes topLeft coordinate system\n
-        If False, assumes centre based coordinates
+        If False, assumes center based coordinates
     nrPoints : int
         The number of calibration points to use, allowed input:\n
         9,13,15 or 25
@@ -155,7 +155,7 @@
     Parameters
     ----------
     pointXY : tuple
-        The center based coordinate which is to be transformed
+        The center-based coordinate which is to be transformed
     screenXY : tuple, ints
         The (x,y) dimensions of the grid or screen
     flipY : Bool
@@ -283,8 +283,8 @@
     Returns
     -------
     dist : float
-        The euclidian distance between the two points, the function assumes
-        that the y-scalying and x-scaling are the same
+        The Euclidian distance between the two points, the function assumes
+        that the y-scaling and x-scaling are the same
     
     Examples
     --------
@@ -301,7 +301,7 @@
     Gets a keypress by using the event.waitKeys or event.getKeys from
     the psychopy module
     
-    The escape key is allways allowed. 
+    The escape key is always allowed. 
     
     Parameters
     ----------
@@ -345,7 +345,7 @@
     Parameters
     ----------
     s : string or a number
-        Any string or number which needs to be typechecked as a number
+        Any string or number which needs to be type-checked as a number
         
     Returns
     -------
@@ -375,9 +375,9 @@
     Parameters
     ----------
     cx : float or int
-        X coorindate of the imaginary circle
+        X coordinate of the imaginary circle
     cy : float or int
-        Y coorindate of the imaginary circle
+        Y coordinate of the imaginary circle
     r : float or int
         The radius of the imaginary circle
     setsize : int, positive
@@ -386,7 +386,7 @@
         If True, the positions on the circle will be shuffled, the positions
         will be equally spaced on the grid, but everytime the function is 
         called, it will return different points on the imaginary circle\n
-        If False, similair to True, but the positions on the imaginary circle
+        If False, similar to True, but the positions on the imaginary circle
         will always be the same
         
     Returns
@@ -484,7 +484,7 @@
     shuffle : Bool
         Indicate whether or not the counterbalanced trial list should be 
         shuffled. If set to True and reps > 0, each counterbalanced list will 
-        be shufled sepperatly before being added to the output dataframe
+        be shuffled separately before being added to the output dataframe
         
     Returns
     -------
@@ -525,7 +525,7 @@
     '''
     Calculate the visual angle on the screen in degrees given a number of 
     pixels. Calculates the distance based on the width of
-    the screen. If the pixels are not square, a sepperate conversion needs
+    the screen. If the pixels are not square, a separate conversion needs
     to be done with the height of the screen.\n
     "pixelsToAngleWH" returns visual degrees for width and height. 
     
@@ -576,7 +576,7 @@
     -------
     degW : float
         The number of pixels which corresponds to the visual degree in angle,
-        horizontaly (width)
+        horizontally (width)
     degH : float
         The number of pixels which corresponds to the visual degree in angle,
         vertically (height)
@@ -597,7 +597,7 @@
 
     '''
     Takes a coordinate given in topLeft reference frame and transforms it
-    to center based coordiantes. Switches from (0,0) as top left to 
+    to center-based coordiantes. Switches from (0,0) as top left to 
     (0,0) as center
     
     Parameters
@@ -612,7 +612,7 @@
     Returns
     -------
     newPos : tuple
-        The (x,y) position in center based coordinates
+        The (x,y) position in center-based coordinates
     
     Examples
     --------

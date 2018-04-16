@@ -1,12 +1,11 @@
 # psychoLink classes
 **List of Classes and class functions**
-* [EyeLinkCoreGraphicsPsychopy](#eyelinkcoregraphicspsychopy)<br/>
 * [eyeLink](#eyelink)<br/>
     * [calibrate](#selfcalibrateself)<br/>
     * [checkAbort](#selfcheckabortself)<br/>
     * [cleanUp](#selfcleanupself)<br/>
     * [drawEyeText](#selfdraweyetextselftextposfalse)<br/>
-    * [drawFixBoundry](#selfdrawfixboundryselfxyradbtypecirclecolor24)<br/>
+    * [drawFixboundary](#selfdrawfixboundaryselfxyradbtypecirclecolor24)<br/>
     * [drawTrialInfo](#selfdrawtrialinfoselfblocknatnr999tcor999tinc999tleft999)<br/>
     * [driftCorrect](#selfdriftcorrectselffixdot)<br/>
     * [getCurSamp](#selfgetcursampself)<br/>
@@ -29,29 +28,19 @@
 
 
 
-# EyeLinkCoreGraphicsPsychopy
-### EyeLinkCoreGraphicsPsychopy
-
-    '''
-    '''
-
-
-
-
-
 # eyeLink
 ### eyeLink
 
     '''
     Initiates the eyetracker. If no eyetracker is found or pylink is not
-    installed, it enteres dummy mode. Is called when the eyeLink class
-    is iniated. It always prints whether or not the eyetracker was 
+    installed, it enters dummy mode. Is called when the eyeLink class
+    is initiated. It always prints whether or not the eyetracker was 
     initiated or if dummy mode was initiated. 
     
     See : https://github.com/jonathanvanleeuwen/psychoLink/wiki
     for more documentation and examples.
     
-    All function documentation assumes that the class is initated as 'tracker'.
+    All function documentation assumes that the class is initiated as 'tracker'.
     See the example below for how to correctly initiate the class.
     
     The class for sending parallel port codes is automatically initiated as
@@ -107,7 +96,7 @@
     
     The absolute minimum of inputs required to initiate the eyetracker. Keep in 
     mind that to get correct distances etc, the values for distance and width
-    should be set for each eyetarcker setup, but it is not required. It is not
+    should be set for each eyetracker setup, but it is not required. It is not
     a good idea to only use the default settings
     
     >>> import psychoLink as pl
@@ -135,10 +124,10 @@
 
     '''
     Checks whether escape has been pressed. If escape has been pressed 
-    it promts the user of it should really abort. If abort is selected
+    it prompts the user of it should really abort. If abort is selected
     then it sets the tracker.ABORT flag to True
     
-    It does not actually exit any of the remaing code, you have to 
+    It does not actually exit any of the remaining code, you have to 
     make sure the experiments stops if the escape key has been pressed. 
     This function only detects the escape key press. 
         
@@ -194,7 +183,7 @@
         The string of text to display on the host pc
         
     pos : tuple
-        The (x,y) position to draw the text, in center based coordinates\n
+        The (x,y) position to draw the text, in center-based coordinates\n
         If no pos given, then draws along the bottom of the screen
     
     Examples
@@ -204,37 +193,37 @@
 
 
 
-#### self.drawFixBoundry(self,x,y,rad,bType='circle',color=[2,4]):
+#### self.drawFixboundary(self,x,y,rad,bType='circle',color=[2,4]):
 
     '''
-    Draws a cross and a boundry on the eyelink host PC screen. The boundry
-    is usefull for the experimenter to determine if the participant is
+    Draws a cross and a boundary on the eyelink host PC screen. The boundary
+    is useful for the experimenter to determine if the participant is
     looking at the target, or whether the calibration is still good. 
     The eyetracker needs to be in recording mode for this to work.
     
     Parameters
     ----------
     x : int or float
-        The x center of the cross, center based coordinates
+        The x center of the cross, center-based coordinates
     y : int or float
-        The y center of the cross, center based coordinates 
+        The y center of the cross, center-based coordinates 
     rad : int or float
-        If bType == 'circle', it is the radius of the circle boundry\n
+        If bType == 'circle', it is the radius of the circle boundary\n
         If bType == 'square', it is the width and height of the square
-        boundry. The radius is in pixels     
+        boundary. The radius is in pixels     
     bType : string
-        The type of shape used to draw boundry. Options: 'circle'
+        The type of shape used to draw the boundary. Options: 'circle'
         or 'square'.
     color : list, 2 ints
         The first value is the color of the fixation cross, the second
-        color is the color of the boundry. Color values can be 0-15, 
+        color is the color of the boundary. Color values can be 0-15, 
         inclusive.
     
     Examples
     --------
-    Draw a fixdot and boundry in the center of the host Pc screen.
+    Draw a fixdot and boundary in the center of the host Pc screen.
     
-    >>> tracker.drawFixBoundry(0, 0, 100)
+    >>> tracker.drawFixboundary(0, 0, 100)
     '''
 
 
@@ -302,7 +291,7 @@
     Returns
     -------
     curSamp : tuple
-        The (x,y) gaze position on the screen. In center based coordinates.
+        The (x,y) gaze position on the screen. In center-based coordinates.
     
     Examples
     --------
@@ -334,7 +323,7 @@
     list with false values
     The eyetracker needs to be in recording mode for this to work.
     By pressing escape you can manually exit the function. This is 
-    usefull if timeout is set to a very long interval. 
+    useful if timeout is set to a very long interval. 
     
     Parameters
     ----------
@@ -362,7 +351,7 @@
     Note
     --------
     This blocks code execution for the duration of timeout. Don't use this 
-    function if you are simultaniously updating the window or running any
+    function if you are simultaneously updating the window or running any
     other code in the background. 
     '''
 
@@ -405,11 +394,11 @@
     ----------
     varName : str, int or float
         The name of the variable you are logging in the eyelink data
-        file. The value passed will be turned to a string before sending the 
-        message
+        file. The value passed will be turned into a string before sending 
+        the message
     value : str, int or float
         The value corresponding to the "varName". The value will be turned
-        to a string before the message is send.
+        into a string before the message is sent.
     
     Examples
     --------
@@ -426,7 +415,7 @@
     Send a message to the eyetracker data file. If logging variables
     use tracker.logVar() instead. This function is better to use if 
     there are timing crucial messages to be sent to the eyetracker log 
-    file. Be sure to wait atleast 2ms between each call to this function. 
+    file. Be sure to wait at least 2ms between each call to this function. 
     The eyelink system needs a minimum of 2ms between each message to
     to keep stable performance. If dummy mode, prints the message to 
     the console.
@@ -521,9 +510,9 @@
     
     If running in dummy mode, returns the mouse position. It flips
     the window every refresh rate, any stimulus not set to
-    autodraw = True, will be remved if running in dummy mode.
+    autodraw = True, will be removed if running in dummy mode.
     By pressing escape you can manually exit the function. This is 
-    usefull if timeout is set to a very long interval. 
+    useful if timeout is set to a very long interval. 
     The eyetracker needs to be in recording mode for this to work.
     
     Parameters
@@ -531,12 +520,12 @@
     fixXY : tuple, two ints or floats
         If none, waits for the first fixation start, else the function 
         returns the first fixation that starts within a certain distance
-        (dist) of the given x and y coordinates. Assumes center based 
+        (dist) of the given x and y coordinates. Assumes center-based 
         coordinates. The input should be (x,y).
     offset :  float or int
         The maximum distance from fixXY which is acceptable, the radius 
         in pixels. 
-        If fixXY is given, then waits intil the satrt of a fixation that
+        If fixXY is given, then waits until the start of a fixation that
         is a maximum of "offset" number of pixels away from the fixXY
     timeout : int or float
         The duration to block code execution and look for the start of a 
@@ -577,11 +566,11 @@
     '''
     Wait for the start of a fixation in the area around a fixDot. 
     The function does not use eyelink events, but rather waits until
-    a certain number of gaze samples are all within the boundry. 
-    If aftre a second there still has not been enough contiguous samples
-    within the boundry, contracting circles will be shown around the 
+    a certain number of gaze samples are all within the boundary. 
+    If after a second there still has not been enough contiguous samples
+    within the boundary, contracting circles will be shown around the 
     fixDot. If after the set maximum time not enough contiguous samples
-    have been detected, it will promt the user for recalibration or 
+    have been detected, it will prompt the user for recalibration or 
     validation. 
     
     Press escape to prematurely exit. 
@@ -601,18 +590,18 @@
         monitor width and distance properties. 
     maxWait : int or float
         The maximum time to wait for a correct fixation before 
-        promting the user about recalibration. In seconds. 
+        prompting the user about recalibration. In seconds. 
     nRings : int
         The number of rings to use for constricting circles
     fixTime : int
-        The duration of contiguous samples within the boundry that are
-        required for succesful fixation.
+        The duration of contiguous samples within the boundary that are
+        required for successful fixation.
         
     Returns
     -------
     correctFixation : Bool
         True if the fixation was correct
-        False if the fixation was incorret
+        False if the fixation was incorrect
     
     Examples
     --------
@@ -630,7 +619,7 @@
 ### getParticipantInfo
 
     '''
-    This class is usefull for getting participant and session information. 
+    This class is useful for getting participant and session information. 
     Use this at the start of each experiment to get the participant number,
     date of birth etc
     
@@ -667,7 +656,7 @@
 
     '''
     Class for sending port codes:
-        Automaticaly goes to dummy mode if no parallel port
+        Automatically goes to dummy mode if no parallel port
 
     Requires dlportio.dll !!!
 
@@ -745,8 +734,8 @@
         The time to block code execution after setting the parallel port 
         before resetting the parallel port, when using "sendCodeAndReset".
         Time interval is in seconds
-    port : hexidecimal
-        The parallel port adress
+    port : hexadecimal
+        The parallel port address
     
     Examples
     --------

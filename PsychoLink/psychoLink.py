@@ -876,23 +876,23 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
     if nrPoints == 9:
         xlineLength     = (xSize-150)/2
         yLineLength     = (ySize-150)/2
-        gridPoints      = makeSquareGrid([3,3], 0,0, [xlineLength, yLineLength])
+        gridPoints      = makeSquareGrid(0, 0, [3,3], [xlineLength, yLineLength])
 
     elif nrPoints == 13:
         xlineLength     = (xSize-150)/2
         yLineLength     = (ySize-150)/2
-        gridPoints      = makeSquareGrid([3,3], 0,0, [xlineLength, yLineLength])
-        gridPoints      += makeSquareGrid([2,2], 0,0, [xSize/2, ySize/2])
+        gridPoints      = makeSquareGrid(0, 0, [3,3], [xlineLength, yLineLength])
+        gridPoints      += makeSquareGrid(0, 0, [2,2], [xSize/2, ySize/2])
 
     elif nrPoints == 15:
         xlineLength     = (xSize-150)/4
         yLineLength     = (ySize-150)/2
-        gridPoints      = makeSquareGrid([5,3], 0,0, [xlineLength, yLineLength])
+        gridPoints      = makeSquareGrid(0, 0, [5,3],[xlineLength, yLineLength])
 
     elif nrPoints == 25:
         xlineLength     = (xSize-150)/4
         yLineLength     = (ySize-150)/4
-        gridPoints      = makeSquareGrid([5,5], 0,0, [xlineLength, yLineLength])
+        gridPoints      = makeSquareGrid(0, 0, [5,5], [xlineLength, yLineLength])
 
     else:
         text.text           = 'Incorrect number of validation points,\n please try again with a different number'
@@ -1253,7 +1253,7 @@ class eyeLink:
 
         try:
             # Real connection to tracker
-            self.eLink = pl.EyeLink(address)
+            self.pylink = pl.EyeLink(address)
             self.pylink.openDataFile(self.EDFDefaultName)
             pl.flushGetkeyQueue()
             self.mode = 'Real'
@@ -1267,12 +1267,12 @@ class eyeLink:
             #or for dummy mode connection
             self.mode = 'Dummy'
             if pl:
-                self.eLink = pl.EyeLink(None)
+                self.pylink = pl.EyeLink(None)
                 error = '\n\tNo eye-tracker found at: "' + address + \
                     '"\n\tEntering DummyMode\n' +\
                     '\tUsing Mouse Position\n\n\tPress "Space" to start'
             else:
-                self.eLink = False
+                self.pylink = False
                 error = '\n\tPylink module not found!'+\
                     '"\n\tEntering DummyMode\n' +\
                     '\tUsing Mouse Position\n\n\tPress "Space" to start'
@@ -1844,7 +1844,7 @@ class eyeLink:
                 event = self.pylink.getNextData()
                 event = self.pylink.getFloatData()
                 if event != None:
-                    if event.getType() == 6 or checkAbort() == False:
+                    if event.getType() == 6 and checkAbort() == False:
                         esacc[0] = event.getStartTime()
                         esacc[1] = event.getEndTime()
                         esacc[2], esacc[3] = event.getStartGaze()

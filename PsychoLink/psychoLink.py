@@ -27,6 +27,7 @@ import tkFileDialog as filedialog
 import scipy
 from scipy import misc
 import math
+import matplotlib.pyplot as plt
 
 # =============================================================================
 # Required functions
@@ -1747,7 +1748,87 @@ class eyeLink:
             self.pylink.sendCommand("draw_text=%d %d %d %s "%(x,y,3,text))
         else:
             print text
+            
+    def drawHostImage(self, im):
+        '''
+        Draws an image to the eyelink host computer. It assumes that the 
+        image is displayed fullsceen. 
+        Rescales the image to half size and turns it into 4 color grayscale.
         
+        The code will/should be updated to be more flexible in image inputs.
+        E.g. change in size and position
+        
+        Note that the code is quite slow, it also clears the screen before
+        drawing.
+        
+        Parameters
+        ----------
+        im : str
+            The path to the image we want to display 
+            
+        Examples
+        --------
+        >>> im = 'picture1.jpg'
+        >>> tracker.drawHostImage(im)
+        '''
+        if self.mode == 'Real':      
+            def im2GrayReshape(im, screenShape, newShape, nColors=4):
+                im = plt.imread(im)
+                grayIm = np.dot(np.array(im)[...,:3], [0.299, 0.587, 0.114])
+                grayIm = scipy.misc.imresize(grayIm, screenShape)
+                rscIm = scipy.misc.imresize(grayIm, newShape)
+                if nColors > 2: 
+                    dscIm = np.array(rscIm.copy(), dtype=np.float64)
+                    dscIm = np.array((dscIm/np.max(dscIm))*(nColors-1), dtype=np.uint8)
+                else:
+                    dscIm = rscIm.copy()
+                    av = np.mean(dscIm)
+                    dscIm[dscIm <= av] = 1
+                    dscIm[dscIm > av] = 0
+                return dscIm
+                
+            def getEyelinkIm(im, screenShape, newShape):
+                # Code 0 = Black
+                # Code 8 = Dark Gray
+                # Code 7 = Light Gray
+                # Code 15 = Bright White
+                newIm = im2GrayReshape(im, screenShape, newShape)
+                newIm[newIm == 1] = 8
+                newIm[newIm == 2] = 7
+                newIm[newIm == 3] = 15
+                return newIm
+                
+            screenShape = (int(self.screenH), int(self.screenW))
+            newShape = (int(self.screenH/2), int(self.screenW/2))
+            xCoords = np.arange(0,self.screenW-2,2)
+            yCoords = np.arange(0,self.screenH-2,2)
+            eyeIm = getEyelinkIm(im, screenShape, newShape)
+            self.pylink.clearScreen(0)
+            # draw each pixel sepperatly
+            for xIdx, x in enumerate(xCoords):
+                sCol = 100
+                sY = 0
+                drawY = 2
+                drawLong = False
+                for yIdx, y in enumerate(yCoords):
+                    if eyeIm[yIdx,xIdx] == sCol:
+                        drawY+=2
+                        drawLong = True
+                    else:
+                        if drawLong:
+                            if sCol != 0:
+                                self.pylink.drawLine((x, sY),(x, sY+drawY),sCol)
+                                #self.pylink.drawLine((x+1, sY),(x+1, sY+drawY),sCol)
+                            drawLong = False
+                        else:
+                            sY = y
+                            if eyeIm[yIdx,xIdx] != 0:
+                                self.pylink.drawLine((x, sY),(x, sY+drawY),eyeIm[yIdx,xIdx])
+                                #self.pylink.drawLine((x+1, sY),(x+1, sY+drawY),eyeIm[yIdx,xIdx])
+                        drawY = 2
+                        sCol = eyeIm[yIdx,xIdx]
+                        sY = y      
+                    
     # Get the newest data sample
     def getCurSamp(self):
         '''

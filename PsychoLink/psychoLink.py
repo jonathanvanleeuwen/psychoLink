@@ -2832,6 +2832,13 @@ class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
         self.size = (0, 0)
         self.extra_info = False
         self.setup_cal_display()
+        self.lineToDraw   = visual.Line(self.window,\
+                        start=(0, 0),\
+                        end=(0, 0),\
+                        lineWidth = 1,\
+                        lineColorSpace = 'rgb255',\
+                        lineColor = [255,0,0],\
+                        )
 
     def setMousStart(self):
         mousStart = (-(self.window.size[0]/2),self.window.size[1]/2)
@@ -3034,15 +3041,9 @@ class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
             # It asumes the image is in the top left   
             x1,y1 = topLeftToCenter((x1*self.image_scale,y1*self.image_scale), self.image_size)
             x2,y2 = topLeftToCenter((x2*self.image_scale,y2*self.image_scale), self.image_size)
-    
-            line   = visual.Line(self.window,\
-                        start=(x1, y1),\
-                        end=(x2, y2),\
-                        lineWidth       = 1,\
-                        lineColorSpace  = 'rgb255',\
-                        lineColor       = [255,0,0],\
-                        )
-            line.draw()
+            self.lineToDraw.setStart((x1, y1))
+            self.lineToDraw.setEnd((x2, y2))
+            self.lineToDraw.draw()
         
     def draw_lozenge(self, x, y, width, height, color_index):
         """ Color does not work, Do not know what this does"""

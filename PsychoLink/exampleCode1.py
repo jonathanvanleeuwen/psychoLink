@@ -12,12 +12,11 @@ fixDot = visual.Circle(win,radius=10,fillColorSpace='rgb255',lineColorSpace='rgb
 gazeDot = visual.Circle(win,radius=10,fillColorSpace='rgb255',lineColorSpace='rgb255',lineColor=[255,0,0],fillColor=[255,0,0],edges=50)
 tracker = pl.eyeLink(win, fileName = 'testing.EDF')
 tracker.calibrate()
-2/0
 for i in range(25):# Run gaze contingent display
     pl.drawText(win, 'Press "Space" to start!')
     tracker.waitForFixation(fixDot)
     tracker.startTrial()  
-    tracker.drawFixBoundry(0,0,100)
+    tracker.drawFixBoundary(0,0,100)
     tracker.logVar('trial_Nr', i)
     s = time.time()
     while time.time() - s < 5:

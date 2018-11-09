@@ -115,8 +115,7 @@ zeroHeaders = ['trialNr', 'targXPos', 'targYPos', 'distXPos', 'distYPos',
 zeroPads = len(zeroHeaders)
 header = header + zeroHeaders
 
-blockList = pl.makeTrialList(header, conds, par['reps'], zeroPads, 
-                             par['shuffleConds'])
+blockList = pl.makeTrialList(header, conds, par['reps'], par['shuffleConds'])
 blockList['trialNr'] = range(1,len(blockList)+1)   
 blockList['block'] = 'Exp'
    
@@ -270,15 +269,15 @@ def runBlock(tl): # tl = trialList
         tracker.drawTrialInfo(block,i+1,nCor,nIncor,trLeft)
         
         # Draw fixation dot on Host PC
-        tracker.drawFixBoundry(fixDot.pos[0], fixDot.pos[1], 
+        tracker.drawFixBoundary(fixDot.pos[0], fixDot.pos[1], 
                                tl.hitDistance[0]*tl.pxPerDeg[0])
         
         # Draw target circle  on Host PC
-        tracker.drawFixBoundry(targXPos, targYPos, 
+        tracker.drawFixBoundary(targXPos, targYPos, 
                                tl.circSize[0]*tl.pxPerDeg[0], [1,4])
         
         # Draw distractor dot on Host PC
-        tracker.drawFixBoundry(distXPos, distYPos, 
+        tracker.drawFixBoundary(distXPos, distYPos, 
                                tl.circSize[0]*tl.pxPerDeg[0], [3,4])
     
         #======================================================================
@@ -410,7 +409,7 @@ blockList = runBlock(blockList)
 #==============================================================================
 # Save the experiment data
 #==============================================================================
-#blockList.to_pickle(saveExpFile)
+blockList.to_pickle(saveExpFile)
    
 #==============================================================================
 # Exit eyetracker, get .edf and cleanup pyshcopy + eyelink

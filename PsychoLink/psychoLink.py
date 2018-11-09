@@ -926,7 +926,7 @@ def calibrationValidation(win, tracker, topLeft = False, nrPoints = 9, dotColor 
     # Draw the Dots dot and wait for 1 second between each dot
     for i in range(0,len(gridPoints)):
         drawDots(gridPoints[i])
-        tracker.drawFixboundary(gridPoints[i][0],gridPoints[i][1],pxPerDegree)
+        tracker.drawFixBoundary(gridPoints[i][0],gridPoints[i][1],pxPerDegree)
         win.flip()
         xSamples  = []
         ySamples  = []
@@ -1633,7 +1633,7 @@ class eyeLink:
             timeStamp = curSamp.getTime()
         return timeStamp
 
-    def drawFixboundary(self, x, y, rad, bType = 'circle', color = [2,4]):
+    def drawFixBoundary(self, x, y, rad, bType = 'circle', color = [2,4]):
         '''
         Draws a cross and a boundary on the eyelink host PC screen. The boundary
         is useful for the experimenter to determine if the participant is
@@ -1663,7 +1663,7 @@ class eyeLink:
         --------
         Draw a fixdot and boundary in the center of the host Pc screen.
         
-        >>> tracker.drawFixboundary(0, 0, 100)
+        >>> tracker.drawFixBoundary(0, 0, 100)
 
         '''
         if self.mode == 'Real':
@@ -2106,7 +2106,7 @@ class eyeLink:
             maxDist = self.pxPerDeg*2
         perimMaxRad = (maxDist)
         rad = perimMaxRad
-        self.drawFixboundary(fixDot.pos[0], fixDot.pos[1], rad)
+        self.drawFixBoundary(fixDot.pos[0], fixDot.pos[1], rad)
         radList= []
         for i in range(int(hz/0.5)):
             rad = rad-(perimMaxRad/(hz/0.5))*(2-(rad/perimMaxRad))

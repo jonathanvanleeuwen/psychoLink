@@ -46,7 +46,6 @@ eFile = path_leaf(saveAs) + '.EDF'
 dDir = os.path.split(os.path.split(os.path.abspath(saveExpFile))[0])[0]                    
 dDir += '\\Data\\'            
 saveExpFile  = dDir+saveExpFile   
-
 # Check if file exists
 if os.path.isfile(saveExpFile) or os.path.isfile(dDir+eFile):
     itt = 1
@@ -409,8 +408,10 @@ blockList = runBlock(blockList)
 #==============================================================================
 # Save the experiment data
 #==============================================================================
-blockList.to_pickle(saveExpFile)
-   
+try:
+    blockList.to_pickle(saveExpFile)
+except:
+    blockList.to_pickle(eFile[:-3]+'p')
 #==============================================================================
 # Exit eyetracker, get .edf and cleanup pyshcopy + eyelink
 #==============================================================================

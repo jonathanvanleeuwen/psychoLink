@@ -5,7 +5,8 @@
     * [checkAbort](#selfcheckabortself)<br/>
     * [cleanUp](#selfcleanupself)<br/>
     * [drawEyeText](#selfdraweyetextselftextposfalse)<br/>
-    * [drawFixboundary](#selfdrawfixboundaryselfxyradbtypecirclecolor24)<br/>
+    * [drawFixBoundary](#selfdrawfixboundaryselfxyradbtypecirclecolor24)<br/>
+    * [drawHostImage](#selfdrawhostimageselfim)<br/>
     * [drawTrialInfo](#selfdrawtrialinfoselfblocknatnr999tcor999tinc999tleft999)<br/>
     * [driftCorrect](#selfdriftcorrectselffixdot)<br/>
     * [getCurSamp](#selfgetcursampself)<br/>
@@ -193,7 +194,7 @@
 
 
 
-#### self.drawFixboundary(self,x,y,rad,bType='circle',color=[2,4]):
+#### self.drawFixBoundary(self,x,y,rad,bType='circle',color=[2,4]):
 
     '''
     Draws a cross and a boundary on the eyelink host PC screen. The boundary
@@ -223,7 +224,33 @@
     --------
     Draw a fixdot and boundary in the center of the host Pc screen.
     
-    >>> tracker.drawFixboundary(0, 0, 100)
+    >>> tracker.drawFixBoundary(0, 0, 100)
+    '''
+
+
+
+#### self.drawHostImage(self,im):
+
+    '''
+    Draws an image to the eyelink host computer. It assumes that the 
+    image is displayed fullsceen. 
+    Rescales the image to half size and turns it into 4 color grayscale.
+    
+    The code will/should be updated to be more flexible in image inputs.
+    E.g. change in size and position
+    
+    Note that the code is quite slow, it also clears the screen before
+    drawing.
+    
+    Parameters
+    ----------
+    im : str
+        The path to the image we want to display 
+        
+    Examples
+    --------
+    >>> im = 'picture1.jpg'
+    >>> tracker.drawHostImage(im)
     '''
 
 

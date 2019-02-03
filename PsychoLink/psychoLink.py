@@ -2531,6 +2531,12 @@ class getParticipantInfo(tk.Tk):
         self.attributes('-topmost', True)
         tk.Tk.mainloop(self)
 
+    def getAge(self):
+        currDate = [int(i) for i in self.currentDate.split('/')]
+        birthDay = [int(i) for i in self.birthDay.split('/')]
+        del self.birthDay
+        return currDate[-1] - birthDay[-1] - ((currDate[-2], currDate[-3]) < (birthDay[-2], birthDay[-3]))
+    
     def saveInfo(self):
         from collections import OrderedDict
         par = OrderedDict()
@@ -2541,7 +2547,7 @@ class getParticipantInfo(tk.Tk):
         par['ppOccCorrection'] = self.occularCorrection
         par['ppLeftEye'] = self.leftEyeCorrection
         par['ppRightEye'] = self.rightEyeCorrection
-        par['ppBirthDay'] = self.birthDay
+        par['ppAge'] = self.getAge()
         par['curDate'] = self.currentDate
         par['saveAs'] = self.saveAs
         self.info = par

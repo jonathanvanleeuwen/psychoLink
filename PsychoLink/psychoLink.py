@@ -1225,6 +1225,8 @@ class eyeLink:
     address : string
         The network address that is connected to the eyelink. By default
         this should be "100.1.1.1"
+    dummyMode : Bool
+        If set to True, forces psychoLink into dummy mode
 
     Returns
     -------
@@ -1262,7 +1264,8 @@ class eyeLink:
     # Initiate Eyetracker or use mouse if no eyetracker found
     # =========================================================================
     def __init__(self, win, fileName='XX.EDF', fileDest=False,
-                 screenWidth=47.5, screenDist=75, address="100.1.1.1"):
+                 screenWidth=47.5, screenDist=75, address="100.1.1.1",
+                 dummyMode=False):
         """
         see pl.tracker documentation
         """
@@ -1277,17 +1280,19 @@ class eyeLink:
         self.PPort = sendPortCode()
 
         try:
-            # Real connection to tracker
-            self.pylink = pl.EyeLink(address)
-            self.pylink.openDataFile(self.EDFDefaultName)
-            pl.flushGetkeyQueue()
-            self.mode = 'Real'
-            self.mouse.setVisible(0)
-            print '\nTracker found!'
-            print 'Mouse set to invissible'
-            drawText(self.win, 'Press "SPACE" to setup EyeTracker!')
-            self.win.flip()
-
+            if not dummyMode:
+                # Real connection to tracker
+                self.pylink = pl.EyeLink(address)
+                self.pylink.openDataFile(self.EDFDefaultName)
+                pl.flushGetkeyQueue()
+                self.mode = 'Real'
+                self.mouse.setVisible(0)
+                print '\nTracker found!'
+                print 'Mouse set to invissible'
+                drawText(self.win, 'Press "SPACE" to setup EyeTracker!')
+                self.win.flip()
+            else:
+                2/0
         except:
             # or for dummy mode connection
             self.mode = 'Dummy'

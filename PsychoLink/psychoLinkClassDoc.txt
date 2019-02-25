@@ -14,6 +14,8 @@
     * [getTime](#selfgettimeself)<br/>
     * [logVar](#selflogvarselfvarnamenonamevaluenovalue)<br/>
     * [sendMsg](#selfsendmsgselfmsg)<br/>
+    * [setCalibrationOptions](#selfsetcalibrationoptionsselfforecol000backcol150150150caldiam10holediam2colordepth32targsound"on"corrsound"on"incsound"on"caltypehv9caltime1000)<br/>
+    * [setEyeLinkSettings](#selfseteyelinksettingsselfvel35acc9500screenw1680screenh1050)<br/>
     * [startRecording](#selfstartrecordingself)<br/>
     * [startTrial](#selfstarttrialselftrialnrfalse)<br/>
     * [stopRecording](#selfstoprecordingself)<br/>
@@ -21,6 +23,17 @@
     * [waitForFixStart](#selfwaitforfixstartselffixxynoneoffset50timeout4)<br/>
     * [waitForFixation](#selfwaitforfixationselffixdotmaxdist0maxwait4nrings3fixtime200)<br/>
 * [getParticipantInfo](#getparticipantinfo)<br/>
+    * [alert_printf](#selfalert_printfselfmsg)<br/>
+    * [draw_image_line](#selfdraw_image_lineselfwidthlinetotlinesbuff)<br/>
+    * [draw_line](#selfdraw_lineselfx1y1x2y2color_index)<br/>
+    * [erase_cal_target](#selferase_cal_targetself)<br/>
+    * [exit_cal_display](#selfexit_cal_displayself)<br/>
+    * [exit_image_display](#selfexit_image_displayself)<br/>
+    * [play_beep](#selfplay_beepselfpylink_sound_index)<br/>
+    * [record_abort_hide](#selfrecord_abort_hideself)<br/>
+    * [set_image_palette](#selfset_image_paletteselfrgb)<br/>
+    * [setup_cal_display](#selfsetup_cal_displayself)<br/>
+    * [setup_image_display](#selfsetup_image_displayselfwidthheight)<br/>
 * [sendPortCode](#sendportcode)<br/>
     * [sendCode](#selfsendcodeselfcode)<br/>
     * [sendCodeAndReset](#selfsendcodeandresetselfcoderesetinterval0)<br/>
@@ -32,26 +45,26 @@
 # eyeLink
 ### eyeLink
 
-    '''
+    """
     Initiates the eyetracker. If no eyetracker is found or pylink is not
     installed, it enters dummy mode. Is called when the eyeLink class
-    is initiated. It always prints whether or not the eyetracker was 
-    initiated or if dummy mode was initiated. 
-    
+    is initiated. It always prints whether or not the eyetracker was
+    initiated or if dummy mode was initiated.
+
     See : https://github.com/jonathanvanleeuwen/psychoLink/wiki
     for more documentation and examples.
-    
+
     All function documentation assumes that the class is initiated as 'tracker'.
     See the example below for how to correctly initiate the class.
-    
+
     The class for sending parallel port codes is automatically initiated as
     tracker.PPort
-    
+
     All eyelink API code can be accessed using tracker.pylink
-    
-    To initiate the eyetracker the window units has to be 
+
+    To initiate the eyetracker the window units has to be
     set to pix
-    
+
     Parameters
     ----------
     win : psychopy window
@@ -59,216 +72,197 @@
     fileName : string
         The name of the eyedata file. Remeber that it should always end
         with .EDF
-    fileDest : string 
+    fileDest : string
         The directory to save the eyedata file. Defaults to False. If False
         the data will be saved in the working directory
     screenWidth : float or int
         The with of the screen, in cm. Only works if the psychopy window
-        was initiated without a psychopy monitor object, else uses the psychopy 
+        was initiated without a psychopy monitor object, else uses the psychopy
         monitor values.
     screenDist : float or int
-        The distance between the participant and the screen, in cm. Only 
-        works if the psychopy window was initiated without a psychopy 
+        The distance between the participant and the screen, in cm. Only
+        works if the psychopy window was initiated without a psychopy
         monitor object, else uses the psychopy monitor values.
     address : string
         The network address that is connected to the eyelink. By default
         this should be "100.1.1.1"
-    
+    dummyMode : Bool
+        If set to True, forces psychoLink into dummy mode
+
     Returns
     -------
     tracker : psychoLink eyetracker class
         The class used to talk to the eyelink eyetracker\n
-        See: https://github.com/jonathanvanleeuwen/psychoLink/wiki for 
-        all included functions. See documentation for each function in this 
-        code. 
-    
+        See: https://github.com/jonathanvanleeuwen/psychoLink/wiki for
+        all included functions. See documentation for each function in this
+        code.
+
     Examples
     --------
-    The examples assume that the psychoLink module is imported from a 
-    different script. To initiate the eyetracker the window units has to be 
+    The examples assume that the psychoLink module is imported from a
+    different script. To initiate the eyetracker the window units has to be
     set to pix
-    
+
     >>> import psychoLink as pl
     >>> from psychopy import visual, monitors
     >>> mon = monitors.Monitor('testMonitor',width=47,distance=75)
     >>> win = visual.Window(units='pix',monitor=mon,size=(1680,1050),
     colorSpace='rgb255',color = (255,255,255), screen = 0, fullscr=False)
     >>> tracker = pl.eyeLink(win, fileName='someName.EDF', fileDest = "C:\Users\User1\Desktop\\")
-    
-    The absolute minimum of inputs required to initiate the eyetracker. Keep in 
+
+    The absolute minimum of inputs required to initiate the eyetracker. Keep in
     mind that to get correct distances etc, the values for distance and width
     should be set for each eyetracker setup, but it is not required. It is not
     a good idea to only use the default settings
-    
+
     >>> import psychoLink as pl
     >>> from psychopy import visual
     >>> win = visual.Window(units='pix')
     >>> tracker = pl.eyeLink(win)
-    '''
+    """
 
 
 
 #### self.calibrate(self):
 
-    '''
+    """
     Starts eyetracker calibration screen.\n
     Press escape to exit calibration
-    
     Examples
     --------
     >>> tracker.calibrate()
-    '''
+    """
 
 
 
 #### self.checkAbort(self):
 
-    '''
-    Checks whether escape has been pressed. If escape has been pressed 
+    """
+    Checks whether escape has been pressed. If escape has been pressed
     it prompts the user of it should really abort. If abort is selected
     then it sets the tracker.ABORT flag to True
-    
-    It does not actually exit any of the remaining code, you have to 
-    make sure the experiments stops if the escape key has been pressed. 
-    This function only detects the escape key press. 
-        
+    It does not actually exit any of the remaining code, you have to
+    make sure the experiments stops if the escape key has been pressed.
+    This function only detects the escape key press.
     Returns
     -------
     escape : True, none
         Only returns True if the escape key has been pressed. If escape was
         not pressed it does not return anything.
-    
     Examples
     --------
     Break out of a trial loop and then out of block loop.
-    
     >>> if tracker.checkAbort(): break
     >>> if tracker.ABORTED: break
-    '''
+    """
 
 
 
 #### self.cleanUp(self):
 
-    '''
+    """
     Cleans up the experiment. this should be the very last function
-    called in the experiment code. 
-    
+    called in the experiment code.
     Sets eyetracker into offline mode\n
     Closes data file\n
     Closes eyetracker conection\n
     Closes eyetracker Graphics\n
     Retrieves data file to current working directory\n
-    Closes psychopy window instance. 
-            
+    Closes psychopy window instance.
     Examples
     --------
     At the very end of the experiment code
-    
     >>> tracker.cleanUp()
-    '''
+    """
 
 
 
 #### self.drawEyeText(self,text,pos=False):
 
-    '''
-    Draw text to the eylink host PC screen. 
-    
+    """
+    Draw text to the eylink host PC screen.
     If dummy mode, prints the message to the console.
     The eyetracker needs to be in recording mode for this to work.
-    
     Parameters
     ----------
     text : string
         The string of text to display on the host pc
-        
     pos : tuple
         The (x,y) position to draw the text, in center-based coordinates\n
         If no pos given, then draws along the bottom of the screen
-    
     Examples
     --------
     >>> tracker.drawText('Instructions')
-    '''
+    """
 
 
 
 #### self.drawFixBoundary(self,x,y,rad,bType='circle',color=[2,4]):
 
-    '''
+    """
     Draws a cross and a boundary on the eyelink host PC screen. The boundary
     is useful for the experimenter to determine if the participant is
-    looking at the target, or whether the calibration is still good. 
+    looking at the target, or whether the calibration is still good.
     The eyetracker needs to be in recording mode for this to work.
-    
     Parameters
     ----------
     x : int or float
         The x center of the cross, center-based coordinates
     y : int or float
-        The y center of the cross, center-based coordinates 
+        The y center of the cross, center-based coordinates
     rad : int or float
         If bType == 'circle', it is the radius of the circle boundary\n
         If bType == 'square', it is the width and height of the square
-        boundary. The radius is in pixels     
+        boundary. The radius is in pixels
     bType : string
         The type of shape used to draw the boundary. Options: 'circle'
         or 'square'.
     color : list, 2 ints
         The first value is the color of the fixation cross, the second
-        color is the color of the boundary. Color values can be 0-15, 
+        color is the color of the boundary. Color values can be 0-15,
         inclusive.
-    
     Examples
     --------
     Draw a fixdot and boundary in the center of the host Pc screen.
-    
     >>> tracker.drawFixBoundary(0, 0, 100)
-    '''
+    """
 
 
 
 #### self.drawHostImage(self,im):
 
-    '''
-    Draws an image to the eyelink host computer. It assumes that the 
-    image is displayed fullsceen. 
+    """
+    Draws an image to the eyelink host computer. It assumes that the
+    image is displayed fullsceen.
     Rescales the image to half size and turns it into 4 color grayscale.
-    
     The code will/should be updated to be more flexible in image inputs.
     E.g. change in size and position
-    
     Note that the code is quite slow, it also clears the screen before
     drawing.
-    
     Parameters
     ----------
     im : str
-        The path to the image we want to display 
-        
+        The path to the image we want to display
     Examples
     --------
     >>> im = 'picture1.jpg'
     >>> tracker.drawHostImage(im)
-    '''
+    """
 
 
 
 #### self.drawTrialInfo(self,block='NA',tNr=999,tCor=999,tInc=999,tLeft=999):
 
-    '''
-    Draws trial information to the eyelink host PC screen. It 
+    """
+    Draws trial information to the eyelink host PC screen. It
     automatically draws the text on the bottom of the screen. This is
     very usefull for the experimenter to track the performance and
     progress of the experiment.
-    
     If dummy mode, prints the message to the console.
     The eyetracker needs to be in recording mode for this to work.
-    
     Parameters
     ----------
-    block : string 
+    block : string
         The experiment block, e.g. "Pract" or "Exp"
     tNr : int
         The current trial number
@@ -278,21 +272,19 @@
         The number of incorrect trials
     tLeft : int
         The number of remaining trials
-    
     Examples
     --------
     >>> tracker.drawTrialInfo('Exp', 100, 95, 5, 900)
-    '''
+    """
 
 
 
 #### self.driftCorrect(self,fixDot):
 
-    '''
+    """
     Performs drift correct.\n
     Requires the spacebar to be pressed when fixating the fixation dot.
     Does not yet support gaze or saccade trigger driftCorrect.
-    
     Parameters
     ----------
     fixDot : psychopy visual shapestim
@@ -301,64 +293,57 @@
     --------
     >>> fixDot = visual.Circle(win,radius=10,edges=50)
     >>> tracker.driftCorrect(fixDot)
-    '''
+    """
 
 
 
 #### self.getCurSamp(self):
 
-    '''
+    """
     Gets the most recent gaze position sample from the eyelink. This
     sample might be a couple of ms delayed, depending on the eyelink
-    settings used. 
-    
-    If in dummy mode returns the mouse position instead. 
+    settings used.
+    If in dummy mode returns the mouse position instead.
     The eyetracker needs to be in recording mode for this to work.
-        
     Returns
     -------
     curSamp : tuple
         The (x,y) gaze position on the screen. In center-based coordinates.
-    
     Examples
     --------
     >>> curSamp = tracker.getCurSamp()
     >>> curSamp
     (100,250)
-    
     Note
     --------
-    If running in dummy mode the cursor positon only updates 
+    If running in dummy mode the cursor positon only updates
     if there is a psychopy event, e.g. every win.flip()
-    If running a while loop without a win.flip(), it will return 
+    If running a while loop without a win.flip(), it will return
     the same mouse position everytime.\n
     This is not the case if the eytracker is connected, then the samples
-    will be updated every ms (if eyelink at 1000hz). 
-    '''
+    will be updated every ms (if eyelink at 1000hz).
+    """
 
 
 
 #### self.getEsacc(self,timeout=4):
 
-    '''
+    """
     Waits for the end of the next saccade (is bussy while waiting) and
     then returns the esacc information.
-    
     If running in dummy mode the function returns a list with False and
-    does not block code execution. In other words, don't use this 
-    function if you are running in dummy mode, as it always returns a 
+    does not block code execution. In other words, don't use this
+    function if you are running in dummy mode, as it always returns a
     list with false values
     The eyetracker needs to be in recording mode for this to work.
-    By pressing escape you can manually exit the function. This is 
-    useful if timeout is set to a very long interval. 
-    
+    By pressing escape you can manually exit the function. This is
+    useful if timeout is set to a very long interval.
     Parameters
     ----------
     timeout : int or float
-        The duration to block code execution and look for the end of a 
+        The duration to block code execution and look for the end of a
         saccade, in seconds. If no end saccade detected during the interval
-        the function will return a list with False. 
-        
+        the function will return a list with False.
     Returns
     -------
     esacc : list
@@ -368,275 +353,300 @@
         index3: start saccade Y\n
         index4: end saccade X\n
         index5: end saccade Y
-    
     Examples
     --------
     >>> esacc = tracker.getEsacc()
     >>> esacc
     [1820247, 1820291, 437.2, 465.0, 810.8, 454.4]
-    
     Note
     --------
-    This blocks code execution for the duration of timeout. Don't use this 
+    This blocks code execution for the duration of timeout. Don't use this
     function if you are simultaneously updating the window or running any
-    other code in the background. 
-    '''
+    other code in the background.
+    """
 
 
 
 #### self.getTime(self):
 
-    '''
+    """
     Gets the eyelink timestamp of the newest gaze sample.
     The eyetracker needs to be in recording mode for this to work.
-        
     Returns
     -------
     timeStamp : float or int
         The timestamp of the newest sample. In eyelink timeframe
-        
     Examples
     --------
     >>> timestamp = tracker.getTime()
     >>> timeStamp
     1820231
-    '''
+    """
 
 
 
 #### self.logVar(self,varName='noName',value='noValue'):
 
-    '''
+    """
     Log a variable to the eyelink log. Automatically waits atleast 2ms
-    after each call to give teh eyelink system time to catch up. 
+    after each call to give teh eyelink system time to catch up.
     It is important that there are no spaces in "varName" and no
     space in "value"
-    
     Sends  "'var '+varName+' '+value" to the eyeTracker log\n
-    
     If dummy mode, prints the message to the console.
     The eyetracker needs to be in recording mode for this to work.
-    
     Parameters
     ----------
     varName : str, int or float
         The name of the variable you are logging in the eyelink data
-        file. The value passed will be turned into a string before sending 
+        file. The value passed will be turned into a string before sending
         the message
     value : str, int or float
         The value corresponding to the "varName". The value will be turned
         into a string before the message is sent.
-    
     Examples
     --------
     >>> tracker.logVar('response', 'left')
     >>> tracker.logVar('rt', 100.0)
-    
-    '''
+    """
 
 
 
 #### self.sendMsg(self,msg=''):
 
-    '''
+    """
     Send a message to the eyetracker data file. If logging variables
-    use tracker.logVar() instead. This function is better to use if 
-    there are timing crucial messages to be sent to the eyetracker log 
-    file. Be sure to wait at least 2ms between each call to this function. 
+    use tracker.logVar() instead. This function is better to use if
+    there are timing crucial messages to be sent to the eyetracker log
+    file. Be sure to wait at least 2ms between each call to this function.
     The eyelink system needs a minimum of 2ms between each message to
-    to keep stable performance. If dummy mode, prints the message to 
+    to keep stable performance. If dummy mode, prints the message to
     the console.
     The eyetracker needs to be in recording mode for this to work.
-    
     Parameters
     ----------
     msg : string
         The string message to send to the eyetracker log file
-    
     Examples
     --------
     Sending a message
-    
     >>> tracker.sendMsg('targetOnset')
-    
     Sending a message at the same time as flipping a window, this should
     give you better timing.
-    
     >>> win.callOnFlip(tracker.sendMsg, 'targetOnset')
     >>> win.flip()
-    
-    '''
+    """
+
+
+
+#### self.setCalibrationOptions(self,foreCol=[0,0,0],backCol=[150,150,150],calDiam=10,holeDiam=2,colorDepth=32,targSound="on",corrSound="on",incSound="on",caltype='HV9',calTime=1000):
+
+    """
+    Set the calibration options for the eyetracker calibration.
+    Is automatically set when initiating the eyetracker. When auto
+    initiating it uses the background color of the psychopy window object.
+    Parameters
+    ----------
+        foreCol : list, [R,G,B]
+            The RGB values of the calibration dot
+        backCol : list, [R,G,B]
+            The RGB values of the background color
+        calDiam : int
+            The diameter of the calibration dot in pixels
+        holeDiam : list, [R,G,B]
+            The diameter of the hole in the calibration dot in pixels. This
+            facilitates fixation.
+        colorDepth : int
+            The colorDepth of the screen, defaults to 32bit
+        targSound : string
+            Whether or not to play a sound when looking at calibration
+            dots. options: 'on' or 'off'. Does not currently work.
+        corrSound : string
+            Whether or not to play a sound when calibration is succesfull.
+            options: 'on' or 'off'. Does not currently work.
+        incSound : string
+            Whether or not to play a sound when calibration is unsuccesfull.
+            options: 'on' or 'off'. Does not currently work.
+        caltype : string
+            The type of calibration to run, e.g. numbe rof dots. The
+            options are: "H3", "HV3", "HV5", "HV9".
+        calTime : int
+            The automatic calibration pacing in milliseconds
+    """
+
+
+
+#### self.setEyeLinkSettings(self,vel=35,acc=9500,screenW=1680,screenH=1050):
+
+    """
+    Manually set eyelink saccade detection parameters.
+    Parameters
+    ----------
+    vel : int
+        The velocity threshold for saccade detection, degrees per second
+    acc : int
+        The acceleration threshold for saccade detection
+    screenW : int
+        The with of the screen in pixels (automatically sets when
+        initiating the eyetracker)
+    screenH : int
+        The height of the screen in pixels (automatically sets when
+        initiating the eyetracker)
+    """
 
 
 
 #### self.startRecording(self):
 
-    '''
-    This sets the eyetracker to recording mode. Does not send any 
+    """
+    This sets the eyetracker to recording mode. Does not send any
     messages. If starting a trial, use tracker.startTrial() instead.
-    
     Examples
     --------
     >>> tracker.startRecording()
-    '''
+    """
 
 
 
 #### self.startTrial(self,trialNr=False):
 
-    '''
-    Starts the eyetracker recording mode and also sends a message to the 
-    eyelink log that the trial is starting. The message sent is 
+    """
+    Starts the eyetracker recording mode and also sends a message to the
+    eyelink log that the trial is starting. The message sent is
     'start_trial'. Use this function before the trial starts.
     If dummy mode, prints the message to the console.
-    
     tracker.startTrial() and tracker.stopTrial() should be used at the
     absolute beginning of a trial and at the absolute end of the trial,
     respectively. All data logging and gaze contingent code should be
     done between tracker.startTrial() and tracker.stopTrial()
-    
     Examples
     --------
     >>> tracker.startTrial(10)
-    '''
+    """
 
 
 
 #### self.stopRecording(self):
 
-    '''
-    This stops the eyetracker recording mode. Does not send any 
+    """
+    This stops the eyetracker recording mode. Does not send any
     messages. If stopping a trial, use tracker.stopTrial() instead.
-    
     Examples
     --------
     >>> tracker.stopRecording()
-    '''
+    """
 
 
 
 #### self.stopTrial(self):
 
-    '''
-    Stops the eyetracker recording mode and also sends a message to the 
-    eyelink log that the trial is stoped. The message sent is 
+    """
+    Stops the eyetracker recording mode and also sends a message to the
+    eyelink log that the trial is stoped. The message sent is
     'stop_trial'. Use this function before the trial starts.
     If dummy mode, prints the message to the console.
     Examples
     --------
     >>> tracker.stopTrial()
-    '''
+    """
 
 
 
 #### self.waitForFixStart(self,fixXY=None,offset=50,timeout=4):
 
-    '''
+    """
     Wait for the start of the next fixation.
     Blocks the execution of code until the start of a fixation
-    
     If running in dummy mode, returns the mouse position. It flips
     the window every refresh rate, any stimulus not set to
     autodraw = True, will be removed if running in dummy mode.
-    By pressing escape you can manually exit the function. This is 
-    useful if timeout is set to a very long interval. 
+    By pressing escape you can manually exit the function. This is
+    useful if timeout is set to a very long interval.
     The eyetracker needs to be in recording mode for this to work.
-    
     Parameters
     ----------
     fixXY : tuple, two ints or floats
-        If none, waits for the first fixation start, else the function 
+        If none, waits for the first fixation start, else the function
         returns the first fixation that starts within a certain distance
-        (dist) of the given x and y coordinates. Assumes center-based 
+        (dist) of the given x and y coordinates. Assumes center-based
         coordinates. The input should be (x,y).
     offset :  float or int
-        The maximum distance from fixXY which is acceptable, the radius 
-        in pixels. 
+        The maximum distance from fixXY which is acceptable, the radius
+        in pixels.
         If fixXY is given, then waits until the start of a fixation that
         is a maximum of "offset" number of pixels away from the fixXY
     timeout : int or float
-        The duration to block code execution and look for the start of a 
-        fixation, in seconds. If no start fixation detected during the 
-        interval the function will return a list with False. 
-                
+        The duration to block code execution and look for the start of a
+        fixation, in seconds. If no start fixation detected during the
+        interval the function will return a list with False.
     Returns
     -------
     fix : list
         index0: Start fixation timestamp\n
         index1: Fixation start X\n
         index2: Fixation start Y\n
-        
         If dummy mode
         index0: None\n
         index1: Fixation start X\n
         index2: Fixation start Y\n
-    
-    
     Examples
     --------
     Wait for a fixation start in the center, with a radius of 50px
-    
     >>> fix = tracker.waitForFixStart((0,0), 50, 5)
     >>> fix
     [1820292, 10,25]
-    
     Note
     --------
-    This function has not been extensively tested, consider using 
-    tracker.waitForFixation() instead. 
-    '''
+    This function has not been extensively tested, consider using
+    tracker.waitForFixation() instead.
+    """
 
 
 
 #### self.waitForFixation(self,fixDot,maxDist=0,maxWait=4,nRings=3,fixTime=200):
 
-    '''
-    Wait for the start of a fixation in the area around a fixDot. 
+    """
+    Wait for the start of a fixation in the area around a fixDot.
     The function does not use eyelink events, but rather waits until
-    a certain number of gaze samples are all within the boundary. 
+    a certain number of gaze samples are all within the boundary.
     If after a second there still has not been enough contiguous samples
-    within the boundary, contracting circles will be shown around the 
+    within the boundary, contracting circles will be shown around the
     fixDot. If after the set maximum time not enough contiguous samples
-    have been detected, it will prompt the user for recalibration or 
-    validation. 
-    
-    Press escape to prematurely exit. 
-    
-    If running in dummy mode it uses the mouse position. 
+    have been detected, it will prompt the user for recalibration or
+    validation.
+    Press escape to prematurely exit.
+    If running in dummy mode it uses the mouse position.
     This function clears the psychopy window and only draws the fixDot.
-    
     Parameters
     ----------
     fixDot : psychopy visual shapestim
         The stimulus to use for fixation detection. usually this will be
-        a psychopy visual.Circle. 
+        a psychopy visual.Circle.
     maxDist : int or float
         The maximum allowed distance from the center of the fixDot. In
-        pixels. If set to 0, it uses two degrees of visual angle. The 
+        pixels. If set to 0, it uses two degrees of visual angle. The
         degrees of visual angle are determined based on the psychopy
-        monitor width and distance properties. 
+        monitor width and distance properties.
     maxWait : int or float
-        The maximum time to wait for a correct fixation before 
-        prompting the user about recalibration. In seconds. 
+        The maximum time to wait for a correct fixation before
+        prompting the user about recalibration. In seconds.
     nRings : int
         The number of rings to use for constricting circles
     fixTime : int
         The duration of contiguous samples within the boundary that are
         required for successful fixation.
-        
     Returns
     -------
     correctFixation : Bool
         True if the fixation was correct
         False if the fixation was incorrect
-    
     Examples
     --------
     >>> fixDot = visual.Circle(win,radius=10,edges=50)
     >>> waitForFixation = tracker.waitForFixation(fixDot, 100)
     >>> waitForFixation
     True
-    '''
+    """
 
 
 
@@ -645,16 +655,16 @@
 # getParticipantInfo
 ### getParticipantInfo
 
-    '''
-    This class is useful for getting participant and session information. 
+    """
+    This class is useful for getting participant and session information.
     Use this at the start of each experiment to get the participant number,
     date of birth etc
-    
+
     Returns
     -------
     info.info : OrderedDict
         A dictionary with participant information
-    
+
     Examples
     --------
     >>> import psychoLink as pl
@@ -672,7 +682,112 @@
                  ('ppBirthDay', '1/1/1960'),
                  ('curDate', '27/03/2018'),
                  ('saveAs', 'PP1S1')])
-    '''
+    """
+
+
+
+#### self.alert_printf(self,msg):
+
+    """
+    Prints alert message to psychopy stderr.
+    """
+
+
+
+#### self.draw_image_line(self,width,line,totlines,buff):
+
+    """
+    Collects all lines for an eye image, saves the image,
+    then creates a psychopy imagestim from it.
+    """
+
+
+
+#### self.draw_line(self,x1,y1,x2,y2,color_index):
+
+    """ Used to draw crosshair, color does not work """
+    if self.image_size:
+        # It asumes the image is in the top left   
+        x1, y1 = topLeftToCenter((x1 * self.image_scale, y1 * self.image_scale), self.image_size)
+        x2, y2 = topLeftToCenter((x2 * self.image_scale, y2 * self.image_scale), self.image_size)
+        self.lineToDraw.setStart((x1, y1))
+        self.lineToDraw.setEnd((x2, y2))
+        self.lineToDraw.draw()
+def draw_lozenge(self, x, y, width, height, color_index):
+    """ Color does not work, Do not know what this does"""
+
+
+
+#### self.erase_cal_target(self):
+
+    """Removes any visible calibration target graphic from display."""
+    self.clear_cal_display()
+def draw_cal_target(self, x, y):
+    """
+
+
+
+#### self.exit_cal_display(self):
+
+    """Exits calibration display."""
+    self.clear_cal_display()
+def clear_cal_display(self):
+    """Clears the calibration display"""
+
+
+
+#### self.exit_image_display(self):
+
+    """Exits the image display."""
+    self.clear_cal_display()
+    self.setup_cal_display()
+def image_title(self, text):
+    """
+
+
+
+#### self.play_beep(self,pylink_sound_index):
+
+    """
+    """
+
+
+
+#### self.record_abort_hide(self):
+
+    """ No idea what this is """
+    pass
+def get_mouse_state(self):
+    """  """
+
+
+
+#### self.set_image_palette(self,r,g,b):
+
+    """
+    Set color palette ued by host pc when sending images.
+    Saves the different r,g,b values provided by the eyelink host palette.
+    When building up each eye image frame, eyelink sends the palette
+    index for each pixel; so an eyelink eye image frame can be a 2D lookup
+    array into this palette.
+    """
+
+
+
+#### self.setup_cal_display(self):
+
+    """
+    Sets up the initial calibration display, which contains a menu with
+    instructions.
+    """
+
+
+
+#### self.setup_image_display(self,width,height):
+
+    """
+    Initialize the index array that will contain camera image data.
+    """
 
 
 
@@ -681,7 +796,7 @@
 # sendPortCode
 ### sendPortCode
 
-    '''
+    """
     Class for sending port codes:
         Automatically goes to dummy mode if no parallel port
 
@@ -689,43 +804,39 @@
 
     Never send codes directly after one another, they will be skipped!!
     Wait for the resetInterval + 2ms between codes
-    
+
     Is automatically initiated when using the psychoLink eyetracking class.
     Initiates to: tracker.PPort
 
-    '''
+    """
 
 
 
 #### self.sendCode(self,code):
 
-    '''
-    Set the parallel port code. 
+    """
+    Set the parallel port code.
     Prints to console if it is unable to connect with the parallel port
-    
     Parameters
     ----------
     code : int, 0-255
         The value to set the parallel port
-        
     Examples
     --------
     Initiates and sends code (output is dummy mode)
     >>> PPort = sendPortCode()
     >>> PPort.sendCode(200)
     portCode: 200
-    '''
+    """
 
 
 
 #### self.sendCodeAndReset(self,code,resetInterval=0):
 
-    '''
-    Set the parallel port code. Then waits for a set time and then 
+    """
+    Set the parallel port code. Then waits for a set time and then
     finaly resets the parallelport.
-    
     Prints to console if it is unable to connect with the parallel port
-    
     Parameters
     ----------
     code : int, 0-255
@@ -733,7 +844,6 @@
     resetInterval : float or int, positive
         If set to 0, then the resetinterval set in "setSettings" is used.
         If not 0, waits for the given float or int in seconds
-    
     Examples
     --------
     Initiates and sends code (output is dummy mode)\n
@@ -743,34 +853,32 @@
     portCode: 200
     portreset: 0
     PortOpen for 9.99999046326ms
-    '''
+    """
 
 
 
 #### self.setSettings(self,resetValue=0,resetInterval=0.001,port=0x378):
 
-    '''
+    """
     Sets the settings for sendPort code class
-    
     Parameters
     ----------
     resetValue : int: 0-255
         The value to which the parallel port will be reset when using
         "sendCodeAndReset"
     resetInterval : float, positive
-        The time to block code execution after setting the parallel port 
+        The time to block code execution after setting the parallel port
         before resetting the parallel port, when using "sendCodeAndReset".
         Time interval is in seconds
     port : hexadecimal
         The parallel port address
-    
     Examples
     --------
-    Initiate the class and set the resetvalue to 10 and wait time to 
+    Initiate the class and set the resetvalue to 10 and wait time to
     10ms
     >>> PPort = sendPortCode()
     >>> PPort.setSettings(10, 0.01, 0x378)
-    '''
+    """
 
 
 

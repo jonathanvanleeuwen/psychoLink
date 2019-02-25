@@ -1297,14 +1297,22 @@ class eyeLink:
             # or for dummy mode connection
             self.mode = 'Dummy'
             if pl:
-                self.pylink = pl.EyeLink(None)
-                error = '\n\tNo eye-tracker found at: "' + address + \
-                        '"\n\tEntering DummyMode\n' + \
-                        '\tUsing Mouse Position\n\n\tPress "Space" to start'
+                try:
+                    self.pylink = pl.EyeLink(None)
+                    error = '\n\tNo eye-tracker found at: "' + address + \
+                            '\n\tEntering DummyMode\n' + \
+                            '\tUsing Mouse Position\n\n\tPress "Space" to start'
+                except:
+                    self.pylink = False
+                    error = '\n\tPylink module not found!' + \
+                            '\n\tCheck for correct pylink installation' + \
+                            '\n\tEntering DummyMode\n' + \
+                            '\tUsing Mouse Position\n\n\tPress "Space" to start'
             else:
                 self.pylink = False
                 error = '\n\tPylink module not found!' + \
-                        '"\n\tEntering DummyMode\n' + \
+                        '\n\tCheck for correct pylink installation' + \
+                        '\n\tEntering DummyMode\n' + \
                         '\tUsing Mouse Position\n\n\tPress "Space" to start'
             print("\nError: %s" % error)
             self.mouse.setVisible(1)

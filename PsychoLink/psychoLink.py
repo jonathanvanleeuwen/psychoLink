@@ -2826,7 +2826,6 @@ class IntroScreen(object):
             s.draw()
 
 try: 
-    2/0
     class EyeLinkCoreGraphicsPsychopy(pl.EyeLinkCustomDisplay):
         WINDOW_BACKGROUND_COLOR = (128, 128, 128)
         CALIBRATION_POINT_OUTER_RADIUS = 15.0, 15.0

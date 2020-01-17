@@ -25,8 +25,8 @@ except:
     pd = False
     warn = 'Pandas not imported!\nmakeTrialList will return array and not dataframe!\nSaving calibration will not work!'
     warnings.warn(warn, Warning)
-import Tkinter as tk
-import tkFileDialog as filedialog
+import tkinter as tk
+import tkinter.filedialog as filedialog
 import scipy
 from scipy import misc
 import math
@@ -1061,11 +1061,11 @@ class sendPortCode:
             from ctypes import windll
             self.io = windll.dlportio
             self.dummy = False
-            print '\nThe parallel port was initiated!'
-            print 'Sending port codes!\n'
+            print('\nThe parallel port was initiated!')
+            print('Sending port codes!\n')
         except:
-            print '\nThe parallel port couldn\'t be opened'
-            print 'Set to dummy mode!\n'
+            print('\nThe parallel port couldn\'t be opened')
+            print('Set to dummy mode!\n')
             self.dummy = True
             self.io = False
 
@@ -1128,12 +1128,12 @@ class sendPortCode:
         if code != self.resetValue:
             # Send port to console
             if self.dummy:
-                print 'portCode: ' + str(code)
+                print('portCode: ' + str(code))
                 portSend = time.time()
                 core.wait(waitTime, hogCPUperiod=waitTime)
                 portReset = time.time()
-                print 'portreset: ' + str(self.resetValue)
-                print 'PortOpen for ' + str((portReset - portSend) * 1000) + 'ms'
+                print('portreset: ' + str(self.resetValue))
+                print('PortOpen for ' + str((portReset - portSend) * 1000) + 'ms')
 
             # Actually send port codes
             elif not self.dummy:
@@ -1141,14 +1141,14 @@ class sendPortCode:
                 try:
                     self.io.DlPortWritePortUchar(self.port, int(code))
                 except:
-                    print 'Failed to send trigger!'
+                    print('Failed to send trigger!')
                 # wait for a set time
                 core.wait(waitTime, hogCPUperiod=waitTime)
                 # Reset the port
                 try:
                     self.io.DlPortWritePortUchar(self.port, int(self.resetValue))
                 except:
-                    print 'Failed to reset trigger!'
+                    print('Failed to reset trigger!')
 
     def sendCode(self, code):
         """
@@ -1169,7 +1169,7 @@ class sendPortCode:
         """
         # Send port to console
         if self.dummy:
-            print 'portCode: ' + str(int(code))
+            print('portCode: ' + str(int(code)))
 
         # Actually send port codes
         elif not self.dummy:
@@ -1177,7 +1177,7 @@ class sendPortCode:
             try:
                 self.io.DlPortWritePortUchar(self.port, int(code))
             except:
-                print 'Failed to send trigger!'
+                print('Failed to send trigger!')
 
 
 # ==============================================================================
@@ -1247,7 +1247,7 @@ class eyeLink:
     >>> mon = monitors.Monitor('testMonitor',width=47,distance=75)
     >>> win = visual.Window(units='pix',monitor=mon,size=(1680,1050),
     colorSpace='rgb255',color = (255,255,255), screen = 0, fullscr=False)
-    >>> tracker = pl.eyeLink(win, fileName='someName.EDF', fileDest = "C:\Users\User1\Desktop\\")
+    >>> tracker = pl.eyeLink(win, fileName='someName.EDF', fileDest = "C:\\Users\\User1\Desktop\\")
 
     The absolute minimum of inputs required to initiate the eyetracker. Keep in
     mind that to get correct distances etc, the values for distance and width
@@ -1287,8 +1287,8 @@ class eyeLink:
                 pl.flushGetkeyQueue()
                 self.mode = 'Real'
                 self.mouse.setVisible(0)
-                print '\nTracker found!'
-                print 'Mouse set to invissible'
+                print('\nTracker found!')
+                print('Mouse set to invissible')
                 drawText(self.win, 'Press "SPACE" to setup EyeTracker!')
                 self.win.flip()
             else:
@@ -1314,7 +1314,7 @@ class eyeLink:
                         '\n\tCheck for correct pylink installation' + \
                         '\n\tEntering DummyMode\n' + \
                         '\tUsing Mouse Position\n\n\tPress "Space" to start'
-            print("\nError: %s" % error)
+            print(("\nError: %s" % error))
             self.mouse.setVisible(1)
             drawText(self.win, error)
             self.win.flip()
@@ -1594,7 +1594,7 @@ class eyeLink:
             self.pylink.sendMessage(str(msg))
         elif self.mode == 'Dummy':
             msg = 'PsychoLink Log (Dummy): ' + str(msg)
-            print msg
+            print(msg)
 
     # Log variable to pyLinkLog
     def logVar(self, varName='noName', value='noValue'):
@@ -1631,7 +1631,7 @@ class eyeLink:
             time.sleep(2 / 1000.0)
         elif self.mode == 'Dummy':
             msg = 'PsychoLink Log (Dummy): ' + msg
-            print msg
+            print(msg)
             time.sleep(2 / 1000.0)
 
     def getTime(self):
@@ -1733,7 +1733,7 @@ class eyeLink:
                 x, y = centerToTopLeft(pos, (self.screenW, self.screenH))
                 self.pylink.sendCommand("draw_text=%d %d %d %s " % (x, y, 3, text))
         else:
-            print text
+            print(text)
 
     def drawTrialInfo(self, block='NA', tNr=999, tCor=999, tInc=999, tLeft=999):
         """
@@ -1770,7 +1770,7 @@ class eyeLink:
             y = self.screenH - 30
             self.pylink.sendCommand("draw_text=%d %d %d %s " % (x, y, 3, text))
         else:
-            print text
+            print(text)
 
     def drawHostImage(self, im):
         """
@@ -2301,22 +2301,22 @@ class eyeLink:
                 time.sleep(0.2)
                 try:
                     os.rename(self.EDFDefaultName, self.EDFfileName)
-                    print '\nEDF file was saved as', self.EDFfileName
+                    print('\nEDF file was saved as', self.EDFfileName)
                     # move the file
                     if self.fileDest:
                         try:
                             os.rename(os.path.abspath(self.EDFfileName),
                                       self.fileDest + self.EDFfileName)
-                            print 'EDF file was moved to\n', self.fileDest + self.EDFfileName
+                            print('EDF file was moved to\n', self.fileDest + self.EDFfileName)
                         except:
-                            print '\nError while moving EDF file!!'
-                            print 'Manually move the file!!'
-                            print 'Currently saved as', os.path.abspath(self.EDFfileName), '!!'
+                            print('\nError while moving EDF file!!')
+                            print('Manually move the file!!')
+                            print('Currently saved as', os.path.abspath(self.EDFfileName), '!!')
                 except:
-                    print '\nError while renaming EDF file!!'
-                    print self.EDFfileName, 'Allready exists!!'
-                    print 'Manually rename the file!!'
-                    print 'Currently saved as', self.EDFDefaultName, '!!'
+                    print('\nError while renaming EDF file!!')
+                    print(self.EDFfileName, 'Allready exists!!')
+                    print('Manually rename the file!!')
+                    print('Currently saved as', self.EDFDefaultName, '!!')
         if self.mouse:
             self.mouse.setVisible(1)
         self.win.close()
@@ -2411,8 +2411,8 @@ class getParticipantInfo(tk.Tk):
         subjectNrLabel.grid(row=0, column=0)
         sessionNrLabel.grid(row=1, column=0)
 
-        subjectNr = range(1, 51)
-        sessionNr = range(1, 11)
+        subjectNr = list(range(1, 51))
+        sessionNr = list(range(1, 11))
         self.subjectNrOptions = tk.StringVar()
         self.sessionNrOptions = tk.StringVar()
         self.subjectNrOptions.set(subjectNr[0])
@@ -2448,9 +2448,9 @@ class getParticipantInfo(tk.Tk):
         monthLabel.grid(row=0, column=2)
         yearLabel.grid(row=0, column=3)
 
-        day = range(1, 32)
-        month = range(1, 13)
-        year = range(1960, 2020)
+        day = list(range(1, 32))
+        month = list(range(1, 13))
+        year = list(range(1960, 2020))
         self.dayOptions = tk.StringVar()
         self.dayOptions.set(day[0])
         self.monthOptions = tk.StringVar()
@@ -3012,8 +3012,8 @@ try:
             for i in range(width):
                 try:
                     self.rgb_index_array[line - 1, i] = buff[i]
-                except Exception, e:
-                    print e
+                except Exception as e:
+                    print(e)
     
             # Once all lines have been collected, go through the hoops needed
             # to display the frame as an image; scaled to fit the display resolution.
@@ -3054,8 +3054,8 @@ try:
                         self.draw_cross_hair()
                     self.window.flip()
     
-                except Exception, err:
-                    print err
+                except Exception as err:
+                    print(err)
     
         def set_image_palette(self, r, g, b):
             """
@@ -3077,7 +3077,7 @@ try:
             """
             Prints alert message to psychopy stderr.
             """
-            print msg
+            print(msg)
     
         def play_beep(self, pylink_sound_index):
             """
@@ -3140,4 +3140,4 @@ try:
             return pos, state[0]
 except:
     EyeLinkCoreGraphicsPsychopy = 'Unable to load pylink module:\npl.EyeLinkCustomDisplay\n\nCheck for correct pylink installation.'
-    print EyeLinkCoreGraphicsPsychopy
+    print(EyeLinkCoreGraphicsPsychopy)
